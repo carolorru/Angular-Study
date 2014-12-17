@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AngularJS Tutorials</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #eee;
+      }
+
+      .form-signin {
+        max-width: 330px;
+        padding: 15px;
+        margin: 0 auto;
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin .checkbox {
+        font-weight: normal;
+      }
+      .form-signin .form-control {
+        position: relative;
+        height: auto;
+        -webkit-box-sizing: border-box;
+           -moz-box-sizing: border-box;
+                box-sizing: border-box;
+        padding: 10px;
+        font-size: 16px;
+      }
+      .form-signin .form-control:focus {
+        z-index: 2;
+      }
+      .form-signin input[type="email"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+    </style>
+  </head>
+  <body ng-app="myApp">
+
+    <div ng-controller="loginCtrl">
+      <div class="container">
+        
+        <form class="form-signin" role="form">
+          <h2 class="form-signin-heading">Please sign in</h2>
+          
+          <label class="sr-only">Email address</label>
+          <input type="email" class="form-control" placeholder="Email address">
+          
+          <label class="sr-only">Password</label>
+          <input type="password" class="form-control" placeholder="Password">
+
+          <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+        </form>
+
+      </div>    
+    </div>
+
+    <div ng-controller="portalCtrl">
+      <div class="container">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>EMISSAO_PV</th>
+              <th>NUM_PED</th>
+              <th>COD_CLI</th>
+              <th>NOM_CLI</th>
+              <th>QTD_PV</th>
+              <th>HR_INI_SEP</th>
+              <th>DT_INI_SEP</th>
+              <th>HR_FIM_SEP</th>
+              <th>DT_FIM_SEP</th>
+              <th>QTD_SEP</th>
+              <th>COD_SEPARADOR</th>
+              <th>NOM_SEPARADOR</th>
+              <th>PESO_BRUTO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="actor in avengers.cast | orderBy:'name' | limitTo:20 | filter:search">
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+              <td>{{actor.name | lowercase}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
+  <script type="text/javascript" src="app/js/main.js"></script>
+  </body>
+</html>
