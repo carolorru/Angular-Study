@@ -105,12 +105,22 @@ app.controller('HomeCtrl', function($rootScope, $location)
    $rootScope.activetab = $location.path();
 });
  
-app.controller('SobreCtrl', function($rootScope, $location)
+app.controller('LoginCtrl', function($rootScope, $location)
 {
    $rootScope.activetab = $location.path();
 });
- 
-app.controller('ContatoCtrl', function($rootScope, $location)
+
+app.controller('SeparacaoCtrl', function($rootScope, $location)
+{
+   $rootScope.activetab = $location.path();
+});
+
+app.controller('ConferenciaCtrl', function($rootScope, $location)
+{
+   $rootScope.activetab = $location.path();
+});
+
+app.controller('ExpedicaoCtrl', function($rootScope, $location)
 {
    $rootScope.activetab = $location.path();
 });
