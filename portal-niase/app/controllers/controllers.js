@@ -1,4 +1,4 @@
-appLogin
+/*appLogin
 	.constant('AUTH_EVENTS', {
 		loginSuccess: 'auth-login-success',
 		loginFailed: 'auth-login-failed',
@@ -97,7 +97,7 @@ appLogin.controller('LoginCtrl', function ($scope, $rootScope, AUTH_EVENTS, Auth
             $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
         });
     };
-});
+});*/
 
 
 app.controller('HomeCtrl', function($rootScope, $location)
