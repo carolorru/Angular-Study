@@ -110,8 +110,11 @@ app.controller('LoginCtrl', function($rootScope, $location)
    $rootScope.activetab = $location.path();
 });
 
-app.controller('SeparacaoCtrl', function($rootScope, $location)
+app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window, $http)
 {
+    $.get('http://webtalk.com.br/uperp/pedidos/separados').success(function(data){
+            $scope.lista = data;
+        });
    $rootScope.activetab = $location.path();
 });
 
