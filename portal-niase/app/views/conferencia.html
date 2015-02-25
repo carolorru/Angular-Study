@@ -16,8 +16,8 @@
       </thead>
       <tbody>
         <tr data-toggle="modal" data-target=".bs-example-modal-lg">
-          <td>150 pedidos</td>
-          <td>10.000,00 kg</td>
+          <td>{{aConferir.num}} pedidos</td>
+          <td>{{aConferir.num_peso}} Kg</td>
         </tr>
       </tbody>
     </table>
@@ -45,23 +45,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>000101</td>
-                    <td>Niaze Chohfi</td>
-                    <td>15</td>
-                    <td>0,5 Kg</td>
-                  </tr>
-                  <tr>
-                    <td>000101</td>
-                    <td>Niaze Chohfi</td>
-                    <td>15</td>
-                    <td>0,5 Kg</td>
-                  </tr>
-                  <tr>
-                    <td>000101</td>
-                    <td>Niaze Chohfi</td>
-                    <td>15</td>
-                    <td>0,5 Kg</td>
+                  <tr ng-repeat="un in aConferir.row">
+                    <td>{{un.NUM_PED}}</td>
+                    <td>{{un.NOM_CLI}}</td>
+                    <td>{{un.QUANTIDADE}}</td>
+                    <td>{{un.PESO_BRUTO}} Kg</td>
                   </tr>
                 </tbody>
               </table>
@@ -87,32 +75,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Alexandre</td>
-          <td>10/02/2015</td>
-          <td>08:10</td>
-          <td>000099</td>
-          <td>1000</td>
-          <td>1.000,00 kg</td>      
-          <td>50%</td>
-        </tr>
-        <tr>
-          <td>Alexandre</td>
-          <td>10/02/2015</td>
-          <td>08:10</td>
-          <td>000099</td>
-          <td>1000</td>
-          <td>1.000,00 kg</td>      
-          <td>50%</td>
-        </tr>
-        <tr>
-          <td>Alexandre</td>
-          <td>10/02/2015</td>
-          <td>08:10</td>
-          <td>000099</td>
-          <td>1000</td>
-          <td>1.000,00 kg</td>      
-          <td>50%</td>
+        <tr ng-repeat="un in emConferencia.row">
+          <td>{{un.NOM_CONFERENTE}}</td>
+          <td>{{un.DT_INI_CONF}}</td>
+          <td>{{un.HR_INI_CONF}}</td>
+          <td>{{un.NUM_PED}}</td>
+          <td>{{un.QUANTIDADE}}</td>
+          <td>{{un.PESO_BRUTO}} Kg</td>
+          <td>{{(un.QTD_CONF/un.QUANTIDADE)*100 | number : 2}}%</td>
         </tr>
       </tbody>
     </table>
@@ -126,8 +96,8 @@
       </thead>
       <tbody>
         <tr data-toggle="modal" data-target=".bs-example-modal-lg-2">
-          <td>50 pedidos</td>
-          <td>1.000,00 kg</td>
+          <td>{{conferidos.num}} pedidos</td>
+          <td>{{conferidos.num_peso}} Kg</td>
         </tr>
       </tbody>
     </table>
@@ -156,41 +126,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Alexandre</td>
-                    <td>3</td>
-                    <td>2.000,00 Kg</td>
-                    <td>20%</td>
-                  </tr>
-                  <tr>
-                    <td>Alexandre</td>
-                    <td>3</td>
-                    <td>2.000,00 Kg</td>
-                    <td>20%</td>
-                  </tr>
-                  <tr>
-                    <td>Alexandre</td>
-                    <td>3</td>
-                    <td>2.000,00 Kg</td>
-                    <td>20%</td>
-                  </tr>
-                  <tr>
-                    <td>Alexandre</td>
-                    <td>3</td>
-                    <td>2.000,00 Kg</td>
-                    <td>20%</td>
-                  </tr>
-                  <tr>
-                    <td>Alexandre</td>
-                    <td>3</td>
-                    <td>2.000,00 Kg</td>
-                    <td>20%</td>
-                  </tr>
-                  <tr>
-                    <td>Alexandre</td>
-                    <td>3</td>
-                    <td>2.000,00 Kg</td>
-                    <td>20%</td>
+                  <tr ng-repeat="un in conferidos.row">
+                    <td>{{un.NOM_CONFERENTE}}</td>
+                    <td>{{un.NUM_PED}}</td>
+                    <td>{{un.PESO_BRUTO}} Kg</td>
+                    <td>{{(un.QTD_CONF/un.QUANTIDADE)*100 | number : 2}}%</td>
                   </tr>
                 </tbody>
               </table>

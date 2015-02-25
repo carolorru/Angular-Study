@@ -29,12 +29,38 @@ app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window,
 
 
 
-app.controller('ConferenciaCtrl', function($rootScope, $location)
+app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $window, $http)
 {
-   $rootScope.activetab = $location.path();
+    var json;
+    $http.get('http://webtalk.com.br/uperp/conferencia/a-conferir').success(function(data){
+        json = data;
+        $scope.aConferir = json;
+    });
+    $http.get('http://webtalk.com.br/uperp/conferencia/em-conferencia').success(function(data){
+        json = data;
+        $scope.emConferencia = json;
+    });
+    $http.get('http://webtalk.com.br/uperp/conferencia/conferidos').success(function(data){
+        json = data;
+        $scope.conferidos = json;
+    });
+    $rootScope.activetab = $location.path();
 });
 
-app.controller('ExpedicaoCtrl', function($rootScope, $location)
+app.controller('ExpedicaoCtrl', function($rootScope, $location, $scope, $window, $http)
 {
-   $rootScope.activetab = $location.path();
+    var json;
+    $http.get('http://webtalk.com.br/uperp/pedidos/a-embalar').success(function(data){
+        json = data;
+        $scope.aEmbalar = json;
+    });
+    $http.get('http://webtalk.com.br/uperp/pedidos/embalando').success(function(data){
+        json = data;
+        $scope.embalando = json;
+    });
+    $http.get('http://webtalk.com.br/uperp/pedidos/embalados').success(function(data){
+        json = data;
+        $scope.embalados = json;
+    });
+    $rootScope.activetab = $location.path();
 });
