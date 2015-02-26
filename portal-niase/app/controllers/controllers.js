@@ -1,33 +1,22 @@
 app.factory('AuthenticationService',
-    ['Base64', '$http', '$cookieStore', '$rootScope', '$timeout',
-    function (Base64, $http, $cookieStore, $rootScope, $timeout) {
+    ['Base64', '$http', '$cookieStore', '$rootScope', '$timeout', '$location',
+    function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
         var service = {};
  
         service.Login = function (username, password, callback) {
  
-            /* Dummy authentication for testing, uses $timeout to simulate api call
-             ----------------------------------------------*/
-            // $timeout(function(){
-            //     var response = { success: username === 'test' && password === 'test' };
-            //     if(!response.success) {
-            //         response.message = 'Username or password is incorrect';
-            //     }
-            //     callback(response);
-            // }, 1000);
- 
- 
             /* Use this for real authentication
              ----------------------------------------------*/
-            $http.get('http://carolineorru.com.br/portal-niase/login', { email: username, pass: password }).success(function (data) {
+            $http.post('http://carolineorru.com.br/portal-niase/services/login', { email: username, pass: password }).success(function (data) {
+                callback(data);
                 console.log(data);
                 if (data.num == 1) {
-                    //httpG.setToken(data.info.token);
-                    //$scope.isAuthenticated = true;
                     $location.path('/portal-niase/home');
                 } else {
                     alert(data.msg);
                 }
             }).error(function (error) {
+                callback(error);
                 console.log(error);
                 alert("Login Error!");
             });
@@ -145,48 +134,25 @@ app.factory('AuthenticationService',
 
 app.controller('MainController', function($rootScope, $location)
 {
-   $rootScope.activetab = $location.path();
 });
 
 
-app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'AuthenticationService', function ($scope, $rootScope, $location, AuthenticationService) {
+app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'AuthenticationService', function($scope, $rootScope, $location, AuthenticationService) {
     // reset login status
     AuthenticationService.ClearCredentials();
-
     $scope.login = function () {
+
         $scope.dataLoading = true;
         AuthenticationService.Login($scope.email, $scope.pass, function(response) {
-            if(response.success) {
+            if(response.num == 1) {
                 AuthenticationService.SetCredentials($scope.email, $scope.pass);
-                $location.path('/home');
+                $location.path('/portal-niase/');
             } else {
                 $scope.error = response.message;
                 $scope.dataLoading = false;
             }
         });
     };
-
-
-    // $scope.login = function(credentials){
-    //     console.log(credentials);
-    //     httpG.get('http://www.webtalk.com.br/uperp/login', credentials).success(function (data) {
-    //         console.log(data);
-    //         if (data.num == 1) {
-    //             //httpG.setToken(data.info.token);
-    //             //$scope.isAuthenticated = true;
-    //             $location.path('/portal-niase/home');
-    //         } else {
-    //             alert(data.msg);
-    //         }
-    //     }).error(function (error) {
-    //         console.log(error);
-    //         alert("Login Error!");
-    //     });
-    // };
-
-    // $scope.doLogOut = function () {
-    //     httpG.removeToken();
-    // };
 }]);
 
 
@@ -200,17 +166,17 @@ app.controller('HomeCtrl', function($rootScope, $location)
 app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window, $http)
 {
     var json;
-    $http.get('http://carolineorru.com.br/portal-niase/pedidos/a-separar').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/a-separar').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.aSeparar = json;        
     });
-    $http.get('http://carolineorru.com.br/portal-niase/pedidos/em-separacao').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/em-separacao').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.emSeparacao = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/pedidos/separados').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/separados').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.separados = json;
@@ -223,17 +189,17 @@ app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window,
 app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $window, $http)
 {
     var json;
-    $http.get('http://carolineorru.com.br/portal-niase/conferencia/a-conferir').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/a-conferir').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.aConferir = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/conferencia/em-conferencia').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/em-conferencia').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.emConferencia = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/conferencia/conferidos').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/conferidos').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.conferidos = json;
@@ -244,17 +210,17 @@ app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $windo
 app.controller('ExpedicaoCtrl', function($rootScope, $location, $scope, $window, $http)
 {
     var json;
-    $http.get('http://carolineorru.com.br/portal-niase/expedicao/a-embalar').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/a-embalar').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.aEmbalar = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/expedicao/embalando').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/embalando').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.embalando = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/expedicao/embalados').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/embalados').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.embalados = json;
