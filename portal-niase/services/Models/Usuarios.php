@@ -137,7 +137,7 @@ class Usuarios
 				WHERE 1 = 1
 					  AND email = '".$params['email']."'
 					  AND pass  = '".$params['pass']."'";
-		echo $sel;
+		//echo $sel;
 		$query = $this->Database->doQuery($sel);
 		if($query)
 		{

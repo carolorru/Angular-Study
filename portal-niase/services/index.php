@@ -214,12 +214,13 @@ $app->get('/permissoes',function () {
 
 //loga no sistema
 $app->post('/login',function () {
-       
+    /*
     echo "<pre>";
     print_r($_POST);
     echo "<br>Request:";
     print_r($_REQUEST);
     echo "</pre>";
+    */
     $Usuarios = new Usuarios();
     $login = $Usuarios->login(array('email' => $_POST['email'], 'pass' => $_POST['pass']));
 
