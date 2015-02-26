@@ -7,12 +7,12 @@ app.config(function($routeProvider, $locationProvider) {
    $locationProvider.html5Mode(true);
  
    $routeProvider
-   .when('/portal-niase/', {
+   .when('/portal-niase/home', {
       title       : 'Home',
       templateUrl : 'app/views/home.html',
       controller  : 'HomeCtrl'
    })
-   .when('/portal-niase/login', {
+   .when('/portal-niase/', {
       title       : 'Login',
       templateUrl : 'app/views/login.html',
       controller  : 'LoginCtrl'

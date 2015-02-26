@@ -1,15 +1,16 @@
 <div id="login" class="container">
 
-    <form class="form-signin well well-lg" role="form" name="loginForm" novalidate>
+    <form class="form-signin well well-lg" role="form" name="loginForm" ng-controller="LoginCtrl"
+      ng-submit="login(credentials)" novalidate>
 
         <img src="img/logo-big.jpg" width="100%">
         <h2 class="form-signin-heading text-warning">Login - Painel Niazetex</h2>
 
         <label for="inputEmail" class="sr-only">E-mail</label>
-        <input type="text" id="username" class="form-control" placeholder="Usuário" required autofocus >
+        <input type="text" id="username" ng-model="credentials.email" class="form-control" placeholder="Usuário" required autofocus >
 
         <label for="inputPassword" class="sr-only">Senha</label>
-        <input type="password" id="password" class="form-control" placeholder="Senha" required>
+        <input type="password" id="password" ng-model="credentials.pass" class="form-control" placeholder="Senha" required>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
 
