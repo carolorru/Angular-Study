@@ -1,0 +1,16 @@
+{
+	"name": "_marcelo/services",
+    "require": {
+        "monolog/monolog": "1.2.*",
+        "slim/slim": "2.*",
+        "zircote/swagger-php": "*",
+        "doctrine/annotations": "1.2.*@dev",
+        "phpmailer/phpmailer": "dev-master"
+    },
+    "autoload": {
+    	"psr-0": {
+    		"Services" : "vendor",
+    		"App" : "/"
+    	}
+    }
+}
