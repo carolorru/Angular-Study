@@ -7,7 +7,7 @@ app.factory('AuthenticationService',
  
             /* Use this for real authentication
              ----------------------------------------------*/
-            $http.post('http://carolineorru.com.br/portal-niase/services/login', { email: username, pass: password }).success(function (data) {
+            $.post('http://carolineorru.com.br/portal-niase/services/login', { email: username, pass: password }).success(function (data) {
                 callback(data);
                 console.log(data);
                 if (data.num == 1) {
