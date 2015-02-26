@@ -10,7 +10,7 @@ class Database
 	{
 
 		$this->tbl = new stdClass();
-		if($_SERVER['SERVER_NAME'] == 'webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'www.webtalk.com.br')
+		if($_SERVER['SERVER_NAME'] == 'webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'www.webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'carolineorru.com.br' || $_SERVER['SERVER_NAME'] == 'www.carolineorru.com.br')
 		{
 			
 			$this->dbhost   = "186.202.152.133";   #Nome do host
