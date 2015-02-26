@@ -1,72 +1,192 @@
-app.factory('httpG', ['$http', '$window', function ($http, $window) {
-    var serviceToken, serviceHost, tokenKey;
-    tokenKey = 'token';
-    if (localStorage.getItem(tokenKey)) {
-        serviceToken = $window.localStorage.getItem(tokenKey);
-    }
-
-    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-
+app.factory('AuthenticationService',
+    ['Base64', '$http', '$cookieStore', '$rootScope', '$timeout',
+    function (Base64, $http, $cookieStore, $rootScope, $timeout) {
+        var service = {};
+ 
+        service.Login = function (username, password, callback) {
+ 
+            /* Dummy authentication for testing, uses $timeout to simulate api call
+             ----------------------------------------------*/
+            // $timeout(function(){
+            //     var response = { success: username === 'test' && password === 'test' };
+            //     if(!response.success) {
+            //         response.message = 'Username or password is incorrect';
+            //     }
+            //     callback(response);
+            // }, 1000);
+ 
+ 
+            /* Use this for real authentication
+             ----------------------------------------------*/
+            $http.get('http://carolineorru.com.br/portal-niase/login', { email: username, pass: password }).success(function (data) {
+                console.log(data);
+                if (data.num == 1) {
+                    //httpG.setToken(data.info.token);
+                    //$scope.isAuthenticated = true;
+                    $location.path('/portal-niase/home');
+                } else {
+                    alert(data.msg);
+                }
+            }).error(function (error) {
+                console.log(error);
+                alert("Login Error!");
+            });
+ 
+        };
+  
+        service.SetCredentials = function (username, password) {
+            var authdata = Base64.encode(username + ':' + password);
+  
+            $rootScope.globals = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
+  
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
+            $cookieStore.put('globals', $rootScope.globals);
+        };
+  
+        service.ClearCredentials = function () {
+            $rootScope.globals = {};
+            $cookieStore.remove('globals');
+            $http.defaults.headers.common.Authorization = 'Basic ';
+        };
+  
+        return service;
+    }])
+  
+.factory('Base64', function () {
+    /* jshint ignore:start */
+  
+    var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  
     return {
-        setHost: function (host) {
-            serviceHost = host;
+        encode: function (input) {
+            var output = "";
+            var chr1, chr2, chr3 = "";
+            var enc1, enc2, enc3, enc4 = "";
+            var i = 0;
+  
+            do {
+                chr1 = input.charCodeAt(i++);
+                chr2 = input.charCodeAt(i++);
+                chr3 = input.charCodeAt(i++);
+  
+                enc1 = chr1 >> 2;
+                enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+                enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+                enc4 = chr3 & 63;
+  
+                if (isNaN(chr2)) {
+                    enc3 = enc4 = 64;
+                } else if (isNaN(chr3)) {
+                    enc4 = 64;
+                }
+  
+                output = output +
+                    keyStr.charAt(enc1) +
+                    keyStr.charAt(enc2) +
+                    keyStr.charAt(enc3) +
+                    keyStr.charAt(enc4);
+                chr1 = chr2 = chr3 = "";
+                enc1 = enc2 = enc3 = enc4 = "";
+            } while (i < input.length);
+  
+            return output;
         },
-
-        setToken: function (token) {
-            serviceToken = token;
-            $window.localStorage.setItem(tokenKey, token);
-        },
-
-        getToken: function () {
-            return serviceToken;
-        },
-
-        removeToken: function() {
-            serviceToken = undefined;
-            $window.localStorage.removeItem(tokenKey);
-        },
-
-        get: function (uri, params) {
-            params = params || {};
-            params['_token'] = serviceToken;
-            return $.ajax({type: "POST", url: uri, data: params, dataType: 'json'});
-        },
-
-        post: function (uri, params) {
-            params = params || {};
-            params['_token'] = serviceToken;
-
-            return $http.post(serviceHost + uri, params);
+  
+        decode: function (input) {
+            var output = "";
+            var chr1, chr2, chr3 = "";
+            var enc1, enc2, enc3, enc4 = "";
+            var i = 0;
+  
+            // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+            var base64test = /[^A-Za-z0-9\+\/\=]/g;
+            if (base64test.exec(input)) {
+                window.alert("There were invalid base64 characters in the input text.\n" +
+                    "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
+                    "Expect errors in decoding.");
+            }
+            input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+  
+            do {
+                enc1 = keyStr.indexOf(input.charAt(i++));
+                enc2 = keyStr.indexOf(input.charAt(i++));
+                enc3 = keyStr.indexOf(input.charAt(i++));
+                enc4 = keyStr.indexOf(input.charAt(i++));
+  
+                chr1 = (enc1 << 2) | (enc2 >> 4);
+                chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+                chr3 = ((enc3 & 3) << 6) | enc4;
+  
+                output = output + String.fromCharCode(chr1);
+  
+                if (enc3 != 64) {
+                    output = output + String.fromCharCode(chr2);
+                }
+                if (enc4 != 64) {
+                    output = output + String.fromCharCode(chr3);
+                }
+  
+                chr1 = chr2 = chr3 = "";
+                enc1 = enc2 = enc3 = enc4 = "";
+  
+            } while (i < input.length);
+  
+            return output;
         }
     };
-}]);
+  
+    /* jshint ignore:end */
+});
 
-app.controller('MainController', ['$scope', '$location', 'httpG', function ($scope, $location, httpG) {
-    
-}]);
+app.controller('MainController', function($rootScope, $location)
+{
+   $rootScope.activetab = $location.path();
+});
 
 
-app.controller('LoginCtrl', ['$scope', '$location', 'httpG', function ($scope, $location, httpG) {
-    $scope.login = function(credentials){
-        console.log(credentials);
-        httpG.get('http://www.webtalk.com.br/uperp/login', credentials).success(function (data) {
-            console.log(data);
-            if (data.num == 1) {
-                //httpG.setToken(data.info.token);
-                //$scope.isAuthenticated = true;
-                $location.path('/portal-niase/home');
+app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'AuthenticationService', function ($scope, $rootScope, $location, AuthenticationService) {
+    // reset login status
+    AuthenticationService.ClearCredentials();
+
+    $scope.login = function () {
+        $scope.dataLoading = true;
+        AuthenticationService.Login($scope.email, $scope.pass, function(response) {
+            if(response.success) {
+                AuthenticationService.SetCredentials($scope.email, $scope.pass);
+                $location.path('/home');
             } else {
-                alert(data.msg);
+                $scope.error = response.message;
+                $scope.dataLoading = false;
             }
-        }).error(function (error) {
-            console.log(error);
-            alert("Login Error!");
         });
     };
 
-    $scope.doLogOut = function () {
-        httpG.removeToken();
-    };
+
+    // $scope.login = function(credentials){
+    //     console.log(credentials);
+    //     httpG.get('http://www.webtalk.com.br/uperp/login', credentials).success(function (data) {
+    //         console.log(data);
+    //         if (data.num == 1) {
+    //             //httpG.setToken(data.info.token);
+    //             //$scope.isAuthenticated = true;
+    //             $location.path('/portal-niase/home');
+    //         } else {
+    //             alert(data.msg);
+    //         }
+    //     }).error(function (error) {
+    //         console.log(error);
+    //         alert("Login Error!");
+    //     });
+    // };
+
+    // $scope.doLogOut = function () {
+    //     httpG.removeToken();
+    // };
 }]);
 
 
@@ -80,17 +200,17 @@ app.controller('HomeCtrl', function($rootScope, $location)
 app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window, $http)
 {
     var json;
-    $http.get('http://webtalk.com.br/uperp/pedidos/a-separar').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/pedidos/a-separar').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.aSeparar = json;        
     });
-    $http.get('http://webtalk.com.br/uperp/pedidos/em-separacao').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/pedidos/em-separacao').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.emSeparacao = json;
     });
-    $http.get('http://webtalk.com.br/uperp/pedidos/separados').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/pedidos/separados').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.separados = json;
@@ -103,17 +223,17 @@ app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window,
 app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $window, $http)
 {
     var json;
-    $http.get('http://webtalk.com.br/uperp/conferencia/a-conferir').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/conferencia/a-conferir').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.aConferir = json;
     });
-    $http.get('http://webtalk.com.br/uperp/conferencia/em-conferencia').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/conferencia/em-conferencia').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.emConferencia = json;
     });
-    $http.get('http://webtalk.com.br/uperp/conferencia/conferidos').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/conferencia/conferidos').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.conferidos = json;
@@ -124,17 +244,17 @@ app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $windo
 app.controller('ExpedicaoCtrl', function($rootScope, $location, $scope, $window, $http)
 {
     var json;
-    $http.get('http://webtalk.com.br/uperp/expedicao/a-embalar').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/expedicao/a-embalar').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.aEmbalar = json;
     });
-    $http.get('http://webtalk.com.br/uperp/expedicao/embalando').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/expedicao/embalando').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.embalando = json;
     });
-    $http.get('http://webtalk.com.br/uperp/expedicao/embalados').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/expedicao/embalados').success(function(data){
         if (data.code == 500) $location.path('/');
         json = data;
         $scope.embalados = json;
