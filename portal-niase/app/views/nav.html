@@ -1,4 +1,4 @@
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top" >
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -11,9 +11,9 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li ng-class="{active: activetab == '/portal-niase/separacao'}"><a href="separacao">Separação</a></li>
-            <li ng-class="{active: activetab == '/portal-niase/conferencia'}"><a href="conferencia">Conferência</a></li>
-            <li ng-class="{active: activetab == '/portal-niase/expedicao'}"><a href="expedicao">Expedição</a></li>
+            <li ng-if="accessSeparacao" ng-class="{active: activetab == '/portal-niase/separacao'}"><a href="separacao">Separação</a></li>
+            <li ng-if="accessConferencia" ng-class="{active: activetab == '/portal-niase/conferencia'}"><a href="conferencia">Conferência</a></li>
+            <li ng-if="accessExpedicao" ng-class="{active: activetab == '/portal-niase/expedicao'}"><a href="expedicao">Expedição</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

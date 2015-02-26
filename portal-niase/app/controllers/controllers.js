@@ -1,50 +1,58 @@
 app.factory('AuthenticationService',
-    ['Base64', '$http', '$cookieStore', '$rootScope', '$timeout', '$location',
-    function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
-        var service = {};
- 
-        service.Login = function (username, password, callback) {
- 
-            /* Use this for real authentication
-             ----------------------------------------------*/
-            $.post('http://carolineorru.com.br/portal-niase/services/login', { email: username, pass: password }).success(function (data) {
-                callback(data);
-                console.log(data);
-                if (data.num == 1) {
-                    $location.path('/portal-niase/home');
-                } else {
-                    alert(data.msg);
-                }
-            }).error(function (error) {
-                callback(error);
-                console.log(error);
-                alert("Login Error!");
-            });
- 
+['Base64', '$http', '$cookieStore', '$rootScope', '$timeout', '$location',
+function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
+    var service = {};
+
+    service.Login = function (username, password, callback) {
+
+        /* Use this for real authentication
+         ----------------------------------------------*/
+        $.post('http://carolineorru.com.br/portal-niase/services/login', { email: username, pass: password }, 'json').success(function (data) {
+            data = JSON.parse(data);            
+            console.log('service post', data);
+            callback(data);
+            if (data.num == 1) {
+                //$location.path('/portal-niase/home');
+            } else {
+                alert(data.msg);
+            }
+            
+        }).error(function (error) {
+            callback(error);
+            alert("Login Error!");
+        });
+
+    };
+
+    service.SetCredentials = function (username, password, permissions, callback) {
+        var authdata = Base64.encode(username + ':' + password);
+
+        $rootScope.globals = {
+            currentUser: {
+                username: username,
+                authdata: authdata
+            },
+            menu: permissions
         };
-  
-        service.SetCredentials = function (username, password) {
-            var authdata = Base64.encode(username + ':' + password);
-  
-            $rootScope.globals = {
-                currentUser: {
-                    username: username,
-                    authdata: authdata
-                }
-            };
-  
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
-            $cookieStore.put('globals', $rootScope.globals);
-        };
-  
-        service.ClearCredentials = function () {
-            $rootScope.globals = {};
-            $cookieStore.remove('globals');
-            $http.defaults.headers.common.Authorization = 'Basic ';
-        };
-  
-        return service;
-    }])
+
+        //console.log($rootScope.globals);
+
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
+        //console.log($http.defaults.headers.common['Authorization']);
+
+        $cookieStore.put('globals', $rootScope.globals);
+        //console.log($cookieStore);
+        callback();
+    };
+
+    service.ClearCredentials = function () {
+        $rootScope.globals = {};
+        $cookieStore.remove('globals');
+        $http.defaults.headers.common.Authorization = 'Basic ';
+    };
+
+    return service;
+}])
   
 .factory('Base64', function () {
     /* jshint ignore:start */
@@ -130,64 +138,86 @@ app.factory('AuthenticationService',
     };
   
     /* jshint ignore:end */
-});
+})
+.factory('Permission', 
+['$rootScope', '$location', '$cookieStore', '$http', 
+function ($rootScope, $location, $cookieStore, $http){
+    var service = {};
+    service.validation = function(){
+        $rootScope.accessExpedicao = false;
+        $rootScope.accessSeparacao = false;
+        $rootScope.accessConferencia = false;
+        for (var i = 0; i < $rootScope.globals.menu.length; i++) {
+            switch($rootScope.globals.menu[i].id) {
+                case '1':
+                    $rootScope.accessExpedicao = true;
+                    break;
+                case '2':
+                    $rootScope.accessSeparacao = true;
+                    break;
+                case '3':
+                    $rootScope.accessConferencia = true;
+                    break;
+            }            
+        }; 
 
-app.controller('MainController', function($rootScope, $location)
-{
-});
+    }
+    return service;
+}]);
 
 
 app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'AuthenticationService', function($scope, $rootScope, $location, AuthenticationService) {
     // reset login status
     AuthenticationService.ClearCredentials();
-    $scope.login = function () {
-
+    $scope.login = function() {
         $scope.dataLoading = true;
         AuthenticationService.Login($scope.email, $scope.pass, function(response) {
+            console.log('dentro do callback',response);
+            $scope.dataLoading = false;
             if(response.num == 1) {
-                AuthenticationService.SetCredentials($scope.email, $scope.pass);
-                $location.path('/portal-niase/');
+                AuthenticationService.SetCredentials($scope.email, $scope.pass, response.menu, function(){
+                    $scope.$apply(function() { $location.path("/portal-niase/home"); });
+                });   
+                    
             } else {
-                $scope.error = response.message;
-                $scope.dataLoading = false;
+                $scope.error = response.msg;
             }
-        });
+            
+        });        
     };
+
 }]);
 
-
-
-
-app.controller('HomeCtrl', function($rootScope, $location)
-{
-   $rootScope.activetab = $location.path();
-});
+app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+    Permission.validation();
+    $rootScope.activetab = $location.path();
+}]);
  
-app.controller('SeparacaoCtrl', function($rootScope, $location, $scope, $window, $http)
-{
+app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
+    Permission.validation();
     var json;
     $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/a-separar').success(function(data){
-        if (data.code == 500) $location.path('/');
+        if (data.code == 500) $scope.$apply(function() { $location.path("/portal-niase/"); });
         json = data;
         $scope.aSeparar = json;        
     });
     $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/em-separacao').success(function(data){
-        if (data.code == 500) $location.path('/');
+        if (data.code == 500) $scope.$apply(function() { $location.path("/portal-niase/"); });
         json = data;
         $scope.emSeparacao = json;
     });
     $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/separados').success(function(data){
-        if (data.code == 500) $location.path('/');
+       if (data.code == 500) $scope.$apply(function() { $location.path("/portal-niase/"); });
         json = data;
         $scope.separados = json;
     });
     $rootScope.activetab = $location.path();
-});
+}]);
 
 
 
-app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $window, $http)
-{
+app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
+    Permission.validation();
     var json;
     $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/a-conferir').success(function(data){
         if (data.code == 500) $location.path('/');
@@ -205,10 +235,10 @@ app.controller('ConferenciaCtrl', function($rootScope, $location, $scope, $windo
         $scope.conferidos = json;
     });
     $rootScope.activetab = $location.path();
-});
+}]);
 
-app.controller('ExpedicaoCtrl', function($rootScope, $location, $scope, $window, $http)
-{
+app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
+    Permission.validation();
     var json;
     $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/a-embalar').success(function(data){
         if (data.code == 500) $location.path('/');
@@ -226,4 +256,4 @@ app.controller('ExpedicaoCtrl', function($rootScope, $location, $scope, $window,
         $scope.embalados = json;
     });
     $rootScope.activetab = $location.path();
-});
+}]);
