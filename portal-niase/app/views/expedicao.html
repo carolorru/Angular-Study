@@ -20,32 +20,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-toggle="modal" data-target=".bs-example-modal-lg-2">
-        <td>Reunidas</td>
-        <td>10</td>
-        <td>100000</td>
-        <td>10.000 Kg</td>
-        <td>1000</td>
-        <td>1.000,00 kg</td>      
-        <td>10 m³</td>
-      </tr>
-      <tr data-toggle="modal" data-target=".bs-example-modal-lg-2">
-        <td>Reunidas</td>
-        <td>10</td>
-        <td>100000</td>
-        <td>10.000 Kg</td>
-        <td>1000</td>
-        <td>1.000,00 kg</td>      
-        <td>10 m³</td>
-      </tr>
-      <tr data-toggle="modal" data-target=".bs-example-modal-lg-2">
-        <td>Reunidas</td>
-        <td>10</td>
-        <td>100000</td>
-        <td>10.000 Kg</td>
-        <td>1000</td>
-        <td>1.000,00 kg</td>      
-        <td>10 m³</td>
+      <tr ng-repeat="un in aEmbalar.row">
+        <td>{{un.NOM_TRANSP}}</td>
+        <td>{{un.NUM_NF}}</td>
+        <td>{{un.TPESO_BRUTO}} Kg</td>
+        <td>{{un.CUBAGEM}}%</td>
       </tr>
     </tbody>
   </table>
