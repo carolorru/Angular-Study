@@ -1,5 +1,7 @@
 <div ng-include="'app/views/nav.html'"></div>
-
+<div ng-if="viewLoading" class="loading">
+  <img class="loading-gif" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+</div>
 <div class="container" style="padding-top: 40px;">
   <h1 class="page-header">Painel de Gestão</h1>  
   <div class="bs-callout bs-callout-info" id="callout-type-b-i-elems">
@@ -128,9 +130,9 @@
                 <tbody>
                   <tr ng-repeat="un in conferidos.row">
                     <td>{{un.NOM_CONFERENTE}}</td>
-                    <td>{{un.NUM_PED}}</td>
-                    <td>{{un.PESO_BRUTO}} Kg</td>
-                    <td>{{(un.QTD_CONF/un.QUANTIDADE)*100 | number : 2}}%</td>
+                    <td>{{un.TOTAL_CONFERIDOS}}</td>
+                    <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
+                    <td>{{(un.TOTAL_CONFERIDOS/un.META)*100 | number : 2}}%</td>
                   </tr>
                 </tbody>
               </table>
