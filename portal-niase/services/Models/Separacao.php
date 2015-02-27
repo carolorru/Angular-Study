@@ -64,10 +64,7 @@ class Separacao
 			if($num > 0){
 
 				$_RETURN['code'] = 200;
-				$_RETURN['num'] = $num;
-
 				
-
 				if($params['tipo'] == 'separados')
 				{
 
@@ -81,6 +78,14 @@ class Separacao
 				    							'META' => $row['META']
 				    							);
 				    }
+
+				    $sel = "SELECT
+								*
+							FROM ".$this->Database->tbl->separacao."
+							WHERE   1 = 1
+									AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''";
+					$qry = $this->Database->doQuery($sel);
+					$_RETURN['num'] = mysql_num_rows($qry);
 
 				}else{
 
