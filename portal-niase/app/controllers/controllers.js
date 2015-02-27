@@ -197,6 +197,7 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
     $scope.viewLoading = true;
     Permission.validation();
     var json;
+    
     $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/a-separar').success(function(data){
         if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
@@ -211,6 +212,7 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
        if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.separados = json;
+    }).then(function() {
         $scope.viewLoading = false;
     });
     $rootScope.activetab = $location.path();
@@ -219,6 +221,7 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 
 
 app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
+    $scope.viewLoading = true;
     Permission.validation();
     var json;
     $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/a-conferir').success(function(data){
@@ -235,11 +238,14 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
         if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.conferidos = json;
+    }).then(function() {
+        $scope.viewLoading = false;
     });
     $rootScope.activetab = $location.path();
 }]);
 
 app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
+    $scope.viewLoading = true;
     Permission.validation();
     var json;
     $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/a-embalar').success(function(data){
@@ -256,6 +262,8 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.embalados = json;
+    }).then(function() {
+        $scope.viewLoading = false;
     });
     $rootScope.activetab = $location.path();
 }]);
