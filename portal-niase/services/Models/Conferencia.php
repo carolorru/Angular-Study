@@ -17,87 +17,134 @@ class Conferencia
 	public function search($params)
 	{
 
-		$sel = "SELECT
-					EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
-					HR_INI_CONF, DT_INI_CONF,QTD_CONF,
-					HR_FIM_CONF,DT_FIM_CONF,
-					COD_CONFERENTE,NOM_CONFERENTE,PESO_BRUTO
-				FROM ".$this->Database->tbl->conferencia."
-				WHERE 1 = 1";
-
 		if($params['tipo'] == 'a-conferir')
-			$sel.= " AND DT_INI_CONF = '' AND HR_INI_CONF = ''";
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
+						HR_INI_CONF, DT_INI_CONF,QTD_CONF,
+						HR_FIM_CONF,DT_FIM_CONF,
+						COD_CONFERENTE,NOM_CONFERENTE,PESO_BRUTO
+					FROM ".$this->Database->tbl->conferencia."
+					WHERE   1 = 1
+							AND DT_INI_CONF = '' AND HR_INI_CONF = ''";
+		}
 
 		if($params['tipo'] == 'conferidos')
-			$sel.= " AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''";
+		{
+			$sel = "SELECT
+						NOM_CONFERENTE, COUNT(COD_CONFERENTE) AS TOTAL_CONFERIDOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 10 AS META
+					FROM ".$this->Database->tbl->conferencia."
+					WHERE   1 = 1
+							AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''
+					GROUP BY COD_CONFERENTE";
+		}
 
 		if($params['tipo'] == 'em-conferencia')
-			$sel.= " AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF = '' AND HR_FIM_CONF = ''";
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
+						HR_INI_CONF, DT_INI_CONF,QTD_CONF,
+						HR_FIM_CONF,DT_FIM_CONF,
+						COD_CONFERENTE,NOM_CONFERENTE,PESO_BRUTO
+					FROM ".$this->Database->tbl->conferencia."
+					WHERE   1 = 1
+							AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF = '' AND HR_FIM_CONF = ''";
+		}
 
 		$sel.= " ORDER BY EMISSAO";
-		
+
 		$query = $this->Database->doQuery($sel);
 		
 		if($query)
 		{
 			
 			$num = mysql_num_rows($query);
+
 			if($num > 0){
 
-				$_RETURN['code'] = 200;
-				$_RETURN['num'] = $num;
+				if($params['tipo'] == 'conferidos')
+				{
 
-				$pesoBruto = array();
+					while($row = mysql_fetch_array($query))
+				    {
 
-			    while($row = mysql_fetch_array($query))
-			    {
+				    	$_RETURN['row'][] = array(
+				    							'NOM_CONFERENTE' => $row['NOM_CONFERENTE'],
+				    							'TOTAL_CONFERIDOS' => $row['TOTAL_CONFERIDOS'],
+				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
+				    							'META' => $row['META']
+				    							);
+				    }
 
-			    	$pesoBruto[] = $row['PESO_BRUTO'];
+				    $sel = "SELECT
+								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
+							FROM ".$this->Database->tbl->conferencia."
+							WHERE   1 = 1
+									AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''";
+					$qry = $this->Database->doQuery($sel);
+					$row = mysql_fetch_array($qry);
 
-			    	$emissao['br_date']      = '';
+					$_RETURN['num'] = $row['TOTAL'];
+					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
 
-			    	$hr_ini_conf['formatted'] = '';
-			    	$dt_ini_conf['br_date']   = '';
+				}else{
 
-			    	$hr_fim_conf['formatted'] = '';
-			    	$dt_fim_conf['br_date']   = '';
+					$_RETURN['code'] = 200;
+					$_RETURN['num'] = $num;
 
-			    	if($row['EMISSAO'] != '')
-			    	{
-			    		$emissao = $this->Common->validaData($row['EMISSAO']);
-			    	}
+					$pesoBruto = array();
 
-			    	if($row['DT_INI_CONF'] != '')
-			    	{
-						$dt_ini_conf = $this->Common->validaData($row['DT_INI_CONF']);
-						$hr_ini_conf = $this->Common->validaHora($row['HR_INI_CONF']);
-			    	}
+				    while($row = mysql_fetch_array($query))
+				    {
 
-			    	if($row['DT_FIM_CONF'] != '')
-			    	{
-						$dt_fim_conf = $this->Common->validaData($row['DT_FIM_CONF']);
-						$hr_fim_conf = $this->Common->validaHora($row['HR_FIM_CONF']);
-			    	}
+				    	$pesoBruto[] = $row['PESO_BRUTO'];
 
-			    	$_RETURN['row'][] = array(
-			    							'EMISSAO' => $emissao['br_date'],
-			    							'NUM_PED' => $row['NUM_PED'],
-			    							'COD_CLI' => $row['COD_CLI'],
-			    							'NOM_CLI' => $row['NOM_CLI'],
-			    							'QUANTIDADE' => $row['QUANTIDADE'],
-											'HR_INI_CONF' => $hr_ini_conf['formatted'],
-											'DT_INI_CONF' => $dt_ini_conf['br_date'],
-											'QTD_CONF' => $row['QTD_CONF'],
-											'HR_FIM_CONF' => $hr_fim_conf['formatted'],
-											'DT_FIM_CONF' => $dt_fim_conf['br_date'],
-											'COD_CONFERENTE' => $row['COD_CONFERENTE'],
-											'NOM_CONFERENTE' => $row['NOM_CONFERENTE'],
-											'PESO_BRUTO' => $row['PESO_BRUTO'],
-			    							 );
+				    	$emissao['br_date']      = '';
 
-			    }
+				    	$hr_ini_conf['formatted'] = '';
+				    	$dt_ini_conf['br_date']   = '';
 
-			    $_RETURN['num_peso'] = array_sum($pesoBruto);
+				    	$hr_fim_conf['formatted'] = '';
+				    	$dt_fim_conf['br_date']   = '';
+
+				    	if($row['EMISSAO'] != '')
+				    	{
+				    		$emissao = $this->Common->validaData($row['EMISSAO']);
+				    	}
+
+				    	if($row['DT_INI_CONF'] != '')
+				    	{
+							$dt_ini_conf = $this->Common->validaData($row['DT_INI_CONF']);
+							$hr_ini_conf = $this->Common->validaHora($row['HR_INI_CONF']);
+				    	}
+
+				    	if($row['DT_FIM_CONF'] != '')
+				    	{
+							$dt_fim_conf = $this->Common->validaData($row['DT_FIM_CONF']);
+							$hr_fim_conf = $this->Common->validaHora($row['HR_FIM_CONF']);
+				    	}
+
+				    	$_RETURN['row'][] = array(
+				    							'EMISSAO' => $emissao['br_date'],
+				    							'NUM_PED' => $row['NUM_PED'],
+				    							'COD_CLI' => $row['COD_CLI'],
+				    							'NOM_CLI' => $row['NOM_CLI'],
+				    							'QUANTIDADE' => $row['QUANTIDADE'],
+												'HR_INI_CONF' => $hr_ini_conf['formatted'],
+												'DT_INI_CONF' => $dt_ini_conf['br_date'],
+												'QTD_CONF' => $row['QTD_CONF'],
+												'HR_FIM_CONF' => $hr_fim_conf['formatted'],
+												'DT_FIM_CONF' => $dt_fim_conf['br_date'],
+												'COD_CONFERENTE' => $row['COD_CONFERENTE'],
+												'NOM_CONFERENTE' => $row['NOM_CONFERENTE'],
+												'PESO_BRUTO' => $row['PESO_BRUTO'],
+				    							 );
+
+				    }
+
+				    $_RETURN['num_peso'] = array_sum($pesoBruto);
+
+				}
 
 			}else{
 
@@ -113,7 +160,7 @@ class Conferencia
 			$_RETURN['code'] = 500;
 			$_RETURN['error_no'] = mysql_errno();
 			$_RETURN['error'] = mysql_error();
-			$_RETURN['msg'] = 'Erro ao criar usuário.';
+			$_RETURN['msg'] = 'Erro na query.';
 
 		}
 

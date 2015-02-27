@@ -34,7 +34,7 @@ class Separacao
 		if($params['tipo'] == 'separados')
 		{
 			$sel = "SELECT
-						NOM_SEPARADOR, COUNT(COD_SEPARADOR) AS TOTAL_SEPARADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 1 AS META
+						NOM_SEPARADOR, COUNT(COD_SEPARADOR) AS TOTAL_SEPARADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 10 AS META
 					FROM ".$this->Database->tbl->separacao."
 					WHERE   1 = 1
 							AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''
