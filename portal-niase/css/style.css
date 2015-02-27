@@ -1,8 +1,14 @@
 html, body, .wrapper{
 	height: 100%;
-position: relative;
-margin: 0;
-padding: 0;
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+.middle{
+	height: 100%;
+	position: relative;
+	margin: 0;
+	padding: 0;
 }
 thead{
 	text-transform: uppercase;
