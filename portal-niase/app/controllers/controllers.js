@@ -215,27 +215,32 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 
 
 
-app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
+app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', '$q', function($scope, $rootScope, $location, $http, Permission, $q) {
     $scope.viewLoading = true;
     Permission.validation();
-    var json;
-    $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/a-conferir').success(function(data){
-        if (data.code == 500) $location.path("/portal-niase/home"); 
-        json = data;
-        $scope.aConferir = json;
-    });
-    $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/em-conferencia').success(function(data){
-        if (data.code == 500) $location.path("/portal-niase/home"); 
-        json = data;
-        $scope.emConferencia = json;
-    });
-    $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/conferidos').success(function(data){
-        if (data.code == 500) $location.path("/portal-niase/home"); 
-        json = data;
-        $scope.conferidos = json;
-    }).then(function() {
-        $scope.viewLoading = false;
-    });
+    function getContent() {
+        var json;
+        $q.when(
+            $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/a-conferir').success(function(data){
+                if (data.code == 500) $location.path("/portal-niase/home"); 
+                json = data;
+                $scope.aConferir = json;
+            }),
+            $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/em-conferencia').success(function(data){
+                if (data.code == 500) $location.path("/portal-niase/home"); 
+                json = data;
+                $scope.emConferencia = json;
+            }),
+            $http.get('http://carolineorru.com.br/portal-niase/services/conferencia/conferidos').success(function(data){
+                if (data.code == 500) $location.path("/portal-niase/home"); 
+                json = data;
+                $scope.conferidos = json;
+            })
+        ).then(function() {
+                $scope.viewLoading = false;
+            });
+    };
+    getContent();
     $rootScope.activetab = $location.path();
 }]);
 
