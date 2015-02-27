@@ -20,14 +20,16 @@ class Expedicao
 		if($params['tipo'] == 'a-embarcar')
 		{
 			$sel = "SELECT
-						EMISSAO,NUM_NF,SERIE_NF,COD_CLI,NOM_CLI,TRANSP,NOM_TRANSP,CUBAGEM,QUANTIDADE,
-						HR_INI_EMB,DT_INI_EMB,
-						QTD_EMB,
-						HR_FIM_EMB,DT_FIM_EMB,
-						COD_EMBARCADOR,NOM_EMBARCADOR,PESO_BRUTO
+						TRANSP,
+						NOM_TRANSP,
+						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
+						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
+						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
+						SUM(100) AS VALOR
 					FROM ".$this->Database->tbl->expedicao."
 					WHERE   1 = 1
-							AND DT_INI_EMB = '' AND HR_INI_EMB = ''";
+							AND DT_INI_EMB = '' AND HR_INI_EMB = ''
+					GROUP BY TRANSP";
 		}
 
 		if($params['tipo'] == 'embarcados')
@@ -70,7 +72,7 @@ class Expedicao
 
 				$_RETURN['code'] = 200;
 
-				if($params['tipo'] == 'embarcados')
+				if($params['tipo'] == 'embarcados' || $params['tipo'] == 'a-embarcar')
 				{
 
 					
