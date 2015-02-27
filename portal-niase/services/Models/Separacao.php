@@ -60,7 +60,6 @@ class Separacao
 		if($query)
 		{
 			
-			$num = mysql_num_rows($query);
 			if($num > 0){
 
 				$_RETURN['code'] = 200;
@@ -80,7 +79,7 @@ class Separacao
 				    }
 
 				    $sel = "SELECT
-								*
+								COUNT(*), SUM(PESO_BRUTO) AS PESO_TOTAL
 							FROM ".$this->Database->tbl->separacao."
 							WHERE   1 = 1
 									AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''";
@@ -89,6 +88,7 @@ class Separacao
 
 				}else{
 
+					$num = mysql_num_rows($query);
 					$pesoBruto = array();
 				
 				    while($row = mysql_fetch_array($query))
