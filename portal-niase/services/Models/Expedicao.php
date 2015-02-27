@@ -33,11 +33,16 @@ class Expedicao
 		if($params['tipo'] == 'embarcados')
 		{
 			$sel = "SELECT
-						NOM_EMBARCADOR, COUNT(COD_EMBARCADOR) AS TOTAL_EMBARCADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 10 AS META
+						TRANSP,
+						NOM_TRANSP,
+						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
+						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
+						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
+						SUM(100) AS VALOR
 					FROM ".$this->Database->tbl->expedicao."
 					WHERE   1 = 1
 							AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
-					GROUP BY COD_EMBARCADOR";
+					GROUP BY TRANSP";
 		}
 
 		if($params['tipo'] == 'embarcando')
@@ -71,12 +76,44 @@ class Expedicao
 					while($row = mysql_fetch_array($query))
 				    {
 
+				    	$sel = "SELECT
+									NUM_NF,
+									DT_INI_EMB,
+									100 AS VALOR,
+									PESO_BRUTO,
+									CUBAGEM
+								FROM ".$this->Database->tbl->expedicao."
+								WHERE   1 = 1
+										AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
+										AND TRANSP = '".$row['TRANSP']."'";
+										//echo $sel;
+						$qry = $this->Database->doQuery($sel);
+						$notas = array();
+						while($r = mysql_fetch_array($qry))
+						{
+
+							$dt_ini_emb['br_date']   = '';
+							$dt_ini_emb = $this->Common->validaData($r['DT_INI_EMB']);
+
+							$notas[] = array(
+										'NUM_NF' => $r['NUM_NF'],
+										'DT_INI_EMB' => $dt_ini_emb['br_date'],
+										'VALOR' => $r['VALOR'],
+										'PESO_BRUTO' => $r['PESO_BRUTO'],
+										'CUBAGEM' => $r['CUBAGEM'],
+										);
+
+						}
+
 				    	$_RETURN['row'][] = array(
-				    							'NOM_EMBARCADOR' => $row['NOM_EMBARCADOR'],
+				    							'NOM_TRANSP' => $row['NOM_TRANSP'],
 				    							'TOTAL_EMBARCADOS' => $row['TOTAL_EMBARCADOS'],
+				    							'TOTAL_CUBAGEM' => $row['TOTAL_CUBAGEM'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
-				    							'META' => $row['META']
+				    							'VALOR' => $row['VALOR'],
+				    							'NOTAS' => $notas
 				    							);
+
 				    }
 
 				    $sel = "SELECT
