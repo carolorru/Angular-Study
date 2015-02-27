@@ -17,22 +17,41 @@ class Separacao
 	public function search($params)
 	{
 
-		$sel = "SELECT
-					EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
-					HR_INI_SEP, DT_INI_SEP,QTD_SEP,
-					HR_FIM_SEP,DT_FIM_SEP,
-					COD_SEPARADOR,NOM_SEPARADOR,PESO_BRUTO
-				FROM ".$this->Database->tbl->separacao."
-				WHERE 1 = 1";
+		$sel = "";
 
 		if($params['tipo'] == 'a-separar')
-			$sel.= " AND DT_INI_SEP = '' AND HR_INI_SEP = ''";
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
+						HR_INI_SEP, DT_INI_SEP,QTD_SEP,
+						HR_FIM_SEP,DT_FIM_SEP,
+						COD_SEPARADOR,NOM_SEPARADOR,PESO_BRUTO
+					FROM ".$this->Database->tbl->separacao."
+					WHERE   1 = 1
+							AND DT_INI_SEP = '' AND HR_INI_SEP = ''";
+		}
 
 		if($params['tipo'] == 'separados')
-			$sel.= " AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''";
+		{
+			$sel = "SELECT
+						NOM_SEPARADOR, COUNT(COD_SEPARADOR) AS TOTAL_SEPARADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 1 AS META
+					FROM ".$this->Database->tbl->separacao."
+					WHERE   1 = 1
+							AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''
+					GROUP BY COD_SEPARADOR";
+		}
 
 		if($params['tipo'] == 'em-separacao')
-			$sel.= " AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP = '' AND HR_FIM_SEP = ''";
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
+						HR_INI_SEP, DT_INI_SEP,QTD_SEP,
+						HR_FIM_SEP,DT_FIM_SEP,
+						COD_SEPARADOR,NOM_SEPARADOR,PESO_BRUTO
+					FROM ".$this->Database->tbl->separacao."
+					WHERE   1 = 1
+							AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP = '' AND HR_FIM_SEP = ''";
+		}
 
 		$sel.= " ORDER BY EMISSAO";
 		
