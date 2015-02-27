@@ -7,32 +7,32 @@ app.config(function($routeProvider, $locationProvider) {
    $locationProvider.html5Mode(true);
  
    $routeProvider
-   .when('/portal-niase/home', {
+   .when('/portal-niazi/home', {
       title       : 'Home',
       templateUrl : 'app/views/home.html',
       controller  : 'HomeCtrl'
    })
-   .when('/portal-niase/', {
+   .when('/portal-niazi/', {
       title       : 'Login',
       templateUrl : 'app/views/login.html',
       controller  : 'LoginCtrl'
    })
-   .when('/portal-niase/separacao', {
+   .when('/portal-niazi/separacao', {
       title       : 'Separação',
       templateUrl : 'app/views/separacao.html',
       controller  : 'SeparacaoCtrl'
    })
-   .when('/portal-niase/conferencia', {
+   .when('/portal-niazi/conferencia', {
       title       : 'Conferência',
       templateUrl : 'app/views/conferencia.html',
       controller  : 'ConferenciaCtrl'
    })
-   .when('/portal-niase/expedicao', {
+   .when('/portal-niazi/expedicao', {
       title       : 'Expedição',
       templateUrl : 'app/views/expedicao.html',
       controller  : 'ExpedicaoCtrl'
    })
-   .otherwise ({ redirectTo: '/portal-niase/' });
+   .otherwise ({ redirectTo: '/portal-niazi/' });
 
 })
 .run(['$rootScope', '$location', '$cookieStore', '$http',
@@ -48,8 +48,8 @@ function ($rootScope, $location, $cookieStore, $http) {
 
    $rootScope.$on('$locationChangeStart', function (event, next, current) {
       // redirect to login page if not logged in
-      if ($location.path() !== '/portal-niase/' && !$rootScope.globals.currentUser) {
-         $location.path('/portal-niase/');
+      if ($location.path() !== '/portal-niazi/' && !$rootScope.globals.currentUser) {
+         $location.path('/portal-niazi/');
       //redireciona para home quando não tem permissão
       } 
       else {
@@ -68,14 +68,14 @@ function ($rootScope, $location, $cookieStore, $http) {
             }            
          }; 
          
-         if($location.path() == '/portal-niase/separacao' && sep != true){
-            $location.path('/portal-niase/');
+         if($location.path() == '/portal-niazi/separacao' && sep != true){
+            $location.path('/portal-niazi/');
          }
-         if($location.path() == '/portal-niase/expedicao' && exp != true){
-            $location.path('/portal-niase/');
+         if($location.path() == '/portal-niazi/expedicao' && exp != true){
+            $location.path('/portal-niazi/');
          }
-         if($location.path() == '/portal-niase/conferencia' && conf != true){
-            $location.path('/portal-niase/');
+         if($location.path() == '/portal-niazi/conferencia' && conf != true){
+            $location.path('/portal-niazi/');
          }
       }
    });
