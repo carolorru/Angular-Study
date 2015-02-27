@@ -11,15 +11,9 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
             data = JSON.parse(data);            
             console.log('service post', data);
             callback(data);
-            if (data.num == 1) {
-                //$location.path('/portal-niase/home');
-            } else {
-                alert(data.msg);
-            }
-            
         }).error(function (error) {
             callback(error);
-            alert("Login Error!");
+            //alert("Login Error!");
         });
 
     };
@@ -170,17 +164,16 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
     // reset login status
     AuthenticationService.ClearCredentials();
     $scope.login = function() {
-        $rootScope.dataLoading = true;
+        $scope.dataLoading = true;
         AuthenticationService.Login($scope.email, $scope.pass, function(response) {
-            console.log('dentro do callback',response);
-            $rootScope.dataLoading = false;
+            //console.log('dentro do callback',response);
             if(response.num == 1) {
                 AuthenticationService.SetCredentials($scope.email, $scope.pass, response.menu, function(){
                     $scope.$apply(function() { $location.path("/portal-niase/home"); });
                 });   
-                    
             } else {
-                $scope.error = response.msg;
+                $scope.errorlogin = response.msg;
+                $scope.dataLoading = false;
             }
             
         });        
