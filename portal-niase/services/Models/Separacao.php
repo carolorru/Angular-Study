@@ -54,12 +54,13 @@ class Separacao
 		}
 
 		$sel.= " ORDER BY EMISSAO";
-		
 		$query = $this->Database->doQuery($sel);
 		
 		if($query)
 		{
 			
+			$num = mysql_num_rows($query);
+
 			if($num > 0){
 
 				$_RETURN['code'] = 200;
@@ -79,16 +80,19 @@ class Separacao
 				    }
 
 				    $sel = "SELECT
-								COUNT(*), SUM(PESO_BRUTO) AS PESO_TOTAL
+								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
 							FROM ".$this->Database->tbl->separacao."
 							WHERE   1 = 1
 									AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''";
 					$qry = $this->Database->doQuery($sel);
-					$_RETURN['num'] = mysql_num_rows($qry);
+					$row = mysql_fetch_array($qry);
+
+					$_RETURN['num'] = $row['TOTAL'];
+					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
 
 				}else{
 
-					$num = mysql_num_rows($query);
+					$_RETURN['num'] = $num;
 					$pesoBruto = array();
 				
 				    while($row = mysql_fetch_array($query))
