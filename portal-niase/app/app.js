@@ -52,10 +52,32 @@ function ($rootScope, $location, $cookieStore, $http) {
          $location.path('/portal-niase/');
       //redireciona para home quando não tem permissão
       } 
-      //else if($location.path() !== '/portal-niase/separacao' $$ !$rootScope.globals.menu){
-
-      //}
-
+      else {
+         var sep = false, exp = false, conf = false;
+         for (var i = 0; i < $rootScope.globals.menu.length; i++) {
+            switch($rootScope.globals.menu[i].id) {
+                case '1':
+                    exp = true;
+                    break;
+                case '2':
+                    sep = true;
+                    break;
+                case '3':
+                    conf = true;
+                    break;
+            }            
+         }; 
+         
+         if($location.path() == '/portal-niase/separacao' && sep != true){
+            $location.path('/portal-niase/');
+         }
+         if($location.path() == '/portal-niase/expedicao' && exp != true){
+            $location.path('/portal-niase/');
+         }
+         if($location.path() == '/portal-niase/conferencia' && conf != true){
+            $location.path('/portal-niase/');
+         }
+      }
    });
 
 }]);
