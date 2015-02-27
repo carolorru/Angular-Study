@@ -20,12 +20,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in aEmbalar.row" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}">
+      <tr ng-repeat="un in aEmbalar.row" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_NOTAS}}</td>
         <td>{{un.TOTAL_EMBARCADOS}}</td>
         <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{un.TOTAL_CUBAGEM}}%</td>
+        <td>{{un.TOTAL_CUBAGEM}} m³</td>
       </tr>
     </tbody>
   </table>
@@ -56,7 +56,7 @@
                     <td>{{item.DT_INI_EMB}}</td>
                     <td>{{item.VALOR}}</td>
                     <td>{{item.PESO_BRUTO}} Kg</td>
-                    <td>{{item.CUBAGEM}}</td>
+                    <td>{{item.CUBAGEM}} m³</td>
                   </tr>
                 </tbody>
               </table>
@@ -82,12 +82,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in embalados.row" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}">
+      <tr ng-repeat="un in embalados.row" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_NOTAS}}</td>
         <td>{{un.TOTAL_EMBARCADOS}}</td>
         <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{un.TOTAL_CUBAGEM}}m3</td>
+        <td>{{un.TOTAL_CUBAGEM}} m³</td>
       </tr>
     </tbody>
   </table>
@@ -120,7 +120,7 @@
                     <td>{{item.DT_INI_EMB}}</td>
                     <td>{{item.VALOR}}</td>
                     <td>{{item.PESO_BRUTO}} Kg</td>
-                    <td>{{item.CUBAGEM}}</td>
+                    <td>{{item.CUBAGEM}} m³</td>
                   </tr>
                 </tbody>
               </table>
