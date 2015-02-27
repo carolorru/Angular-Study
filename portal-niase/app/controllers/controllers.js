@@ -172,8 +172,10 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
                     $scope.$apply(function() { $location.path("/portal-niase/home"); });
                 });   
             } else {
-                $scope.errorlogin = response.msg;
-                $scope.dataLoading = false;
+                $scope.$apply(function() {
+                    alert(response.msg);
+                    $scope.dataLoading = false;
+                });
             }
             
         });        

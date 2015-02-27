@@ -1,6 +1,8 @@
-body{
-	width: 100%;
+html, body, .wrapper{
 	height: 100%;
+position: relative;
+margin: 0;
+padding: 0;
 }
 thead{
 	text-transform: uppercase;
