@@ -17,22 +17,41 @@ class Expedicao
 	public function search($params)
 	{
 
-		$sel = "SELECT
-					EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
-					HR_INI_EMB, DT_INI_EMB,QTD_EMB,
-					HR_FIM_EMB,DT_FIM_EMB,
-					COD_EMBARCADOR,NOM_EMBARCADOR,PESO_BRUTO
-				FROM ".$this->Database->tbl->expedicao."
-				WHERE 1 = 1";
+		if($params['tipo'] == 'a-embarcar')
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_NF,SERIE_NF,COD_CLI,NOM_CLI,TRANSP,NOM_TRANSP,CUBAGEM,QUANTIDADE,
+						HR_INI_EMB,DT_INI_EMB,
+						QTD_EMB,
+						HR_FIM_EMB,DT_FIM_EMB,
+						COD_EMBARCADOR,NOM_EMBARCADOR,PESO_BRUTO
+					FROM ".$this->Database->tbl->expedicao."
+					WHERE   1 = 1
+							AND DT_INI_EMB = '' AND HR_INI_EMB = ''";
+		}
 
-		if($params['tipo'] == 'a-embalar')
-			$sel.= " AND DT_INI_EMB = '' AND HR_INI_EMB = ''";
+		if($params['tipo'] == 'embarcados')
+		{
+			$sel = "SELECT
+						NOM_EMBARCADOR, COUNT(COD_EMBARCADOR) AS TOTAL_EMBARCADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 10 AS META
+					FROM ".$this->Database->tbl->expedicao."
+					WHERE   1 = 1
+							AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
+					GROUP BY COD_EMBARCADOR";
+		}
 
-		if($params['tipo'] == 'embalados')
-			$sel.= " AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''";
-
-		if($params['tipo'] == 'embalando')
-			$sel.= " AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB = '' AND HR_FIM_EMB = ''";
+		if($params['tipo'] == 'embarcando')
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_NF,SERIE_NF,COD_CLI,NOM_CLI,TRANSP,NOM_TRANSP,CUBAGEM,QUANTIDADE,
+						HR_INI_EMB,DT_INI_EMB,
+						QTD_EMB,
+						HR_FIM_EMB,DT_FIM_EMB,
+						COD_EMBARCADOR,NOM_EMBARCADOR,PESO_BRUTO
+					FROM ".$this->Database->tbl->expedicao."
+					WHERE   1 = 1
+							AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB = '' AND HR_FIM_EMB = ''";
+		}
 
 		$sel.= " ORDER BY EMISSAO";
 		
@@ -45,61 +64,96 @@ class Expedicao
 			if($num > 0){
 
 				$_RETURN['code'] = 200;
-				$_RETURN['num'] = $num;
 
-				$pesoBruto = array();
+				if($params['tipo'] == 'embarcados')
+				{
 
-			    while($row = mysql_fetch_array($query))
-			    {
+					while($row = mysql_fetch_array($query))
+				    {
 
-			    	$pesoBruto[] = $row['PESO_BRUTO'];
+				    	$_RETURN['row'][] = array(
+				    							'NOM_EMBARCADOR' => $row['NOM_EMBARCADOR'],
+				    							'TOTAL_EMBARCADOS' => $row['TOTAL_EMBARCADOS'],
+				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
+				    							'META' => $row['META']
+				    							);
+				    }
 
-			    	$emissao['br_date']      = '';
+				    $sel = "SELECT
+								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
+							FROM ".$this->Database->tbl->expedicao."
+							WHERE   1 = 1
+									AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''";
+					$qry = $this->Database->doQuery($sel);
+					$row = mysql_fetch_array($qry);
 
-			    	$hr_ini_emb['formatted'] = '';
-			    	$dt_ini_emb['br_date']   = '';
+					$_RETURN['num'] = $row['TOTAL'];
+					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
 
-			    	$hr_fim_emb['formatted'] = '';
-			    	$dt_fim_emb['br_date']   = '';
+				}else{
 
-			    	if($row['EMISSAO'] != '')
-			    	{
-			    		$emissao = $this->Common->validaData($row['EMISSAO']);
-			    	}
+					$_RETURN['num'] = $num;
 
-			    	if($row['DT_INI_EMB'] != '')
-			    	{
-						$dt_ini_emb = $this->Common->validaData($row['DT_INI_EMB']);
-						$hr_ini_emb = $this->Common->validaHora($row['HR_INI_EMB']);
-			    	}
+					$pesoBruto = array();
 
-			    	if($row['DT_FIM_EMB'] != '')
-			    	{
-						$dt_fim_emb = $this->Common->validaData($row['DT_FIM_EMB']);
-						$hr_fim_emb = $this->Common->validaHora($row['HR_FIM_EMB']);
-			    	}
-			    	
-			    	
+				    while($row = mysql_fetch_array($query))
+				    {
 
-			    	$_RETURN['row'][] = array(
-			    							'EMISSAO' => $emissao['br_date'],
-			    							'NUM_PED' => $row['NUM_PED'],
-			    							'COD_CLI' => $row['COD_CLI'],
-			    							'NOM_CLI' => $row['NOM_CLI'],
-			    							'QUANTIDADE' => $row['QUANTIDADE'],
-											'hr_ini_emb' => $hr_ini_emb['formatted'],
-											'dt_ini_emb' => $dt_ini_emb['br_date'],
-											'QTD_EMB' => $row['QTD_EMB'],
-											'hr_fim_emb' => $hr_fim_emb['formatted'],
-											'dt_fim_emb' => $dt_fim_emb['br_date'],
-											'COD_EMBARCADOR' => $row['COD_EMBARCADOR'],
-											'NOM_EMBARCADOR' => $row['NOM_EMBARCADOR'],
-											'PESO_BRUTO' => $row['PESO_BRUTO'],
-			    							 );
+				    	$pesoBruto[] = $row['PESO_BRUTO'];
 
-			    }
+				    	$emissao['br_date']      = '';
 
-			    $_RETURN['num_peso'] = array_sum($pesoBruto);
+				    	$hr_ini_emb['formatted'] = '';
+				    	$dt_ini_emb['br_date']   = '';
+
+				    	$hr_fim_emb['formatted'] = '';
+				    	$dt_fim_emb['br_date']   = '';
+
+				    	if($row['EMISSAO'] != '')
+				    	{
+				    		$emissao = $this->Common->validaData($row['EMISSAO']);
+				    	}
+
+				    	if($row['DT_INI_EMB'] != '')
+				    	{
+							$dt_ini_emb = $this->Common->validaData($row['DT_INI_EMB']);
+							$hr_ini_emb = $this->Common->validaHora($row['HR_INI_EMB']);
+				    	}
+
+				    	if($row['DT_FIM_EMB'] != '')
+				    	{
+							$dt_fim_emb = $this->Common->validaData($row['DT_FIM_EMB']);
+							$hr_fim_emb = $this->Common->validaHora($row['HR_FIM_EMB']);
+				    	}
+				    	
+				    	
+
+				    	$_RETURN['row'][] = array(
+				    							'EMISSAO' => $emissao['br_date'],
+				    							'NUM_NF' => $row['NUM_NF'],
+				    							'SERIE_NF' => $row['SERIE_NF'],
+				    							'COD_CLI' => $row['COD_CLI'],
+				    							'NOM_CLI' => $row['NOM_CLI'],
+				    							'TRANSP' => $row['TRANSP'],
+												'NOM_TRANSP' => $row['NOM_TRANSP'],
+												'CUBAGEM' => $row['CUBAGEM'],
+				    							'QUANTIDADE' => $row['QUANTIDADE'],
+												'HR_INI_EMB' => $hr_ini_emb['formatted'],
+												'DT_INI_EMB' => $dt_ini_emb['br_date'],
+												'QTD_EMB' => $row['QTD_EMB'],
+												'HR_FIM_EMB' => $hr_fim_emb['formatted'],
+												'DT_FIM_EMB' => $dt_fim_emb['br_date'],
+												'COD_EMBARCADOR' => $row['COD_EMBARCADOR'],
+												'NOM_EMBARCADOR' => $row['NOM_EMBARCADOR'],
+												'PESO_BRUTO' => $row['PESO_BRUTO']
+				    							 );
+
+				    }
+
+				    $_RETURN['num_peso'] = array_sum($pesoBruto);
+
+				}
+				
 
 			}else{
 

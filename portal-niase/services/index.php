@@ -123,30 +123,30 @@ $app->group('/expedicao', $authenticateForRole('expedicao'), function() use ($ap
 
 	});
 
-	$app->get('/a-embalar',function () {
+	$app->get('/a-embarcar',function () {
 	        
 	    $Expedicao = new Expedicao();
-	    $search = $Expedicao->search(array('tipo' => 'a-embalar'));
+	    $search = $Expedicao->search(array('tipo' => 'a-embarcar'));
 
 	    header("Content-Type: application/json");
 		echo json_encode($search);
 
 	});
 
-	$app->get('/embalados',function () {
+	$app->get('/embarcados',function () {
 	        
 	    $Expedicao = new Expedicao();
-	    $search = $Expedicao->search(array('tipo' => 'embalados'));
+	    $search = $Expedicao->search(array('tipo' => 'embarcados'));
 
 	    header("Content-Type: application/json");
 		echo json_encode($search);
 
 	});
 
-	$app->get('/embalando',function () {
+	$app->get('/embarcando',function () {
 	        
 	    $Expedicao = new Expedicao();
-	    $search = $Expedicao->search(array('tipo' => 'embalando'));
+	    $search = $Expedicao->search(array('tipo' => 'embarcando'));
 
 	    header("Content-Type: application/json");
 		echo json_encode($search);
