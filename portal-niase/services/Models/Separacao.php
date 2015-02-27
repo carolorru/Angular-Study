@@ -66,57 +66,78 @@ class Separacao
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = $num;
 
-				$pesoBruto = array();
+				
 
-			    while($row = mysql_fetch_array($query))
-			    {
+				if($params['tipo'] == 'separados')
+				{
 
-			    	$pesoBruto[] = $row['PESO_BRUTO'];
+					while($row = mysql_fetch_array($query))
+				    {
 
-			    	$emissao['br_date']      = '';
+				    	$_RETURN['row'][] = array(
+				    							'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
+				    							'TOTAL_SEPARADOS' => $row['TOTAL_SEPARADOS'],
+				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
+				    							'META' => $row['META']
+				    							);
+				    }
 
-			    	$hr_ini_sep['formatted'] = '';
-			    	$dt_ini_sep['br_date']   = '';
-			    	
-			    	$hr_fim_sep['formatted'] = '';
-			    	$dt_fim_sep['br_date']   = '';
+				}else{
 
-			    	if($row['EMISSAO'] != '')
-			    	{
-			    		$emissao = $this->Common->validaData($row['EMISSAO']);
-			    	}
+					$pesoBruto = array();
+				
+				    while($row = mysql_fetch_array($query))
+				    {
 
-			    	if($row['DT_INI_SEP'] != '')
-			    	{
-						$dt_ini_sep = $this->Common->validaData($row['DT_INI_SEP']);
-						$hr_ini_sep = $this->Common->validaHora($row['HR_INI_SEP']);
-			    	}
+				    	$pesoBruto[] = $row['PESO_BRUTO'];
 
-			    	if($row['DT_FIM_SEP'] != '')
-			    	{
-						$dt_fim_sep = $this->Common->validaData($row['DT_FIM_SEP']);
-						$hr_fim_sep = $this->Common->validaHora($row['HR_FIM_SEP']);
-			    	}
+				    	$emissao['br_date']      = '';
 
-			    	$_RETURN['row'][] = array(
-			    							'EMISSAO' => $emissao['br_date'],
-			    							'NUM_PED' => $row['NUM_PED'],
-			    							'COD_CLI' => $row['COD_CLI'],
-			    							'NOM_CLI' => $row['NOM_CLI'],
-			    							'QUANTIDADE' => $row['QUANTIDADE'],
-											'HR_INI_SEP' => $hr_ini_sep['formatted'],
-											'DT_INI_SEP' => $dt_ini_sep['br_date'],
-											'QTD_SEP' => $row['QTD_SEP'],
-											'HR_FIM_SEP' => $hr_fim_sep['formatted'],
-											'DT_FIM_SEP' => $dt_fim_sep['br_date'],
-											'COD_SEPARADOR' => $row['COD_SEPARADOR'],
-											'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
-											'PESO_BRUTO' => $row['PESO_BRUTO'],
-			    							 );
+				    	$hr_ini_sep['formatted'] = '';
+				    	$dt_ini_sep['br_date']   = '';
+				    	
+				    	$hr_fim_sep['formatted'] = '';
+				    	$dt_fim_sep['br_date']   = '';
 
-			    }
+				    	if($row['EMISSAO'] != '')
+				    	{
+				    		$emissao = $this->Common->validaData($row['EMISSAO']);
+				    	}
 
-			    $_RETURN['num_peso'] = array_sum($pesoBruto);
+				    	if($row['DT_INI_SEP'] != '')
+				    	{
+							$dt_ini_sep = $this->Common->validaData($row['DT_INI_SEP']);
+							$hr_ini_sep = $this->Common->validaHora($row['HR_INI_SEP']);
+				    	}
+
+				    	if($row['DT_FIM_SEP'] != '')
+				    	{
+							$dt_fim_sep = $this->Common->validaData($row['DT_FIM_SEP']);
+							$hr_fim_sep = $this->Common->validaHora($row['HR_FIM_SEP']);
+				    	}
+
+				    	$_RETURN['row'][] = array(
+				    							'EMISSAO' => $emissao['br_date'],
+				    							'NUM_PED' => $row['NUM_PED'],
+				    							'COD_CLI' => $row['COD_CLI'],
+				    							'NOM_CLI' => $row['NOM_CLI'],
+				    							'QUANTIDADE' => $row['QUANTIDADE'],
+												'HR_INI_SEP' => $hr_ini_sep['formatted'],
+												'DT_INI_SEP' => $dt_ini_sep['br_date'],
+												'QTD_SEP' => $row['QTD_SEP'],
+												'HR_FIM_SEP' => $hr_fim_sep['formatted'],
+												'DT_FIM_SEP' => $dt_fim_sep['br_date'],
+												'COD_SEPARADOR' => $row['COD_SEPARADOR'],
+												'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
+												'PESO_BRUTO' => $row['PESO_BRUTO'],
+				    							 );
+
+				    }
+
+				    $_RETURN['num_peso'] = array_sum($pesoBruto);
+
+				}
+
 
 			}else{
 
