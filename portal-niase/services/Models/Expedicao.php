@@ -73,6 +73,7 @@ class Expedicao
 				if($params['tipo'] == 'embarcados')
 				{
 
+					
 					while($row = mysql_fetch_array($query))
 				    {
 
@@ -86,9 +87,9 @@ class Expedicao
 								WHERE   1 = 1
 										AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
 										AND TRANSP = '".$row['TRANSP']."'";
-										//echo $sel;
 						$qry = $this->Database->doQuery($sel);
 						$notas = array();
+						$total_notas = mysql_num_rows($qry);
 						while($r = mysql_fetch_array($qry))
 						{
 
@@ -111,7 +112,8 @@ class Expedicao
 				    							'TOTAL_CUBAGEM' => $row['TOTAL_CUBAGEM'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
 				    							'VALOR' => $row['VALOR'],
-				    							'NOTAS' => $notas
+				    							'NOTAS' => $notas,
+				    							'TOTAL_NOTAS' => $total_notas
 				    							);
 
 				    }
