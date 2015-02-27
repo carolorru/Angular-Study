@@ -194,7 +194,7 @@ app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', f
 }]);
  
 app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
-    $rootScope.viewLoading = true;
+    $scope.viewLoading = true;
     Permission.validation();
     var json;
     $http.get('http://carolineorru.com.br/portal-niase/services/pedidos/a-separar').success(function(data){
@@ -211,7 +211,7 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
        if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.separados = json;
-        $rootScope.viewLoading = false;
+        $scope.viewLoading = false;
     });
     $rootScope.activetab = $location.path();
 }]);
