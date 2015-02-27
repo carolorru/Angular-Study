@@ -243,17 +243,17 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
     $scope.viewLoading = true;
     Permission.validation();
     var json;
-    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/a-embalar').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/a-embarcar').success(function(data){
         if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.aEmbalar = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/embalando').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/embarcando').success(function(data){
         if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.embalando = json;
     });
-    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/embalados').success(function(data){
+    $http.get('http://carolineorru.com.br/portal-niase/services/expedicao/embarcados').success(function(data){
         if (data.code == 500) $location.path("/portal-niase/home"); 
         json = data;
         $scope.embalados = json;
