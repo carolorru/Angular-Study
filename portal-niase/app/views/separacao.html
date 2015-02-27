@@ -131,9 +131,9 @@
                 <tbody>
                   <tr ng-repeat="un in separados.row">
                     <td>{{un.NOM_SEPARADOR}}</td>
-                    <td>{{un.NUM_PED}}</td>
-                    <td>{{un.PESO_BRUTO}} Kg</td>
-                    <td>{{(un.QTD_SEP/un.QUANTIDADE)*100 | number : 2}}%</td>
+                    <td>{{un.TOTAL_SEPARADOS}}</td>
+                    <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
+                    <td>{{(un.TOTAL_SEPARADOS/un.META)*100 | number : 2}}%</td>
                   </tr>
                 </tbody>
               </table>
