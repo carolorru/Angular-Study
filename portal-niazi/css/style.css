@@ -35,6 +35,10 @@ thead{
 	font-size: 150%;
 }
 
+.bs-callout h2 span {
+	float: right;
+}
+
 .bs-callout-default {
     border-left-color: #777;
     padding: 10px;
