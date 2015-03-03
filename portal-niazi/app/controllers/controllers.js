@@ -7,7 +7,7 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
 
         /* Use this for real authentication
          ----------------------------------------------*/
-        $.post('http://carolineorru.com.br/portal-niazi/services/login', { email: username, pass: password }, 'json').success(function (data) {
+        $.post('http://www.webtalk.com.br/projetos/niazi/services/login', { email: username, pass: password }, 'json').success(function (data) {
             data = JSON.parse(data);            
             console.log('service post', data);
             callback(data);
@@ -35,7 +35,7 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
         //console.log($http.defaults.headers.common['Authorization']);
 
         $cookieStore.put('globals', $rootScope.globals);
-        //console.log($cookieStore);
+        console.log($rootScope.globals);
         callback();
     };
 
@@ -137,20 +137,25 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
 ['$rootScope', '$location', '$cookieStore', '$http', 
 function ($rootScope, $location, $cookieStore, $http){
     var service = {};
+    console.log('permissions');
     service.validation = function(){
         $rootScope.accessExpedicao = false;
         $rootScope.accessSeparacao = false;
         $rootScope.accessConferencia = false;
         for (var i = 0; i < $rootScope.globals.menu.length; i++) {
+            console.log($rootScope.globals.menu[i].id);
             switch($rootScope.globals.menu[i].id) {
-                case '1':
+                case 1:
                     $rootScope.accessExpedicao = true;
+                    console.log('menu1');
                     break;
-                case '2':
+                case 2:
                     $rootScope.accessSeparacao = true;
+                    console.log('menu2');
                     break;
-                case '3':
+                case 3:
                     $rootScope.accessConferencia = true;
+                    console.log('menu3');
                     break;
             }            
         }; 
@@ -200,6 +205,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
 }]);
 
 app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+    console.log('controller');
     Permission.validation();
     $rootScope.activetab = $location.path();
 }]);
@@ -223,19 +229,19 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         counter = 3;
 
         var json;
-        $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/a-separar').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/pedidos/a-separar').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aSeparar = json;    
             sucssesAjax();    
         });
-        $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/em-separacao').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/pedidos/em-separacao').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emSeparacao = json;
             sucssesAjax();
         });
-        $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/separados').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/pedidos/separados').success(function(data){
            if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.separados = json;
@@ -272,19 +278,19 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
         counter = 3;
 
         var json;
-        $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/a-conferir').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/conferencia/a-conferir').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aConferir = json;
             sucssesAjax();
         });
-        $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/em-conferencia').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/conferencia/em-conferencia').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emConferencia = json;
             sucssesAjax();
         });
-        $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/conferidos').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/conferencia/conferidos').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.conferidos = json;
@@ -320,13 +326,13 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         counter = 2;
 
         var json;
-        $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/a-embarcar').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/expedicao/a-embarcar').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aEmbalar = json;
             sucssesAjax();
         });
-        $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/embarcados').success(function(data){
+        $http.get('http://www.webtalk.com.br/projetos/niazi/services/expedicao/embarcados').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.embalados = json;

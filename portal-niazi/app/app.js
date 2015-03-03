@@ -56,13 +56,13 @@ function ($rootScope, $location, $cookieStore, $http) {
          var sep = false, exp = false, conf = false;
          for (var i = 0; i < $rootScope.globals.menu.length; i++) {
             switch($rootScope.globals.menu[i].id) {
-                case '1':
+                case 1:
                     exp = true;
                     break;
-                case '2':
+                case 2:
                     sep = true;
                     break;
-                case '3':
+                case 3:
                     conf = true;
                     break;
             }            
