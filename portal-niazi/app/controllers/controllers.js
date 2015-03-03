@@ -204,32 +204,44 @@ app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', f
     $rootScope.activetab = $location.path();
 }]);
  
-app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', function($scope, $rootScope, $location, $http, Permission, currentDate) {
+app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval) {
     Permission.validation();
-    var counter = 3;
+    var counter;
 
     $scope.viewLoading = true;
     $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
     
-    var json;
-    $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/a-separar').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.aSeparar = json;        
-    });
-    $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/em-separacao').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.emSeparacao = json;
-    });
-    $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/separados').success(function(data){
-       if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.separados = json;
-    }).then(function() {
-        $scope.viewLoading = false;
-    });
+    getSeparacao();
+
+    $interval(function(){
+        getSeparacao();    
+    },25000);
+
+    function getSeparacao() {
+        $scope.viewLoading = true;
+        counter = 3;
+
+        var json;
+        $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/a-separar').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.aSeparar = json;    
+            sucssesAjax();    
+        });
+        $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/em-separacao').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.emSeparacao = json;
+            sucssesAjax();
+        });
+        $http.get('http://carolineorru.com.br/portal-niazi/services/pedidos/separados').success(function(data){
+           if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.separados = json;
+            sucssesAjax();
+        });
+    }
 
     function sucssesAjax() {
         counter --;
@@ -241,33 +253,46 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 
 
 
-app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', function($scope, $rootScope, $location, $http, Permission, currentDate) {
+app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval) {
     Permission.validation();
-    var counter = 3;
+    var counter;
 
     $scope.viewLoading = true;
     $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
-    
-    $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/a-conferir').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.aConferir = json;
-        sucssesAjax();
-    });
-    $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/em-conferencia').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.emConferencia = json;
-        sucssesAjax();
-    });
-    $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/conferidos').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.conferidos = json;
-        sucssesAjax();
-    });
 
+    getConferencia();
+
+    $interval(function(){
+        getConferencia();    
+    },25000);
+
+    function getConferencia() {
+        $scope.viewLoading = true;
+        counter = 3;
+
+        var json;
+        $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/a-conferir').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.aConferir = json;
+            sucssesAjax();
+        });
+        $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/em-conferencia').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.emConferencia = json;
+            sucssesAjax();
+        });
+        $http.get('http://carolineorru.com.br/portal-niazi/services/conferencia/conferidos').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.conferidos = json;
+            sucssesAjax();
+        });
+    
+    }
+    
     function sucssesAjax() {
         counter --;
         if (counter === 0) {
@@ -276,25 +301,36 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
     }
 }]);
 
-app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', function($scope, $rootScope, $location, $http, Permission, currentDate) {
+app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval) {
     Permission.validation();
-    var counter = 2;
+    var counter;
 
     $scope.viewLoading = true;
     $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
 
-    var json;
-    $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/a-embarcar').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.aEmbalar = json;
-    });
-    $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/embarcados').success(function(data){
-        if (data.code == 500) $location.path("/portal-niazi/home"); 
-        json = data;
-        $scope.embalados = json;
-    });
+    getExpedicao();
+
+    $interval(function(){
+        getExpedicao();    
+    },25000);
+
+    function getExpedicao() {
+        $scope.viewLoading = true;
+        counter = 2;
+
+        var json;
+        $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/a-embarcar').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.aEmbalar = json;
+        });
+        $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/embarcados').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+            json = data;
+            $scope.embalados = json;
+        });
+    }
 
     function sucssesAjax() {
         counter --;
