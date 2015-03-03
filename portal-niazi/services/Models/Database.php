@@ -46,7 +46,7 @@ class Database
 			//$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
 			//@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
-			$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password);// or die(mssql_get_last_message());
+			$this->mssql = mssql_connect($this->dbhost,$this->user,$this->password);// or die(mssql_get_last_message());
 			echo "<pre>";
 			print_r($this->mssql);
 			echo "</pre>";
