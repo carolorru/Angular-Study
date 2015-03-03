@@ -43,16 +43,11 @@ class Database
 			$this->tbl->conferencia = 'PAINEL_ACD_002';
 			$this->tbl->expedicao   = 'PAINEL_ACD_003';
 
-			//$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
-			//@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
+			$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
+			@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
-			$this->mssql = mssql_connect($this->dbhost,$this->user,$this->password);// or die(mssql_get_last_message());
-			echo "<pre>";
-			print_r($this->mssql);
-			echo "</pre>";
-			@mssql_select_db($this->db,$this->mssql) or die(mssql_get_last_message());
-
-		
+			//$connection = odbc_connect("Driver={SQL Server Native Client 10.0};Server=".$this->dbhost.";Database=".$this->db.";", $this->user, $this->password);
+			//print_r($connection);
 
 	}
 	
