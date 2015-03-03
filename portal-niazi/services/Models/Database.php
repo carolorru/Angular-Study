@@ -43,11 +43,12 @@ class Database
 			$this->tbl->conferencia = 'PAINEL_ACD_002';
 			$this->tbl->expedicao   = 'PAINEL_ACD_003';
 
-			$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
-			@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
+			//$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
+			//@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
 			//$connection = odbc_connect("Driver={SQL Server Native Client 10.0};Server=".$this->dbhost.";Database=".$this->db.";", $this->user, $this->password);
-			//print_r($connection);
+			$this->mssql = odbc_connect($this->dbhost,$this->user,$this->password,SQL_CUR_USE_ODBC) or die("<B>Error!</B> Couldn't Connect To Database. Error Code:  ".odbc_error());
+			print_r($this->mssql);
 
 	}
 	
@@ -63,14 +64,16 @@ class Database
 	{
 		
 		//return $this->doMysql($params);
-
-		$query        = mssql_query($params);
+		$query = odbc_exec($this->mssql, $params) or die("<p>".odbc_errormsg()."</p>");
+		print_r($query);
+		die('- die -');
+		/*$query        = mssql_query($params);
 		$numRegistros = mssql_num_rows($query);
 		
 		$_RETURN['num'] = $numRegistros;
 		$_RETURN['row'] = $query;
 
-		return $_RETURN;
+		return $_RETURN;*/
 
 	}
 
