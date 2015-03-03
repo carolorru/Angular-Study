@@ -29,7 +29,7 @@ class Database
 			@mysql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
 		}else{
-
+		}
 			// Dados do banco
 			$this->dbhost   = "177.102.18.147";   #Nome do host
 			$this->db       = "UPERP";   #Nome do banco de dados
@@ -46,7 +46,7 @@ class Database
 			$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
 			@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
-		}
+		
 
 	}
 	
@@ -61,7 +61,7 @@ class Database
 	public function doQuery($params)
 	{
 		
-		return $this->doMysql($params);
+		//return $this->doMysql($params);
 
 		$query        = mssql_query($params);
 		$numRegistros = mssql_num_rows($query);
@@ -70,6 +70,15 @@ class Database
 		$_RETURN['row'] = $query;
 
 		return $_RETURN;
+
+	}
+
+	public function pre($params)
+	{
+
+		echo "<pre>";
+		print_r($params);
+		echo "</pre>";
 
 	}
 	

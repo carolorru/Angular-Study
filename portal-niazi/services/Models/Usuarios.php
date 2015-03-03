@@ -27,14 +27,14 @@ class Usuarios
 		if($query)
 		{
 			
-			$num = mysql_num_rows($query);
+			$num = mssql_num_rows($query['row']);
 			
 			if($num > 0)
 			{
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = $num;
 
-			    while($row = mysql_fetch_array($query))
+			    while($row = mssql_fetch_array($query['row']))
 			    {
 
 			    	$_RETURN['row'][] = array(
@@ -58,8 +58,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro.';
 
 		}
@@ -85,14 +85,14 @@ class Usuarios
 		if($query)
 		{
 			
-			$num = mysql_num_rows($query);
+			$num = mssql_num_rows($query['row']);
 			
 			if($num > 0)
 			{
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = $num;
 
-			    while($row = mysql_fetch_array($query))
+			    while($row = mssql_fetch_array($query['row']))
 			    {
 
 			    	$_RETURN['row'][] = array(
@@ -118,8 +118,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro ao criar usuário.';
 
 		}
@@ -142,14 +142,14 @@ class Usuarios
 		if($query)
 		{
 
-			if(mysql_num_rows($query) > 0)
+			if(mssql_num_rows($query['row']) > 0)
 			{
 
 				$_RETURN['code'] = 200;
 				$_RETURN['msg']  = 'Usuário autenticado.';
-				$_RETURN['num']  = mysql_num_rows($query);
+				$_RETURN['num']  = mssql_num_rows($query['row']);
 
-			    $row = mysql_fetch_array($query);
+			    $row = mssql_fetch_array($query['row']);
 
 		    	$_RETURN['row'][] = array(
 		    							'id' => $row['id'],
@@ -160,16 +160,18 @@ class Usuarios
 
 		    	$sel = "SELECT * FROM ".$this->Database->tbl->usuarios_perms." WHERE id IN(".$row['permissions'].")";
 		    	$qry = $this->Database->doQuery($sel);
-				if($qry && mysql_num_rows($query) >0)
+				if($qry && mssql_num_rows($query['row']) >0)
 				{
-					
-					while($r = mysql_fetch_array($qry))
+
+					while($r = mssql_fetch_array($qry['row']))
 					{
+						
 						$menu[] = array(
 									'id' => $r['id'],
 									'name' => utf8_encode($r['name']),
 									'slug' => $r['slug']
 									);
+						
 					}
 
 					$_RETURN['menu'] = $menu;
@@ -192,8 +194,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro ao criar usuário.';
 
 		}
@@ -238,8 +240,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro ao criar usuário.';
 
 		}
@@ -274,8 +276,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro ao atualizar usuário.';
 
 		}
