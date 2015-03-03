@@ -7,7 +7,7 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
 
         /* Use this for real authentication
          ----------------------------------------------*/
-        $.post('http://www.webtalk.com.br/projetos/niazi/services/login', { email: username, pass: password }, 'json').success(function (data) {
+        $.post('http://www.carolineorru.com.br/portal-niazi/services/login', { email: username, pass: password }, 'json').success(function (data) {
             data = JSON.parse(data);            
             console.log('service post', data);
             callback(data);
@@ -229,19 +229,19 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         counter = 3;
 
         var json;
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/pedidos/a-separar').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/pedidos/a-separar').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aSeparar = json;    
             sucssesAjax();    
         });
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/pedidos/em-separacao').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/pedidos/em-separacao').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emSeparacao = json;
             sucssesAjax();
         });
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/pedidos/separados').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/pedidos/separados').success(function(data){
            if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.separados = json;
@@ -278,19 +278,19 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
         counter = 3;
 
         var json;
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/conferencia/a-conferir').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/conferencia/a-conferir').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aConferir = json;
             sucssesAjax();
         });
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/conferencia/em-conferencia').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/conferencia/em-conferencia').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emConferencia = json;
             sucssesAjax();
         });
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/conferencia/conferidos').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/conferencia/conferidos').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.conferidos = json;
@@ -326,13 +326,13 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         counter = 2;
 
         var json;
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/expedicao/a-embarcar').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/expedicao/a-embarcar').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aEmbalar = json;
             sucssesAjax();
         });
-        $http.get('http://www.webtalk.com.br/projetos/niazi/services/expedicao/embarcados').success(function(data){
+        $http.get('http://www.carolineorru.com.br/portal-niazi/services/expedicao/embarcados').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.embalados = json;
