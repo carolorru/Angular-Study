@@ -324,11 +324,13 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aEmbalar = json;
+            sucssesAjax();
         });
         $http.get('http://carolineorru.com.br/portal-niazi/services/expedicao/embarcados').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.embalados = json;
+            sucssesAjax();
         });
     }
 
