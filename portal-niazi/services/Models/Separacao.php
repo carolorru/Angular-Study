@@ -17,7 +17,7 @@ class Separacao
 	public function search($params)
 	{
 
-		$sel = "";
+		$sel = "SELECT * FROM ".$this->Database->tbl->separacao;
 
 		if($params['tipo'] == 'a-separar')
 		{
@@ -34,11 +34,11 @@ class Separacao
 		if($params['tipo'] == 'separados')
 		{
 			$sel = "SELECT
-						NOM_SEPARADOR, COUNT(COD_SEPARADOR) AS TOTAL_SEPARADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 10 AS META
+						NOM_SEPARADOR, COUNT(COD_SEPARADOR) AS TOTAL_SEPARADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, META_SEP AS META
 					FROM ".$this->Database->tbl->separacao."
 					WHERE   1 = 1
 							AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''
-					GROUP BY COD_SEPARADOR";
+					GROUP BY COD_SEPARADOR, NOM_SEPARADOR, EMISSAO, META_SEP";
 		}
 
 		if($params['tipo'] == 'em-separacao')
@@ -56,10 +56,11 @@ class Separacao
 		$sel.= " ORDER BY EMISSAO";
 		$query = $this->Database->doQuery($sel);
 		
-		if($query)
+		//echo $sel;
+		if($query['num'] > 0)
 		{
 			
-			$num = mysql_num_rows($query);
+			$num = mssql_num_rows($query['row']);
 
 			if($num > 0){
 
@@ -68,7 +69,7 @@ class Separacao
 				if($params['tipo'] == 'separados')
 				{
 
-					while($row = mysql_fetch_array($query))
+					while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$_RETURN['row'][] = array(
@@ -85,7 +86,7 @@ class Separacao
 							WHERE   1 = 1
 									AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''";
 					$qry = $this->Database->doQuery($sel);
-					$row = mysql_fetch_array($qry);
+					$row = mssql_fetch_array($qry);
 
 					$_RETURN['num'] = $row['TOTAL'];
 					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
@@ -95,7 +96,7 @@ class Separacao
 					$_RETURN['num'] = $num;
 					$pesoBruto = array();
 				
-				    while($row = mysql_fetch_array($query))
+				    while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
@@ -129,7 +130,7 @@ class Separacao
 				    							'EMISSAO' => $emissao['br_date'],
 				    							'NUM_PED' => $row['NUM_PED'],
 				    							'COD_CLI' => $row['COD_CLI'],
-				    							'NOM_CLI' => $row['NOM_CLI'],
+				    							'NOM_CLI' => trim($row['NOM_CLI']),
 				    							'QUANTIDADE' => $row['QUANTIDADE'],
 												'HR_INI_SEP' => $hr_ini_sep['formatted'],
 												'DT_INI_SEP' => $dt_ini_sep['br_date'],
@@ -160,8 +161,8 @@ class Separacao
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro na query.';
 
 		}

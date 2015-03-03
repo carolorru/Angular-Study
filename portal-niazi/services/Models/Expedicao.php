@@ -17,34 +17,39 @@ class Expedicao
 	public function search($params)
 	{
 
+		$sel = "SELECT * FROM ".$this->Database->tbl->expedicao;
+
 		if($params['tipo'] == 'a-embarcar')
 		{
 			$sel = "SELECT
 						TRANSP,
 						NOM_TRANSP,
+						EMISSAO,
 						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
 						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
 						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
-						SUM(100) AS VALOR
+						SUM(VALOR_NF) AS VALOR
 					FROM ".$this->Database->tbl->expedicao."
 					WHERE   1 = 1
 							AND DT_INI_EMB = '' AND HR_INI_EMB = ''
-					GROUP BY TRANSP";
+					GROUP BY TRANSP, NOM_TRANSP , EMISSAO ";
 		}
 
 		if($params['tipo'] == 'embarcados')
 		{
 			$sel = "SELECT
-						TRANSP,
-						NOM_TRANSP,
 						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
 						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
 						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
-						SUM(100) AS VALOR
+						SUM(VALOR_NF) AS VALOR,
+						TRANSP,
+						NOM_TRANSP,
+						EMISSAO
 					FROM ".$this->Database->tbl->expedicao."
 					WHERE   1 = 1
 							AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
-					GROUP BY TRANSP";
+					GROUP BY TRANSP, NOM_TRANSP , EMISSAO ";
+
 		}
 
 		if($params['tipo'] == 'embarcando')
@@ -61,45 +66,46 @@ class Expedicao
 		}
 
 		$sel.= " ORDER BY EMISSAO";
-		
 		$query = $this->Database->doQuery($sel);
 		
-		if($query)
+		if($query['num'] > 0)
 		{
 			
-			$num = mysql_num_rows($query);
+			$num = mssql_num_rows($query['row']);
+
 			if($num > 0){
 
 				$_RETURN['code'] = 200;
 
 				if($params['tipo'] == 'embarcados' || $params['tipo'] == 'a-embarcar')
 				{
-
 					
-					while($row = mysql_fetch_array($query))
+					while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$sel = "SELECT
 									NUM_NF,
 									DT_INI_EMB,
-									100 AS VALOR,
+									VALOR_NF AS VALOR,
 									PESO_BRUTO,
 									CUBAGEM
 								FROM ".$this->Database->tbl->expedicao."
 								WHERE   1 = 1
 										AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
-										AND TRANSP = '".$row['TRANSP']."'";
+										AND TRANSP = ".$row['TRANSP']."";
+
 						$qry = $this->Database->doQuery($sel);
 						$notas = array();
-						$total_notas = mysql_num_rows($qry);
-						while($r = mysql_fetch_array($qry))
+						$total_notas = mssql_num_rows($qry['num']);
+
+						while($r = mssql_fetch_array($qry['row']))
 						{
 
 							$dt_ini_emb['br_date']   = '';
 							$dt_ini_emb = $this->Common->validaData($r['DT_INI_EMB']);
 
 							$notas[] = array(
-										'NUM_NF' => $r['NUM_NF'],
+										'NUM_NF' => trim($r['NUM_NF']),
 										'DT_INI_EMB' => $dt_ini_emb['br_date'],
 										'VALOR' => $r['VALOR'],
 										'PESO_BRUTO' => $r['PESO_BRUTO'],
@@ -109,7 +115,7 @@ class Expedicao
 						}
 
 				    	$_RETURN['row'][] = array(
-				    							'NOM_TRANSP' => $row['NOM_TRANSP'],
+				    							'NOM_TRANSP' => trim($row['NOM_TRANSP']),
 				    							'TOTAL_EMBARCADOS' => $row['TOTAL_EMBARCADOS'],
 				    							'TOTAL_CUBAGEM' => $row['TOTAL_CUBAGEM'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
@@ -126,7 +132,7 @@ class Expedicao
 							WHERE   1 = 1
 									AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''";
 					$qry = $this->Database->doQuery($sel);
-					$row = mysql_fetch_array($qry);
+					$row = mssql_fetch_array($qry['row']);
 
 					$_RETURN['num'] = $row['TOTAL'];
 					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
@@ -137,7 +143,7 @@ class Expedicao
 
 					$pesoBruto = array();
 
-				    while($row = mysql_fetch_array($query))
+				    while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
@@ -171,12 +177,12 @@ class Expedicao
 
 				    	$_RETURN['row'][] = array(
 				    							'EMISSAO' => $emissao['br_date'],
-				    							'NUM_NF' => $row['NUM_NF'],
+				    							'NUM_NF' => trim($row['NUM_NF']),
 				    							'SERIE_NF' => $row['SERIE_NF'],
 				    							'COD_CLI' => $row['COD_CLI'],
-				    							'NOM_CLI' => $row['NOM_CLI'],
+				    							'NOM_CLI' => trim($row['NOM_CLI']),
 				    							'TRANSP' => $row['TRANSP'],
-												'NOM_TRANSP' => $row['NOM_TRANSP'],
+												'NOM_TRANSP' => trim($row['NOM_TRANSP']),
 												'CUBAGEM' => $row['CUBAGEM'],
 				    							'QUANTIDADE' => $row['QUANTIDADE'],
 												'HR_INI_EMB' => $hr_ini_emb['formatted'],
@@ -208,8 +214,8 @@ class Expedicao
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error_no'] = mysql_errno();
-			$_RETURN['error'] = mysql_error();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro na query.';
 
 		}
