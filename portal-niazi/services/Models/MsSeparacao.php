@@ -60,7 +60,7 @@ class Separacao
 		if($query['num'] > 0)
 		{
 			
-			$num = $this->Database->num_rows($query);
+			$num = mssql_num_rows($query['row']);
 
 			if($num > 0){
 
@@ -69,7 +69,7 @@ class Separacao
 				if($params['tipo'] == 'separados')
 				{
 
-					while($row = $this->Database->fetch_array($query))
+					while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$_RETURN['row'][] = array(
@@ -86,7 +86,7 @@ class Separacao
 							WHERE   1 = 1
 									AND DT_INI_SEP != '' AND HR_INI_SEP != '' AND DT_FIM_SEP != '' AND HR_FIM_SEP != ''";
 					$qry = $this->Database->doQuery($sel);
-					$row = $this->Database->fetch_array($qry);
+					$row = mssql_fetch_array($qry);
 
 					$_RETURN['num'] = $row['TOTAL'];
 					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
@@ -96,7 +96,7 @@ class Separacao
 					$_RETURN['num'] = $num;
 					$pesoBruto = array();
 				
-				    while($row = $this->Database->fetch_array($query))
+				    while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
@@ -161,7 +161,8 @@ class Separacao
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro na query.';
 
 		}

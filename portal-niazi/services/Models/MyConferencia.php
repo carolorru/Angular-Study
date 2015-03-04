@@ -1,8 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set("display_errors",1);
-
 class Conferencia
 {
 
@@ -20,8 +17,6 @@ class Conferencia
 	public function search($params)
 	{
 
-		$sel = "SELECT * FROM ".$this->Database->tbl->conferencia;
-
 		if($params['tipo'] == 'a-conferir')
 		{
 			$sel = "SELECT
@@ -37,11 +32,11 @@ class Conferencia
 		if($params['tipo'] == 'conferidos')
 		{
 			$sel = "SELECT
-						EMISSAO, NOM_CONFERENTE, COUNT(COD_CONFERENTE) AS TOTAL_CONFERIDOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, META_CONF AS META
+						NOM_CONFERENTE, COUNT(COD_CONFERENTE) AS TOTAL_CONFERIDOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, 10 AS META
 					FROM ".$this->Database->tbl->conferencia."
 					WHERE   1 = 1
 							AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''
-					GROUP BY COD_CONFERENTE, NOM_CONFERENTE, META_CONF, EMISSAO";
+					GROUP BY COD_CONFERENTE";
 		}
 
 		if($params['tipo'] == 'em-conferencia')
@@ -59,18 +54,18 @@ class Conferencia
 		$sel.= " ORDER BY EMISSAO";
 
 		$query = $this->Database->doQuery($sel);
-//$this->Database->pre($query);
-		if($query['num'] > 0)
+		
+		if($query)
 		{
 			
-			$num = $this->Database->num_rows($query);
+			$num = mysql_num_rows($query);
 
 			if($num > 0){
 
 				if($params['tipo'] == 'conferidos')
 				{
 
-					while($row = $this->Database->fetch_array($query))
+					while($row = mysql_fetch_array($query))
 				    {
 
 				    	$_RETURN['row'][] = array(
@@ -87,7 +82,7 @@ class Conferencia
 							WHERE   1 = 1
 									AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''";
 					$qry = $this->Database->doQuery($sel);
-					$row = $this->Database->fetch_array($qry);
+					$row = mysql_fetch_array($qry);
 
 					$_RETURN['num'] = $row['TOTAL'];
 					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
@@ -99,7 +94,7 @@ class Conferencia
 
 					$pesoBruto = array();
 
-				    while($row = $this->Database->fetch_array($query))
+				    while($row = mysql_fetch_array($query))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
@@ -133,7 +128,7 @@ class Conferencia
 				    							'EMISSAO' => $emissao['br_date'],
 				    							'NUM_PED' => $row['NUM_PED'],
 				    							'COD_CLI' => $row['COD_CLI'],
-				    							'NOM_CLI' => trim($row['NOM_CLI']),
+				    							'NOM_CLI' => $row['NOM_CLI'],
 				    							'QUANTIDADE' => $row['QUANTIDADE'],
 												'HR_INI_CONF' => $hr_ini_conf['formatted'],
 												'DT_INI_CONF' => $dt_ini_conf['br_date'],
@@ -163,7 +158,8 @@ class Conferencia
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
+			$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mysql_error();
 			$_RETURN['msg'] = 'Erro na query.';
 
 		}

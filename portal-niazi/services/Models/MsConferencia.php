@@ -63,14 +63,14 @@ class Conferencia
 		if($query['num'] > 0)
 		{
 			
-			$num = $this->Database->num_rows($query);
+			$num = mssql_num_rows($query['row']);
 
 			if($num > 0){
 
 				if($params['tipo'] == 'conferidos')
 				{
 
-					while($row = $this->Database->fetch_array($query))
+					while($row = mssql_fetch_array($query['row'], MSSQL_ASSOC))
 				    {
 
 				    	$_RETURN['row'][] = array(
@@ -87,7 +87,7 @@ class Conferencia
 							WHERE   1 = 1
 									AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''";
 					$qry = $this->Database->doQuery($sel);
-					$row = $this->Database->fetch_array($qry);
+					$row = mssql_fetch_array($qry['row'], MSSQL_ASSOC);
 
 					$_RETURN['num'] = $row['TOTAL'];
 					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
@@ -99,7 +99,7 @@ class Conferencia
 
 					$pesoBruto = array();
 
-				    while($row = $this->Database->fetch_array($query))
+				    while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
@@ -163,7 +163,8 @@ class Conferencia
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro na query.';
 
 		}

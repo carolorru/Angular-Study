@@ -71,7 +71,7 @@ class Expedicao
 		if($query['num'] > 0)
 		{
 			
-			$num = $this->Database->num_rows($query);
+			$num = mssql_num_rows($query['row']);
 
 			if($num > 0){
 
@@ -80,7 +80,7 @@ class Expedicao
 				if($params['tipo'] == 'embarcados' || $params['tipo'] == 'a-embarcar')
 				{
 					
-					while($row = $this->Database->fetch_array($query))
+					while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$sel = "SELECT
@@ -96,9 +96,9 @@ class Expedicao
 
 						$qry = $this->Database->doQuery($sel);
 						$notas = array();
-						$total_notas = $this->Database->num_rows($qry);
+						$total_notas = mssql_num_rows($qry['num']);
 
-						while($r = $this->Database->fetch_array($qry))
+						while($r = mssql_fetch_array($qry['row']))
 						{
 
 							$dt_ini_emb['br_date']   = '';
@@ -132,7 +132,7 @@ class Expedicao
 							WHERE   1 = 1
 									AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''";
 					$qry = $this->Database->doQuery($sel);
-					$row = $this->Database->fetch_array($qry);
+					$row = mssql_fetch_array($qry['row']);
 
 					$_RETURN['num'] = $row['TOTAL'];
 					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
@@ -143,7 +143,7 @@ class Expedicao
 
 					$pesoBruto = array();
 
-				    while($row = $this->Database->fetch_array($query))
+				    while($row = mssql_fetch_array($query['row']))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
@@ -172,6 +172,8 @@ class Expedicao
 							$dt_fim_emb = $this->Common->validaData($row['DT_FIM_EMB']);
 							$hr_fim_emb = $this->Common->validaHora($row['HR_FIM_EMB']);
 				    	}
+				    	
+				    	
 
 				    	$_RETURN['row'][] = array(
 				    							'EMISSAO' => $emissao['br_date'],
@@ -212,7 +214,8 @@ class Expedicao
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro na query.';
 
 		}

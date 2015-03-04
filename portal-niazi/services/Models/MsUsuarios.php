@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_PARSE);
 ini_set("display_errors",1);
 
@@ -28,14 +27,14 @@ class Usuarios
 		if($query)
 		{
 			
-			$num = $this->Database->num_rows($query);
-
+			$num = mssql_num_rows($query['row']);
+			
 			if($num > 0)
 			{
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = $num;
 
-			    while($row = $this->Database->fetch_array($query))
+			    while($row = mssql_fetch_array($query['row']))
 			    {
 
 			    	$_RETURN['row'][] = array(
@@ -59,7 +58,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro.';
 
 		}
@@ -85,14 +85,14 @@ class Usuarios
 		if($query)
 		{
 			
-			$num = $this->Database->num_rows($query);
+			$num = mssql_num_rows($query['row']);
 			
 			if($num > 0)
 			{
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = $num;
 
-			    while($row = $this->Database->fetch_array($query))
+			    while($row = mssql_fetch_array($query['row']))
 			    {
 
 			    	$_RETURN['row'][] = array(
@@ -118,7 +118,8 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
 			$_RETURN['msg'] = 'Erro ao criar usuário.';
 
 		}
@@ -141,16 +142,14 @@ class Usuarios
 		if($query)
 		{
 
-			$num = $this->Database->num_rows($query);
-
-			if($num > 0)
+			if(mssql_num_rows($query['row']) > 0)
 			{
 
 				$_RETURN['code'] = 200;
 				$_RETURN['msg']  = 'Usuário autenticado.';
-				$_RETURN['num']  = $num;
+				$_RETURN['num']  = mssql_num_rows($query['row']);
 
-			    $row = $this->Database->fetch_array($query);
+			    $row = mssql_fetch_array($query['row']);
 
 		    	$_RETURN['row'][] = array(
 		    							'id' => $row['id'],
@@ -161,12 +160,10 @@ class Usuarios
 
 		    	$sel = "SELECT * FROM ".$this->Database->tbl->usuarios_perms." WHERE id IN(".$row['permissions'].")";
 		    	$qry = $this->Database->doQuery($sel);
-		    	$num = $this->Database->num_rows($qry);
-
-				if($qry && $num >0)
+				if($qry && mssql_num_rows($query['row']) >0)
 				{
 
-					while($r = $this->Database->fetch_array($qry))
+					while($r = mssql_fetch_array($qry['row']))
 					{
 						
 						$menu[] = array(
@@ -197,8 +194,9 @@ class Usuarios
 
 			$_RETURN['num'] = 0;
 			$_RETURN['code'] = 500;
-			$_RETURN['error'] = $this->Database->dbError();
-			$_RETURN['msg'] = 'Erro na query.';
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
+			$_RETURN['msg'] = 'Erro ao criar usuário.';
 
 		}
 
@@ -217,5 +215,100 @@ class Usuarios
 		return $_RETURN;
 		
 	}
+
+	public function createUser($params)
+	{
+
+		$permissions = "";
+		if(isset($params['permissions']))
+		{
+			$permissions = implode(",", $params['permissions']);
+		}
+
+		$ins = "INSERT INTO ".$this->Database->tbl->usuarios."
+				(full_name,email,pass,permissions)
+				VALUES
+				('".$params['full_name']."','".$params['email']."','".$params['pass']."','".$permissions."')";
+		$query = $this->Database->doQuery($ins);
+		if($query)
+		{
+
+			$_RETURN['code'] = 200;
+			$_RETURN['msg']  = 'Usuário criado.';
+
+		}else{
+
+			$_RETURN['num'] = 0;
+			$_RETURN['code'] = 500;
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
+			$_RETURN['msg'] = 'Erro ao criar usuário.';
+
+		}
+
+		return $_RETURN;
+		
+	}
+
+	public function updateUser($params)
+	{
+
+		$permission = "";
+		if(isset($params['permissions']))
+		{
+			$permission = implode(",", $params['permissions']);
+		}
+
+		$upd = "UPDATE ".$this->Database->tbl->usuarios." SET
+					full_name = '".$params['full_name']."',
+					email = '".$params['email']."',
+					pass = '".$params['pass']."',
+					permissions = '".$permissions."'
+				WHERE id = ".$params['id'];
+		$query = $this->Database->doQuery($upd);
+		if($query)
+		{
+
+			$_RETURN['code'] = 200;
+			$_RETURN['msg']  = 'Usuário atualizado.';
+
+		}else{
+
+			$_RETURN['num'] = 0;
+			$_RETURN['code'] = 500;
+			//$_RETURN['error_no'] = mysql_errno();
+			$_RETURN['error'] = mssql_get_last_message();
+			$_RETURN['msg'] = 'Erro ao atualizar usuário.';
+
+		}
+
+		return $_RETURN;
+		
+	}
+
+	public function removeUser($params)
+	{
+
+		$del = "DELETE FROM ".$this->Database->tbl->usuarios." WHERE id = ".$params['id'];
+		$query = $this->Database->doQuery($del);
+		if($query)
+		{
+
+			$_RETURN['code'] = 200;
+			$_RETURN['msg']  = 'Usuário removido.';
+
+		}else{
+
+			$_RETURN['num'] = 500;
+			$_RETURN['msg'] = 'Erro ao remover usuário.';
+
+		}
+
+		return $_RETURN;
+		
+	}
 	
 }
+
+
+

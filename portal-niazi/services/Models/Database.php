@@ -10,9 +10,15 @@ class Database
 	{
 
 		$this->tbl = new stdClass();
-		if($_SERVER['SERVER_NAME'] == 'webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'www.webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'carolineorru.com.br' || $_SERVER['SERVER_NAME'] == 'www.carolineorru.com.br')
+
+		##
+		# SERVIDORES DE TESTE
+		##
+		//if($_GET['TYPE'] == "MySQL" || $_SERVER['SERVER_NAME'] == 'webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'www.webtalk.com.br' || $_SERVER['SERVER_NAME'] == 'carolineorru.com.br' || $_SERVER['SERVER_NAME'] == 'www.carolineorru.com.br')
+		if(isset($_GET['TYPE']) && $_GET['TYPE'] == "MySQL")
 		{
 			
+			$this->dbtype   = "mysql";
 			$this->dbhost   = "186.202.152.133";   #Nome do host
 			$this->db       = "incommunicatio1";   #Nome do banco de dados
 			$this->user     = "incommunicatio1"; #Nome do usuário
@@ -29,8 +35,12 @@ class Database
 			@mysql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
 		}else{
-		}
+
+			##
+			# SERVIDOR DE PRODUÇÃO
+			##
 			// Dados do banco
+			$this->dbtype   = "mssql";
 			$this->dbhost   = "177.102.18.147";   #Nome do host
 			$this->db       = "UPERP";   #Nome do banco de dados
 			$this->user     = "sa"; #Nome do usuário
@@ -43,37 +53,68 @@ class Database
 			$this->tbl->conferencia = 'PAINEL_ACD_002';
 			$this->tbl->expedicao   = 'PAINEL_ACD_003';
 
-			//$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
-			//@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
+			$this->mssql = @mssql_connect($this->dbhost,$this->user,$this->password) or die("Não foi possível a conexão com o banco de dados!");
+			@mssql_select_db($this->db,$this->mssql) or die("Não foi possível selecionar o banco de dados!");
 
-			//$connection = odbc_connect("Driver={SQL Server Native Client 10.0};Server=".$this->dbhost.";Database=".$this->db.";", $this->user, $this->password);
-			$this->mssql = odbc_connect($this->dbhost,$this->user,$this->password,SQL_CUR_USE_ODBC) or die("<B>Error!</B> Couldn't Connect To Database. Error Code:  ".odbc_error());
-			print_r($this->mssql);
+		}
+
+		//echo "::".$this->dbtype;
+
+	}
+
+	public function dbError($query)
+	{
+
+		if($this->dbtype == 'mysql')
+		{
+			$error = mysql_error();
+			return $error;
+		}
+
+		$error = mssql_get_last_message();
+		return $error;
 
 	}
 	
-	public function doMySQL($params)
+	public function fetch_array($query)
 	{
 
-		$query = mysql_query($params,$this->mssql);
-		return $query;
+		if($this->dbtype == 'mysql')
+		{
+			$row = mysql_fetch_array($query);
+			return $row;
+		}
+
+		$row = mssql_fetch_array($query);
+		return $row;
+
+	}
+
+	public function num_rows($query)
+	{
+
+		if($this->dbtype == 'mysql')
+		{
+			$num = mysql_num_rows($query);
+			return $num;
+		}
+
+		$num = mssql_num_rows($query);
+		return $num;
 
 	}
 
 	public function doQuery($params)
 	{
 		
-		//return $this->doMysql($params);
-		$query = odbc_exec($this->mssql, $params) or die("<p>".odbc_errormsg()."</p>");
-		print_r($query);
-		die('- die -');
-		/*$query        = mssql_query($params);
-		$numRegistros = mssql_num_rows($query);
-		
-		$_RETURN['num'] = $numRegistros;
-		$_RETURN['row'] = $query;
+		if($this->dbtype == 'mysql')
+		{
+			$query = mysql_query($params,$this->mssql);
+			return $query;
+		}
 
-		return $_RETURN;*/
+		$query = mssql_query($params);
+		return $query;
 
 	}
 
