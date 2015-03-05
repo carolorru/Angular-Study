@@ -220,28 +220,29 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
     
     getSeparacao();
 
-    $interval(function(){
+    var intervalContent = $interval(function(){
         getSeparacao();    
     },25000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 
     function getSeparacao() {
         $scope.viewLoading = true;
         counter = 3;
 
         var json;
-        $http.get('/portal-niazi/services/pedidos/a-separar').success(function(data){
+        $http.get('/portal-niazi/services/pedidos/a-separar?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aSeparar = json;    
             sucssesAjax();    
         });
-        $http.get('/portal-niazi/services/pedidos/em-separacao').success(function(data){
+        $http.get('/portal-niazi/services/pedidos/em-separacao?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emSeparacao = json;
             sucssesAjax();
         });
-        $http.get('/portal-niazi/services/pedidos/separados').success(function(data){
+        $http.get('/portal-niazi/services/pedidos/separados?TYPE=MSSQL').success(function(data){
            if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.separados = json;
@@ -269,28 +270,29 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
 
     getConferencia();
 
-    $interval(function(){
+    var intervalContent = $interval(function(){
         getConferencia();    
     },25000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 
     function getConferencia() {
         $scope.viewLoading = true;
         counter = 3;
 
         var json;
-        $http.get('/portal-niazi/services/conferencia/a-conferir').success(function(data){
+        $http.get('/portal-niazi/services/conferencia/a-conferir?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aConferir = json;
             sucssesAjax();
         });
-        $http.get('/portal-niazi/services/conferencia/em-conferencia').success(function(data){
+        $http.get('/portal-niazi/services/conferencia/em-conferencia?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emConferencia = json;
             sucssesAjax();
         });
-        $http.get('/portal-niazi/services/conferencia/conferidos').success(function(data){
+        $http.get('/portal-niazi/services/conferencia/conferidos?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.conferidos = json;
@@ -317,22 +319,23 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 
     getExpedicao();
 
-    $interval(function(){
+    var intervalContent = $interval(function(){
         getExpedicao();    
     },25000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 
     function getExpedicao() {
         $scope.viewLoading = true;
         counter = 2;
 
         var json;
-        $http.get('/portal-niazi/services/expedicao/a-embarcar').success(function(data){
+        $http.get('/portal-niazi/services/expedicao/a-embarcar?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aEmbalar = json;
             sucssesAjax();
         });
-        $http.get('/portal-niazi/services/expedicao/embarcados').success(function(data){
+        $http.get('/portal-niazi/services/expedicao/embarcados?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.embalados = json;
