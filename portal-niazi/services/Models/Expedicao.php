@@ -68,7 +68,7 @@ class Expedicao
 		$sel.= " ORDER BY EMISSAO";
 		$query = $this->Database->doQuery($sel);
 		
-		if($query['num'] > 0)
+		if($query > 0)
 		{
 			
 			$num = $this->Database->num_rows($query);
@@ -188,8 +188,8 @@ class Expedicao
 												'QTD_EMB' => $row['QTD_EMB'],
 												'HR_FIM_EMB' => $hr_fim_emb['formatted'],
 												'DT_FIM_EMB' => $dt_fim_emb['br_date'],
-												'COD_EMBARCADOR' => $row['COD_EMBARCADOR'],
-												'NOM_EMBARCADOR' => $row['NOM_EMBARCADOR'],
+												'COD_EMBARCADOR' => trim($row['COD_EMBARCADOR']),
+												'NOM_EMBARCADOR' => trim($row['NOM_EMBARCADOR']),
 												'PESO_BRUTO' => $row['PESO_BRUTO']
 				    							 );
 

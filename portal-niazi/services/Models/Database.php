@@ -114,7 +114,7 @@ class Database
 		}
 
 		$query = mssql_query($params);
-		//$this->pre($query);
+
 		return $query;
 
 	}

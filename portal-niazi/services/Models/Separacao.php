@@ -57,7 +57,7 @@ class Separacao
 		$query = $this->Database->doQuery($sel);
 		
 		//echo $sel;
-		if($query['num'] > 0)
+		if($query > 0)
 		{
 			
 			$num = $this->Database->num_rows($query);
@@ -137,8 +137,8 @@ class Separacao
 												'QTD_SEP' => $row['QTD_SEP'],
 												'HR_FIM_SEP' => $hr_fim_sep['formatted'],
 												'DT_FIM_SEP' => $dt_fim_sep['br_date'],
-												'COD_SEPARADOR' => $row['COD_SEPARADOR'],
-												'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
+												'COD_SEPARADOR' => trim($row['COD_SEPARADOR']),
+												'NOM_SEPARADOR' => trim($row['NOM_SEPARADOR']),
 												'PESO_BRUTO' => $row['PESO_BRUTO'],
 				    							 );
 

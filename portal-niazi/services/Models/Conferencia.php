@@ -60,7 +60,7 @@ class Conferencia
 
 		$query = $this->Database->doQuery($sel);
 
-		if($query['num'] > 0)
+		if($query > 0)
 		{
 			
 			$num = $this->Database->num_rows($query);
@@ -140,8 +140,8 @@ class Conferencia
 												'QTD_CONF' => $row['QTD_CONF'],
 												'HR_FIM_CONF' => $hr_fim_conf['formatted'],
 												'DT_FIM_CONF' => $dt_fim_conf['br_date'],
-												'COD_CONFERENTE' => $row['COD_CONFERENTE'],
-												'NOM_CONFERENTE' => $row['NOM_CONFERENTE'],
+												'COD_CONFERENTE' => trim($row['COD_CONFERENTE']),
+												'NOM_CONFERENTE' => trim($row['NOM_CONFERENTE']),
 												'PESO_BRUTO' => $row['PESO_BRUTO'],
 				    							 );
 
