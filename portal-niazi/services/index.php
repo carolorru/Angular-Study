@@ -21,9 +21,11 @@ require 'Models/Usuarios.php';
 \Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();
 
-$authenticateForRole = function ( $role = '' ) {
+$authenticateForRole = function($role = ''){
     
     return function () use ( $role ) {
+
+    	//print_r($_SESSION);
         
         if(!isset($_SESSION['auth']) && $role != '')
         {

@@ -59,7 +59,7 @@ class Conferencia
 		$sel.= " ORDER BY EMISSAO";
 
 		$query = $this->Database->doQuery($sel);
-//$this->Database->pre($query);
+
 		if($query['num'] > 0)
 		{
 			
