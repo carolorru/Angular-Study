@@ -25,6 +25,7 @@ class Database
 			$this->password = "geral152133";     #Senha do usuário
 
 			$this->tbl->usuarios   	   = 'uperp_USERS';
+
 			$this->tbl->usuarios_perms = 'uperp_USERS_PERMS';
 			
 			$this->tbl->separacao      = 'uperp_PAINEL_ACD_001';
@@ -41,10 +42,10 @@ class Database
 			##
 			// Dados do banco
 			$this->dbtype   = "mssql";
-			$this->dbhost   = "177.102.18.147"; #Nome do host
-			$this->db       = "UPERP"; 			#Nome do banco de dados
-			$this->user     = "sa"; 			#Nome do usuário
-			$this->password = "uperp@3468"; 	#Senha do usuário
+			$this->dbhost   = "192.168.0.121"; #Nome do host
+			$this->db       = "DATANIAZITEX"; 			#Nome do banco de dados
+			$this->user     = "SIGA"; 			#Nome do usuário
+			$this->password = "SIGA"; 	#Senha do usuário
 
 			$this->tbl->usuarios   	   = 'uperp_USERS';
 			$this->tbl->usuarios_perms = 'uperp_USERS_PERMS';
@@ -66,10 +67,6 @@ class Database
 				echo "Unable to connect.";
 				die( print_r( sqlsrv_errors(), true)); 
 			 
-			}else{
-
-				echo "aqui está normal";
-
 			}
 
 		}
@@ -152,8 +149,8 @@ class Database
 
 		}else if($this->dbtype == 'sqlsrv'){
 
-			$num = sqlsrv_query($this->sqlsrv,$params);
-			return $num;
+			$query = sqlsrv_query($this->sqlsrv,$params,array(), array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
+			return $query;
 			
 		}
 
@@ -173,6 +170,3 @@ class Database
 	}
 	
 }
-
-
-
