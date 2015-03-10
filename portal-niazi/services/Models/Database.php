@@ -152,7 +152,7 @@ class Database
 
 		}else if($this->dbtype == 'sqlsrv'){
 
-			$num = sqlsrv_query($params,$this->sqlsrv);
+			$num = sqlsrv_query($this->sqlsrv,$params);
 			return $num;
 			
 		}
