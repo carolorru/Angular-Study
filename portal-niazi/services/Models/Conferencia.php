@@ -24,39 +24,119 @@ class Conferencia
 
 		if($params['tipo'] == 'a-conferir')
 		{
-			$sel = "SELECT
-						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
-						HR_INI_CONF, DT_INI_CONF,QTD_CONF,
-						HR_FIM_CONF,DT_FIM_CONF,
-						COD_CONFERENTE,NOM_CONFERENTE,PESO_BRUTO
-					FROM ".$this->Database->tbl->conferencia."
-					WHERE   1 = 1
-							AND DT_INI_CONF = '' AND HR_INI_CONF = ''";
+			$sel = "select	C5_EMISSAO					as EMISSAO,
+		C5_NUM						as NUM_PED, 
+		C5_CLIENTE+C5_LOJACLI		as COD_CLI, 
+		A1_NOME						as NOM_CLI, 
+		sum(C9_QTDLIB)				as QUANTIDADE, 
+		CB7_XHRIC					as HR_INI_CONF, 
+		CB7_XDTIC					as DT_INI_CONF, 
+		sum(isnull(CB9_QTESEP,0))	as QTD_CONF, 
+		CB7_XHRFC					as HR_FIM_CONF, 
+		CB7_XDTFC					as DT_FIM_CONF, 
+		max(isnull(CB9_CODSEP, ''))	as COD_CONFERENTE, 
+		max(isnull(CB1_NOME,''))	as NOM_CONFERENTE, 
+		1000                        as META_CONF,
+		sum(C5_PBRUTO)				as PESO_BRUTO 
+from (
+
+SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C9_QTDLIB, CB7_PEDIDO, CB7_XHRIC, CB7_XDTIC, CB7_XHRFC, CB7_XDTFC, sum(isnull(CB8_QTDORI-CB8_SALDOE,0)) as CB9_QTESEP, max(isnull(CB7_XOPERC, '')) as CB9_CODSEP, max(isnull(CB1_NOME,'')) as CB1_NOME, 
+(select SC5a.C5_PBRUTO from SC5110 as SC5a where SC5a.C5_NUM = SC5.C5_NUM and SC5a.D_E_L_E_T_ <> '*') as C5_PBRUTO
+ from       CB7110 as CB7
+ inner join CB8110 as CB8
+ on         CB8_FILIAL = CB7_FILIAL
+ and        CB8_PEDIDO = CB7_PEDIDO
+ and        CB8.D_E_L_E_T_ <> '*'
+ left  join SB1110 as SB1
+ on         B1_COD = CB8_PROD 
+ and        SB1.D_E_L_E_T_ <> '*' 
+ inner join SC5110 as SC5
+ on         C5_NUM = CB7_PEDIDO
+-- and        C5_EMISSAO LIKE '201511%'
+ and        SC5.D_E_L_E_T_ <> '*'
+ inner join SA1110 SA1
+ on         A1_COD = C5_CLIENTE
+ and
+
+        A1_LOJA = C5_LOJACLI
+ and        SA1.D_E_L_E_T_ <> '*'
+ left  join CB1110 CB1
+ on         CB1_CODOPE = CB7_XOPERC
+ and        CB1.D_E_L_E_T_ <> '*'
+ where      CB7.D_E_L_E_T_ <> '*'
+ and        CB7_XDTIC = ''
+ group by   C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_XHRIC, CB7_XDTIC, CB7_XHRFC, CB7_XDTFC
+ ) A GROUP BY C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_XHRIC, CB7_XDTIC, CB7_XHRFC, CB7_XDTFC";
 		}
 
 		if($params['tipo'] == 'conferidos')
 		{
-			$sel = "SELECT
-						EMISSAO, NOM_CONFERENTE, COUNT(COD_CONFERENTE) AS TOTAL_CONFERIDOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, META_CONF AS META
-					FROM ".$this->Database->tbl->conferencia."
-					WHERE   1 = 1
-							AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''
-					GROUP BY COD_CONFERENTE, NOM_CONFERENTE, META_CONF, EMISSAO";
+			$sel = "select	count(C5_NUM)		as TOTAL_CONFERIDOS, 
+		CB1_NOME			as NOM_CONFERENTE, 
+		max(CB1_XMETAC)                as META,
+		sum(C5_PBRUTO)		as TOTAL_PESO_BRUTO 
+ from       CB7110 as CB7
+ inner join SC5110 as SC5
+ on         C5_NUM = CB7_PEDIDO
+ and        SC5.D_E_L_E_T_ <> '*'
+ left  join CB1110 CB1
+ on         CB1_CODOPE = CB7_XOPERC
+ and        CB1.D_E_L_E_T_ <> '*'
+ where      CB7.D_E_L_E_T_ <> '*'
+ and        CB7_XDTFC = convert(varchar(8), SYSDATETIME(), 112)
+ group by   CB1_NOME
+";
 		}
 
 		if($params['tipo'] == 'em-conferencia')
 		{
-			$sel = "SELECT
-						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
-						HR_INI_CONF, DT_INI_CONF,QTD_CONF,
-						HR_FIM_CONF,DT_FIM_CONF,
-						COD_CONFERENTE,NOM_CONFERENTE,PESO_BRUTO
-					FROM ".$this->Database->tbl->conferencia."
-					WHERE   1 = 1
-							AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF = '' AND HR_FIM_CONF = ''";
+			$sel = "select	C5_EMISSAO					as EMISSAO,
+		C5_NUM						as NUM_PED, 
+		C5_CLIENTE+C5_LOJACLI		as COD_CLI, 
+		A1_NOME						as NOM_CLI, 
+		sum(C9_QTDLIB)				as QUANTIDADE, 
+		CB7_XHRIC					as HR_INI_CONF, 
+		CB7_XDTIC					as DT_INI_CONF, 
+		sum(isnull(CB9_QTESEP,0))	as QTD_CONF, 
+		CB7_XHRFC					as HR_FIM_CONF, 
+		CB7_XDTFC					as DT_FIM_CONF, 
+		max(isnull(CB9_CODSEP, ''))	as COD_CONFERENTE, 
+		max(isnull(CB1_NOME,''))	as NOM_CONFERENTE, 
+		1000                        as META_CONF,
+		sum(C5_PBRUTO)				as PESO_BRUTO 
+from (
+
+SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C9_QTDLIB, CB7_PEDIDO, CB7_XHRIC, CB7_XDTIC, CB7_XHRFC, CB7_XDTFC, sum(isnull(CB8_QTDORI-CB8_SALDOE,0)) as CB9_QTESEP, max(isnull(CB7_XOPERC, '')) as CB9_CODSEP, max(isnull(CB1_NOME,'')) as CB1_NOME,
+(select SC5a.C5_PBRUTO from SC5110 as SC5a where SC5a.C5_NUM = SC5.C5_NUM and SC5a.D_E_L_E_T_ <> '*') as C5_PBRUTO
+ from       CB7110 as CB7
+ inner join CB8110 as CB8
+ on         CB8_FILIAL = CB7_FILIAL
+ and        CB8_PEDIDO = CB7_PEDIDO
+ and        CB8.D_E_L_E_T_ <> '*'
+ left  join SB1110 as SB1
+ on         B1_COD = CB8_PROD 
+ and        SB1.D_E_L_E_T_ <> '*' 
+ inner join SC5110 as SC5
+ on         C5_NUM = CB7_PEDIDO
+-- and        C5_EMISSAO LIKE '201511%'
+ and        SC5.D_E_L_E_T_ <> '*'
+ inner join SA1110 SA1
+ on         A1_COD = C5_CLIENTE
+ and
+
+        A1_LOJA = C5_LOJACLI
+ and        SA1.D_E_L_E_T_ <> '*'
+ left  join CB1110 CB1
+ on         CB1_CODOPE = CB7_XOPERC
+ and        CB1.D_E_L_E_T_ <> '*'
+ where      CB7.D_E_L_E_T_ <> '*'
+ and        CB7_XDTIC <> ''
+ and        CB7_XDTFC = ''
+ group by   C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_XHRIC, CB7_XDTIC, CB7_XHRFC, CB7_XDTFC
+ ) A GROUP BY C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_XHRIC, CB7_XDTIC, CB7_XHRFC, CB7_XDTFC";
 		}
 
-		$sel.= " ORDER BY EMISSAO";
+		//$sel.= " ORDER BY EMISSAO";
 
 		$query = $this->Database->doQuery($sel);
 

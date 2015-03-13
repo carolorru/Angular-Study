@@ -22,8 +22,8 @@
     <tbody>
       <tr ng-repeat="un in aEmbalar.row" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
-        <td>{{un.TOTAL_NOTAS}}</td>
         <td>{{un.TOTAL_EMBARCADOS}}</td>
+        <td>{{un.VALOR}}</td>
         <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
         <td>{{un.TOTAL_CUBAGEM}} m³</td>
       </tr>
@@ -85,7 +85,7 @@
       <tr ng-repeat="un in embalados.row" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_NOTAS}}</td>
-        <td>{{un.TOTAL_EMBARCADOS}}</td>
+        <td>{{un.VALOR}}</td>
         <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
         <td>{{un.TOTAL_CUBAGEM}} m³</td>
       </tr>

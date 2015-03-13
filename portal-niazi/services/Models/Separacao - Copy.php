@@ -1,0 +1,172 @@
+<?php
+
+class Separacao
+{
+
+	public $Database;
+	public $Common;
+
+	public function __construct()
+	{
+		// Dados do banco
+		$this->Database = new Database;
+		$this->Common = new Common;
+		
+	}
+	
+	public function search($params)
+	{
+
+		$sel = "SELECT * FROM ".$this->Database->tbl->separacao;
+
+		if($params['tipo'] == 'a-separar')
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
+						HR_INI_SEP, DT_INI_SEP,QTD_SEP,
+						HR_FIM_SEP,DT_FIM_SEP,
+						COD_SEPARADOR,NOM_SEPARADOR,PESO_BRUTO
+					FROM ".$this->Database->tbl->separacao."
+					WHERE   DT_INI_SEP = '' ";
+		}
+
+		if($params['tipo'] == 'separados')
+		{
+			$sel = "SELECT
+						NOM_SEPARADOR, COUNT(COD_SEPARADOR) AS TOTAL_SEPARADOS, SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO, META_SEP AS META
+					FROM ".$this->Database->tbl->separacao."
+					WHERE   DT_FIM_SEP != '' 
+					GROUP BY COD_SEPARADOR, NOM_SEPARADOR, EMISSAO, META_SEP";
+		}
+
+		if($params['tipo'] == 'em-separacao')
+		{
+			$sel = "SELECT
+						EMISSAO,NUM_PED,COD_CLI,NOM_CLI,QUANTIDADE,
+						HR_INI_SEP, DT_INI_SEP,QTD_SEP,
+						HR_FIM_SEP,DT_FIM_SEP,
+						COD_SEPARADOR,NOM_SEPARADOR,PESO_BRUTO
+					FROM ".$this->Database->tbl->separacao."
+					WHERE   DT_INI_SEP != '' AND DT_FIM_SEP = '' ";
+		}
+
+		$sel.= " ORDER BY EMISSAO";
+		$query = $this->Database->doQuery($sel);
+		
+		//echo $sel;
+		if($query > 0)
+		{
+			
+			$num = $this->Database->num_rows($query);
+
+			if($num > 0){
+
+				$_RETURN['code'] = 200;
+				
+				if($params['tipo'] == 'separados')
+				{
+
+					while($row = $this->Database->fetch_array($query))
+				    {
+
+				    	$_RETURN['row'][] = array(
+				    							'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
+				    							'TOTAL_SEPARADOS' => $row['TOTAL_SEPARADOS'],
+				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
+				    							'META' => $row['META']
+				    							);
+				    }
+
+				    $sel = "SELECT
+								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
+							FROM ".$this->Database->tbl->separacao."
+							WHERE   DT_FIM_SEP != '' ";
+					$qry = $this->Database->doQuery($sel);
+					$row = $this->Database->fetch_array($qry);
+
+					$_RETURN['num'] = $row['TOTAL'];
+					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
+
+				}else{
+
+					$_RETURN['num'] = $num;
+					$pesoBruto = array();
+				
+				    while($row = $this->Database->fetch_array($query))
+				    {
+
+				    	$pesoBruto[] = $row['PESO_BRUTO'];
+
+				    	$emissao['br_date']      = '';
+
+				    	$hr_ini_sep['formatted'] = '';
+				    	$dt_ini_sep['br_date']   = '';
+				    	
+				    	$hr_fim_sep['formatted'] = '';
+				    	$dt_fim_sep['br_date']   = '';
+
+				    	if($row['EMISSAO'] != '')
+				    	{
+				    		$emissao = $this->Common->validaData($row['EMISSAO']);
+				    	}
+
+				    	if($row['DT_INI_SEP'] != '')
+				    	{
+							$dt_ini_sep = $this->Common->validaData($row['DT_INI_SEP']);
+							$hr_ini_sep = $this->Common->validaHora($row['HR_INI_SEP']);
+				    	}
+
+				    	if($row['DT_FIM_SEP'] != '')
+				    	{
+							$dt_fim_sep = $this->Common->validaData($row['DT_FIM_SEP']);
+							$hr_fim_sep = $this->Common->validaHora($row['HR_FIM_SEP']);
+				    	}
+
+				    	$_RETURN['row'][] = array(
+				    							'EMISSAO' => $emissao['br_date'],
+				    							'NUM_PED' => $row['NUM_PED'],
+				    							'COD_CLI' => $row['COD_CLI'],
+				    							'NOM_CLI' => trim($row['NOM_CLI']),
+				    							'QUANTIDADE' => $row['QUANTIDADE'],
+												'HR_INI_SEP' => $hr_ini_sep['formatted'],
+												'DT_INI_SEP' => $dt_ini_sep['br_date'],
+												'QTD_SEP' => $row['QTD_SEP'],
+												'HR_FIM_SEP' => $hr_fim_sep['formatted'],
+												'DT_FIM_SEP' => $dt_fim_sep['br_date'],
+												'COD_SEPARADOR' => trim($row['COD_SEPARADOR']),
+												'NOM_SEPARADOR' => trim($row['NOM_SEPARADOR']),
+												'PESO_BRUTO' => $row['PESO_BRUTO'],
+				    							 );
+
+				    }
+
+				    $_RETURN['num_peso'] = array_sum($pesoBruto);
+
+				}
+
+
+			}else{
+
+				$_RETURN['code'] = 200;
+				$_RETURN['num'] = 0;
+				$_RETURN['msg'] = 'Nenhum resultado encontrado.';
+
+			}
+
+		}else{
+
+			$_RETURN['num'] = 0;
+			$_RETURN['code'] = 500;
+			$_RETURN['error'] = $this->Database->dbError();
+			$_RETURN['msg'] = 'Erro na query.';
+
+		}
+
+		return $_RETURN;
+		
+	}
+	
+}
+
+
+

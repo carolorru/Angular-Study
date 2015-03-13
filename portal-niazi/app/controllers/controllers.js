@@ -218,15 +218,16 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
     $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
     
-    getSeparacao();
+    getSeparacao(0);
 
     var intervalContent = $interval(function(){
-        getSeparacao();    
-    },25000);
+        getSeparacao(1);    
+    },45000);
     $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 
-    function getSeparacao() {
-        $scope.viewLoading = true;
+    function getSeparacao(index) {
+		
+        //$scope.viewLoading = true;
         counter = 3;
 
         var json;
@@ -234,25 +235,25 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aSeparar = json;    
-            sucssesAjax();    
+            sucssesAjax(index);    
         });
         $http.get('/portal-niazi/services/pedidos/em-separacao?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emSeparacao = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
         $http.get('/portal-niazi/services/pedidos/separados?TYPE=MSSQL').success(function(data){
            if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.separados = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
     }
 
-    function sucssesAjax() {
+    function sucssesAjax(index) {
         counter --;
-        if (counter === 0) {
+        if (counter === 0 && index == 0) {
             $scope.viewLoading = false;
         }
     }    

@@ -1,5 +1,7 @@
 <?php
 
+set_time_limit(0);
+
 header('Access-Control-Allow-Origin: *');
 
 //error_reporting(E_ERROR | E_PARSE);

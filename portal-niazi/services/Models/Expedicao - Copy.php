@@ -17,144 +17,52 @@ class Expedicao
 	public function search($params)
 	{
 
-//		$sel = "SELECT * FROM ".$this->Database->tbl->expedicao;
+		$sel = "SELECT * FROM ".$this->Database->tbl->expedicao;
 
 		if($params['tipo'] == 'a-embarcar')
 		{
-
-			$sel = "select			count(A.C5_NOTA)       			as TOTAL_EMBARCADOS, 
-		A.C5_TRANSP				    as TRANSP,
-		A4_NOME						as NOM_TRANSP,
-		sum(A.C5_XCUB)				as TOTAL_CUBAGEM,
-		sum(B.C5_PBRUTO)			as TOTAL_PESO_BRUTO,
-		sum(F2_VALBRUT)             as VALOR
-from (
-SELECT C5_XCUB, C5_NOTA, C5_SERIE, C5_TRANSP, C5_EMISSAO, C5_NUM, sum(C5_PBRUTO) as C5_PBRUTO,
-		A4_NOME
- from       CB7110 as CB7
- inner join SC5110 as SC5
- on         C5_FILIAL = CB7_FILIAL
- and        C5_NUM = CB7_PEDIDO
-  and        SC5.D_E_L_E_T_ <> '*'
- inner join SA4110 SA4
- on         A4_COD = C5_TRANSP
- and        SA4.D_E_L_E_T_ <> '*'
- where      CB7_XDTIE = ''
- and        CB7.D_E_L_E_T_ <> '*'
- group by   C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A4_NOME, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB
- ) A
- inner join SC5110 as B 
- on         B.C5_NUM = A.C5_NUM 
- and        B.D_E_L_E_T_ <> '*'
- inner join SF2110
- on         F2_DOC = A.C5_NOTA
- and        F2_SERIE = A.C5_SERIE
- GROUP BY A4_NOME, A.C5_TRANSP					";
-
+			$sel = "SELECT
+						TRANSP,
+						NOM_TRANSP,
+						EMISSAO,
+						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
+						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
+						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
+						SUM(VALOR_NF) AS VALOR
+					FROM ".$this->Database->tbl->expedicao."
+					WHERE   DT_INI_EMB = ''
+					GROUP BY TRANSP, NOM_TRANSP , EMISSAO ";
 		}
 
 		if($params['tipo'] == 'embarcados')
 		{
-			$sel = "select			count(A.C5_NOTA)			as TOTAL_EMBARCADOS, 
-		A.C5_TRANSP				    as TRANSP,
-		A4_NOME						as NOM_TRANSP,
-		sum(A.C5_XCUB)				as TOTAL_CUBAGEM,
-		sum(B.C5_PBRUTO)			as TOTAL_PESO_BRUTO,
-		sum(F2_VALBRUT)             as VALOR
-from (
-SELECT C5_XCUB, C5_NOTA, C5_SERIE, C5_TRANSP, C5_EMISSAO, C5_NUM, sum(C5_PBRUTO) as C5_PBRUTO,
-		A4_NOME
- from       CB7110 as CB7
- inner join SC5110 as SC5
- on         C5_FILIAL = CB7_FILIAL
- and        C5_NUM = CB7_PEDIDO
-  and        SC5.D_E_L_E_T_ <> '*'
- inner join SA4110 SA4
- on         A4_COD = C5_TRANSP
- and        SA4.D_E_L_E_T_ <> '*'
- where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112)
- and        CB7.D_E_L_E_T_ <> '*'
- group by   C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A4_NOME, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB
- ) A
- inner join SC5110 as B 
- on         B.C5_NUM = A.C5_NUM 
- and        B.D_E_L_E_T_ <> '*'
- inner join SF2110
- on         F2_DOC = A.C5_NOTA
- and        F2_SERIE = A.C5_SERIE
- GROUP BY A4_NOME, A.C5_TRANSP			";
- 
+			$sel = "SELECT
+						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
+						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
+						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
+						SUM(VALOR_NF) AS VALOR,
+						TRANSP,
+						NOM_TRANSP,
+						EMISSAO
+					FROM ".$this->Database->tbl->expedicao."
+					WHERE   DT_FIM_EMB != '' 
+					GROUP BY TRANSP, NOM_TRANSP , EMISSAO ";
+
 		}
 
 		if($params['tipo'] == 'embarcando')
 		{
-			/*$sel = "SELECT
+			$sel = "SELECT
 						EMISSAO,NUM_NF,SERIE_NF,COD_CLI,NOM_CLI,TRANSP,NOM_TRANSP,CUBAGEM,QUANTIDADE,
 						HR_INI_EMB,DT_INI_EMB,
 						QTD_EMB,
 						HR_FIM_EMB,DT_FIM_EMB,
 						COD_EMBARCADOR,NOM_EMBARCADOR,PESO_BRUTO
 					FROM ".$this->Database->tbl->expedicao."
-					WHERE   DT_INI_EMB != '' AND DT_FIM_EMB = '' ";*/
-			$sel = "select	A.C5_EMISSAO				as EMISSAO,
-		A.C5_NOTA					as NUM_NF, 
-		A.C5_SERIE					as SERIE_NF, 
-		A.C5_CLIENTE+A.C5_LOJACLI	as COD_CLI, 
-		A1_NOME						as NOM_CLI,
-		A.C5_TRANSP				    as TRANSP,
-		A4_NOME						as NOM_TRANSP,
-		A.C5_XCUB					as CUBAGEM,
-		sum(C9_QTDLIB)				as QUANTIDADE, 
-		CB7_XHRIE					as HR_INI_EMB, 
-		CB7_XDTIE					as DT_INI_EMB, 
-		sum(isnull(CB9_QTESEP,0))	as QTD_EMB, 
-		CB7_XHRFE					as HR_FIM_EMB, 
-		CB7_XDTFE					as DT_FIM_EMB, 
-		max(isnull(CB9_CODSEP, ''))	as COD_EMBARCADOR, 
-		max(isnull(CB1_NOME,''))	as NOM_EMBARCADOR, 
-		sum(B.C5_PBRUTO)			as PESO_BRUTO
-from (
-SELECT C5_XCUB, C5_NOTA, C5_SERIE, C5_TRANSP, C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, sum(C5_PBRUTO) as C5_PBRUTO,
-		A4_NOME, 
-		A1_NOME, 
-		sum(CB8_QTDORI) as C9_QTDLIB, sum(isnull(CB8_QTDORI-CB8_SALDOE,0)) as CB9_QTESEP, 
-		CB7_PEDIDO, CB7_XHRIE, CB7_XDTIE, CB7_XHRFE, CB7_XDTFE, max(isnull(CB7_XOPERE, '')) as CB9_CODSEP, 
-		max(isnull(CB1_NOME,'')) as CB1_NOME
- from       CB7110 as CB7
- inner join CB8110 as CB8
- on         CB8_FILIAL = CB7_FILIAL
- and        CB8_PEDIDO = CB7_PEDIDO
- and        CB8.D_E_L_E_T_ <> '*'
- left  join SB1110 as SB1
- on         B1_COD = CB8_PROD 
- and        SB1.D_E_L_E_T_ <> '*' 
- inner join SC5110 as SC5
- on         C5_FILIAL = CB7_FILIAL
- and        C5_NUM = CB7_PEDIDO
-  and        SC5.D_E_L_E_T_ <> '*'
- inner join SA1110 SA1
- on         A1_COD = C5_CLIENTE
- and        A1_LOJA = C5_LOJACLI
- and        SA1.D_E_L_E_T_ <> '*'
- inner join SA4110 SA4
- on         A4_COD = C5_TRANSP
- and        SA4.D_E_L_E_T_ <> '*'
- left  join CB1110 CB1
- on         CB1_CODOPE = CB7_XOPERE
- and        CB1.D_E_L_E_T_ <> '*'
- where      CB7_XDTFE = '' 
- and		CB7_XDTIE <> ''
- and        CB7.D_E_L_E_T_ <> '*'
- group by   C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_XHRIE, CB7_XDTIE, CB7_XHRFE, CB7_XDTFE, A4_NOME, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB
- ) A
- inner join SC5110 as B 
- on         B.C5_NUM = A.C5_NUM 
- and        B.D_E_L_E_T_ <> '*'
- GROUP BY   A.C5_EMISSAO, A.C5_NUM, A.C5_CLIENTE, A.C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_XHRIE, CB7_XDTIE, CB7_XHRFE, CB7_XDTFE, A4_NOME, A.C5_TRANSP, A.C5_NOTA, A.C5_SERIE, A.C5_XCUB
-";
+					WHERE   DT_INI_EMB != '' AND DT_FIM_EMB = '' ";
 		}
 
-		//$sel.= " ORDER BY EMISSAO";
+		$sel.= " ORDER BY EMISSAO";
 		$query = $this->Database->doQuery($sel);
 		
 		if($query > 0)
