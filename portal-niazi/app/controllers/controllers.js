@@ -269,15 +269,15 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
     $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
 
-    getConferencia();
+    getConferencia(0);
 
     var intervalContent = $interval(function(){
-        getConferencia();    
+        getConferencia(1);    
     },25000);
     $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 
     function getConferencia() {
-        $scope.viewLoading = true;
+        //$scope.viewLoading = true;
         counter = 3;
 
         var json;
@@ -285,26 +285,26 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aConferir = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
         $http.get('/portal-niazi/services/conferencia/em-conferencia?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emConferencia = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
         $http.get('/portal-niazi/services/conferencia/conferidos?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.conferidos = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
     
     }
     
-    function sucssesAjax() {
+    function sucssesAjax(index) {
         counter --;
-        if (counter === 0) {
+        if (counter === 0 && index == 0) {
             $scope.viewLoading = false;
         }
     }
@@ -318,15 +318,15 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
     $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
 
-    getExpedicao();
+    getExpedicao(0);
 
     var intervalContent = $interval(function(){
-        getExpedicao();    
+        getExpedicao(1);    
     },25000);
     $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 
     function getExpedicao() {
-        $scope.viewLoading = true;
+        //$scope.viewLoading = true;
         counter = 2;
 
         var json;
@@ -334,19 +334,19 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aEmbalar = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
         $http.get('/portal-niazi/services/expedicao/embarcados?TYPE=MSSQL').success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.embalados = json;
-            sucssesAjax();
+            sucssesAjax(index);
         });
     }
 
-    function sucssesAjax() {
+    function sucssesAjax(index) {
         counter --;
-        if (counter === 0) {
+        if (counter === 0 && index == 0) {
             $scope.viewLoading = false;
         }
     }

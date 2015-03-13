@@ -20,7 +20,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in aEmbalar.row" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
+      <tr ng-repeat="un in aEmbalar.row | orderBy:'NOM_TRANSP'" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_EMBARCADOS}}</td>
         <td>{{un.VALOR}}</td>
@@ -82,7 +82,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in embalados.row" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
+      <tr ng-repeat="un in embalados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_NOTAS}}</td>
         <td>{{un.VALOR}}</td>
