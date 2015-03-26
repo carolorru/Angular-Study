@@ -24,7 +24,7 @@ class Database
 			$this->user     = "incommunicatio1"; #Nome do usuário
 			$this->password = "geral152133";     #Senha do usuário
 
-			$this->tbl->usuarios   	   = 'uperp_USERS';
+			$this->tbl->usuarios   	   = 'PAINEL_ACD_004';
 
 			$this->tbl->usuarios_perms = 'uperp_USERS_PERMS';
 			
@@ -47,7 +47,7 @@ class Database
 			$this->user     = "SIGA"; 			#Nome do usuário
 			$this->password = "SIGA"; 	#Senha do usuário
 
-			$this->tbl->usuarios   	   = 'uperp_USERS';
+			$this->tbl->usuarios   	   = 'PAINEL_ACD_004';
 			$this->tbl->usuarios_perms = 'uperp_USERS_PERMS';
 
 			$this->tbl->separacao   = 'PAINEL_ACD_001';
@@ -170,3 +170,6 @@ class Database
 	}
 	
 }
+
+
+

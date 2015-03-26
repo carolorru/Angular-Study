@@ -47,7 +47,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="un in aConferir.row">
+                  <tr ng-repeat="un in aConferir.row | orderBy:'NUM_PED'">
                     <td>{{un.NUM_PED}}</td>
                     <td>{{un.NOM_CLI}}</td>
                     <td>{{un.QUANTIDADE}}</td>
@@ -67,13 +67,13 @@
     <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
       <thead>
         <tr class="danger">
-          <td>Separador</td>
+          <td>Conferente</td>
           <td>Data início</td>
           <td>Hora início</td>
           <td>Nr. Pedido</td>
           <td>Nr. de Peças</td>
           <td>Peso</td>
-          <td>% Separação</td>
+          <td>% Conferencia</td>
         </tr>
       </thead>
       <tbody>

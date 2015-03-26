@@ -51,7 +51,7 @@ class Usuarios
 
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = 0;
-				$_RETURN['msg'] = 'Nenhum resultado encontrado.';
+				$_RETURN['msg'] = 'Nenhum1 resultado encontrado.';
 
 			}
 		
@@ -110,7 +110,7 @@ class Usuarios
 
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = 0;
-				$_RETURN['msg'] = 'Nenhum resultado encontrado.';
+				$_RETURN['msg'] = 'Nenhum2 resultado encontrado.';
 
 			}
 		
@@ -189,7 +189,7 @@ class Usuarios
 
 				$_RETURN['code'] = 200;
 				$_RETURN['num'] = 0;
-				$_RETURN['msg'] = 'Nenhum resultado encontrado.';
+				$_RETURN['msg'] = 'Nenhum3 resultado encontrado.';
 
 			}
 

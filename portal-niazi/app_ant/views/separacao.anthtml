@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="cursor" data-toggle="modal" data-target=".bs-example-modal-lg">
+        <tr data-toggle="modal" data-target=".bs-example-modal-lg">
           <td>{{aSeparar.num}} pedidos</td>
           <td>{{aSeparar.num_peso}} Kg</td>
         </tr>
@@ -47,7 +47,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="un in aSeparar.row | orderBy:'NUM_PED'">
+                  <tr ng-repeat="un in aSeparar.row">
                     <td>{{un.NUM_PED}}</td>
                     <td>{{un.NOM_CLI}}</td>
                     <td>{{un.QUANTIDADE}}</td>
@@ -77,7 +77,7 @@
         </tr>
       </thead>
       <tbody >
-        <tr ng-repeat="un in emSeparacao.row | orderBy:'NUM_PED'">
+        <tr ng-repeat="un in emSeparacao.row">
           <td>{{un.NOM_SEPARADOR}}</td>
           <td>{{un.DT_INI_SEP}}</td>
           <td>{{un.HR_INI_SEP}}</td>
@@ -98,7 +98,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="cursor" data-toggle="modal" data-target=".bs-example-modal-lg-2">
+        <tr data-toggle="modal" data-target=".bs-example-modal-lg-2">
           <td>{{separados.num}} pedidos</td>
           <td>{{separados.num_peso}} Kg</td>
         </tr>
@@ -129,7 +129,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="un in separados.row | orderBy:'NOM_SEPARADOR'">
+                  <tr ng-repeat="un in separados.row">
                     <td>{{un.NOM_SEPARADOR}}</td>
                     <td>{{un.TOTAL_SEPARADOS}}</td>
                     <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>

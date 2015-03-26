@@ -16,126 +16,146 @@ class Expedicao
 	
 	public function search($params)
 	{
-
-		$sel = "SELECT * FROM ".$this->Database->tbl->expedicao;
-
-		if($params['tipo'] == 'a-embarcar')
+		If ($params['tipo'] == 'a-embarcar')
 		{
-			$sel = "SELECT
-						TRANSP,
-						NOM_TRANSP,
-						EMISSAO,
-						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
-						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
-						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
-						SUM(VALOR_NF) AS VALOR
-					FROM ".$this->Database->tbl->expedicao."
-					WHERE   1 = 1
-							AND DT_INI_EMB = '' AND HR_INI_EMB = ''
-					GROUP BY TRANSP, NOM_TRANSP , EMISSAO ";
+			$sel = "select	F2_EMISSAO	as DATA,
+							F2_DOC		as NF, 
+							A4_NOME			as TRANSP,
+							C5_XCUB			as CUBAGEM,
+							C5_PBRUTO		as PESO,
+							F2_VALBRUT      as VALOR
+							,CB7_XDTFE		as DT_EMB
+					from (
+					SELECT      C5_XCUB, C5_NOTA, C5_SERIE, C5_TRANSP, C5_EMISSAO,sum(C5_PBRUTO) as C5_PBRUTO, CB7_XDTFE, CB7_NOTA, CB7_SERIE
+					 from       CB7110 as CB7
+					 inner join SC5110 as SC5
+					 on         C5_FILIAL = CB7_FILIAL
+					 and        C5_NUM = CB7_PEDIDO
+					 and        SC5.D_E_L_E_T_ <> '*'
+					 where      CB7_XDTFE = ''
+					 and        CB7_XDTFP <> ''
+					 and        CB7.D_E_L_E_T_ <> '*'
+					 group by   C5_EMISSAO, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB, CB7_XDTFE, CB7_NOTA, CB7_SERIE
+					 ) A
+					 left  join SF2110 as SF2
+					 on         F2_DOC = CB7_NOTA
+					 and        F2_SERIE = CB7_SERIE
+					 and        SF2.D_E_L_E_T_ <> '*'
+					 left join  SA4110 as SA4
+					 on         A4_COD = C5_TRANSP
+					 and        SA4.D_E_L_E_T_ <> '*'
+					order by 	DT_EMB, A4_NOME, F2_DOC ";
 		}
-
-		if($params['tipo'] == 'embarcados')
+		If ($params['tipo'] == 'embarcados')
 		{
-			$sel = "SELECT
-						COUNT(NUM_NF) AS TOTAL_EMBARCADOS,
-						SUM(CUBAGEM) AS TOTAL_CUBAGEM,
-						SUM(PESO_BRUTO) AS TOTAL_PESO_BRUTO,
-						SUM(VALOR_NF) AS VALOR,
-						TRANSP,
-						NOM_TRANSP,
-						EMISSAO
-					FROM ".$this->Database->tbl->expedicao."
-					WHERE   1 = 1
-							AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
-					GROUP BY TRANSP, NOM_TRANSP , EMISSAO ";
-
+			$sel = "select	F2_EMISSAO		as DATA,
+							F2_DOC			as NF, 
+							A4_NOME			as TRANSP,
+							C5_XCUB			as CUBAGEM,
+							C5_PBRUTO		as PESO,
+							F2_VALBRUT      as VALOR
+							,CB7_XDTFE		as DT_EMB
+					from (
+					SELECT      C5_XCUB, C5_NOTA, C5_SERIE, C5_TRANSP, C5_EMISSAO,sum(C5_PBRUTO) as C5_PBRUTO, CB7_XDTFE, CB7_NOTA, CB7_SERIE
+					 from       CB7110 as CB7
+					 inner join SC5110 as SC5
+					 on         C5_FILIAL = CB7_FILIAL
+					 and        C5_NUM = CB7_PEDIDO
+					 and        SC5.D_E_L_E_T_ <> '*'
+					 where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112)
+					 and        CB7_XDTFP <> ''
+					 and        CB7.D_E_L_E_T_ <> '*'
+					 group by   C5_EMISSAO, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB, CB7_XDTFE, CB7_NOTA, CB7_SERIE
+					 ) A
+					 left  join SF2110 as SF2
+					 on         F2_DOC = CB7_NOTA
+					 and        F2_SERIE = CB7_SERIE
+					 and        SF2.D_E_L_E_T_ <> '*'
+					 left join  SA4110 as SA4
+					 on         A4_COD = C5_TRANSP
+					 and        SA4.D_E_L_E_T_ <> '*'
+					order by 	DT_EMB, A4_NOME, F2_DOC ";
 		}
+//				 where      (CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112) OR CB7_XDTFE = '')
 
-		if($params['tipo'] == 'embarcando')
-		{
-			$sel = "SELECT
-						EMISSAO,NUM_NF,SERIE_NF,COD_CLI,NOM_CLI,TRANSP,NOM_TRANSP,CUBAGEM,QUANTIDADE,
-						HR_INI_EMB,DT_INI_EMB,
-						QTD_EMB,
-						HR_FIM_EMB,DT_FIM_EMB,
-						COD_EMBARCADOR,NOM_EMBARCADOR,PESO_BRUTO
-					FROM ".$this->Database->tbl->expedicao."
-					WHERE   1 = 1
-							AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB = '' AND HR_FIM_EMB = ''";
-		}
-
-		$sel.= " ORDER BY EMISSAO";
 		$query = $this->Database->doQuery($sel);
 		
 		if($query > 0)
 		{
-			
 			$num = $this->Database->num_rows($query);
-
 			if($num > 0){
-
 				$_RETURN['code'] = 200;
-
 				if($params['tipo'] == 'embarcados' || $params['tipo'] == 'a-embarcar')
 				{
-					
+					$n_y = 0;
+					$transp = '';
+					$primeiro = 0;
 					while($row = $this->Database->fetch_array($query))
 				    {
-
-				    	$sel = "SELECT
-									NUM_NF,
-									DT_INI_EMB,
-									VALOR_NF AS VALOR,
-									PESO_BRUTO,
-									CUBAGEM
-								FROM ".$this->Database->tbl->expedicao."
-								WHERE   1 = 1
-										AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''
-										AND TRANSP = ".$row['TRANSP']."";
-
-						$qry = $this->Database->doQuery($sel);
-						$notas = array();
-						$total_notas = $this->Database->num_rows($qry);
-
-						while($r = $this->Database->fetch_array($qry))
-						{
+							If($primeiro==0)
+							{
+								$transp = '';
+								$dt_ini_emb['br_date']   = '';
+								$dt_ini_emb = $this->Common->validaData($row['DATA']);
+								$notas[] = array('NUM_NF'=>$row['NF'],
+												 'DT_INI_EMB'=>$dt_ini_emb['br_date'],
+												 'VALOR'=>$row['VALOR'],
+												 'PESO_BRUTO'=>$row['PESO'],
+												 'CUBAGEM'=>$row['CUBAGEM'],
+												 );
+								$total_notas += 1;
+								$total_cubg += $row['CUBAGEM'];
+								$total_peso += $row['PESO'];
+								$total_vlor += $row['VALOR'];
+							}
+							If(trim($row['TRANSP'])<> $transp)
+							{
+								If($primeiro == 1)
+								{
+									$_RETURN['row'][] = array(
+															'NOM_TRANSP' => $transp,
+															'TOTAL_EMBARCADOS' => $total_notas,
+															'TOTAL_CUBAGEM' => $total_cubg,
+															'TOTAL_PESO_BRUTO' => $total_peso,
+															'VALOR' => $total_vlor,
+															'NOTAS' => $notas,
+															'TOTAL_NOTAS' => $total_notas
+															);
+								}
+								$primeiro = 1;
+								$notas = array();
+								$total_notas = 0;
+								$total_cubg = 0;
+								$total_peso = 0;
+								$total_vlor = 0;
+							}
 
 							$dt_ini_emb['br_date']   = '';
-							$dt_ini_emb = $this->Common->validaData($r['DT_INI_EMB']);
+							$dt_ini_emb = $this->Common->validaData($row['DATA']);
+							$notas[] = array('NUM_NF'=>$row['NF'],
+											 'DT_INI_EMB'=>$dt_ini_emb['br_date'],
+											 'VALOR'=>$row['VALOR'],
+											 'PESO_BRUTO'=>$row['PESO'],
+											 'CUBAGEM'=>$row['CUBAGEM'],
+											 );
+							$total_notas += 1;
+							$total_cubg += $row['CUBAGEM'];
+							$total_peso += $row['PESO'];
+							$total_vlor += $row['VALOR'];
 
-							$notas[] = array(
-										'NUM_NF' => trim($r['NUM_NF']),
-										'DT_INI_EMB' => $dt_ini_emb['br_date'],
-										'VALOR' => $r['VALOR'],
-										'PESO_BRUTO' => $r['PESO_BRUTO'],
-										'CUBAGEM' => $r['CUBAGEM'],
-										);
-
-						}
-
-				    	$_RETURN['row'][] = array(
-				    							'NOM_TRANSP' => trim($row['NOM_TRANSP']),
-				    							'TOTAL_EMBARCADOS' => $row['TOTAL_EMBARCADOS'],
-				    							'TOTAL_CUBAGEM' => $row['TOTAL_CUBAGEM'],
-				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
-				    							'VALOR' => $row['VALOR'],
-				    							'NOTAS' => $notas,
-				    							'TOTAL_NOTAS' => $total_notas
-				    							);
-
-				    }
-
-				    $sel = "SELECT
-								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
-							FROM ".$this->Database->tbl->expedicao."
-							WHERE   1 = 1
-									AND DT_INI_EMB != '' AND HR_INI_EMB != '' AND DT_FIM_EMB != '' AND HR_FIM_EMB != ''";
-					$qry = $this->Database->doQuery($sel);
-					$row = $this->Database->fetch_array($qry);
-
-					$_RETURN['num'] = $row['TOTAL'];
-					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
+							$transp = trim($row['TRANSP']);
+					}
+					$_RETURN['row'][] = array(
+											'NOM_TRANSP' => $transp,
+											'TOTAL_EMBARCADOS' => $total_notas,
+											'TOTAL_CUBAGEM' => $total_cubg,
+											'TOTAL_PESO_BRUTO' => $total_peso,
+											'VALOR' => $total_vlor,
+											'NOTAS' => $notas,
+											'TOTAL_NOTAS' => $total_notas
+											);
+					$_RETURN['num'] = 1;
+					$_RETURN['num_peso'] = 1;
 
 				}else{
 
@@ -222,6 +242,3 @@ class Expedicao
 	}
 	
 }
-
-
-
