@@ -32,6 +32,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl : 'app/views/expedicao.html',
       controller  : 'ExpedicaoCtrl'
    })
+   .when('/portal-niazi/cadastro', {
+      title       : 'Edição de Senha',
+      templateUrl : 'app/views/cadastro.html',
+      controller  : 'CadastroCtrl'
+   })
    .otherwise ({ redirectTo: '/portal-niazi/' });
 
 })
@@ -65,6 +70,9 @@ function ($rootScope, $location, $cookieStore, $http) {
                 case 3:
                     conf = true;
                     break;
+                case 4:
+                    pass = true;
+                    break;
             }            
          }; 
          
@@ -75,6 +83,9 @@ function ($rootScope, $location, $cookieStore, $http) {
             $location.path('/portal-niazi/');
          }
          if($location.path() == '/portal-niazi/conferencia' && conf != true){
+            $location.path('/portal-niazi/');
+         }
+         if($location.path() == '/portal-niazi/cadastro' && pass != true){
             $location.path('/portal-niazi/');
          }
       }
