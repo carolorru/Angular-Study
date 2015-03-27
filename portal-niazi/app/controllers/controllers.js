@@ -142,6 +142,7 @@ function ($rootScope, $location, $cookieStore, $http){
         $rootScope.accessExpedicao = false;
         $rootScope.accessSeparacao = false;
         $rootScope.accessConferencia = false;
+        $rootScope.accessCadastro = false;
         for (var i = 0; i < $rootScope.globals.menu.length; i++) {
             console.log($rootScope.globals.menu[i].id);
             switch($rootScope.globals.menu[i].id) {
@@ -156,6 +157,10 @@ function ($rootScope, $location, $cookieStore, $http){
                 case 3:
                     $rootScope.accessConferencia = true;
                     console.log('menu3');
+                    break;
+                case 4:
+                    $rootScope.accessCadastro = true;
+                    console.log('menu4');
                     break;
             }            
         }; 
@@ -205,7 +210,12 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
 }]);
 
 app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
-    console.log('controller');
+    Permission.validation();
+    $rootScope.activetab = $location.path();
+}]);
+
+app.controller('CadastroCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+    console.log('cadastro');
     Permission.validation();
     $rootScope.activetab = $location.path();
 }]);
