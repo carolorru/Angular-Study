@@ -62,7 +62,8 @@ class Expedicao
 					 on         C5_FILIAL = CB7_FILIAL
 					 and        C5_NUM = CB7_PEDIDO
 					 and        SC5.D_E_L_E_T_ <> '*'
-					 where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112)
+					 -- where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112)
+					 where      CB7_XDTFE = ".$params['ref-date']."
 					 and        CB7_XDTFP <> ''
 					 and        CB7.D_E_L_E_T_ <> '*'
 					 group by   C5_EMISSAO, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB, CB7_XDTFE, CB7_NOTA, CB7_SERIE

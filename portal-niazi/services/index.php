@@ -95,7 +95,7 @@ $app->group('/pedidos', $authenticateForRole('pedidos'), function() use ($app){
 	$app->get('/separados',function () {
 	        
 	    $Separacao = new Separacao();
-	    $search = $Separacao->search(array('tipo' => 'separados'));
+	    $search = $Separacao->search(array('tipo' => 'separados', 'ref-date' => $_GET['ref-date']));
 
 	    header("Content-Type: application/json");
 		echo json_encode($search);
@@ -140,7 +140,7 @@ $app->group('/expedicao', $authenticateForRole('expedicao'), function() use ($ap
 	$app->get('/embarcados',function () {
 	        
 	    $Expedicao = new Expedicao();
-	    $search = $Expedicao->search(array('tipo' => 'embarcados'));
+	    $search = $Expedicao->search(array('tipo' => 'embarcados', 'ref-date' => $_GET['ref-date']));
 
 	    header("Content-Type: application/json");
 		echo json_encode($search);
@@ -185,7 +185,7 @@ $app->group('/conferencia', $authenticateForRole('conferencia'), function() use 
 	$app->get('/conferidos',function () {
 	        
 	    $Conferencia = new Conferencia();
-	    $search = $Conferencia->search(array('tipo' => 'conferidos'));
+	    $search = $Conferencia->search(array('tipo' => 'conferidos', 'ref-date' => $_GET['ref-date']));
 
 	    header("Content-Type: application/json");
 		echo json_encode($search);
@@ -246,6 +246,8 @@ $app->get('/logout',function () {
 
 $app->group('/usuarios', $authenticateForRole('usuarios'), function() use ($app){
 
+
+
 	//cria usuario
 	$app->post('/',function () {
 	        
@@ -301,6 +303,16 @@ $app->group('/usuarios', $authenticateForRole('usuarios'), function() use ($app)
 
 	});
 
+	//lista todos
+	$app->put('/troca-senha',function () {
+	        
+	    $Usuarios = new Usuarios();
+	    $trocar_senha = $Usuarios->trocar_senha($_POST);
+
+	    header("Content-Type: application/json");
+		echo json_encode($trocar_senha);
+
+	});
 
 });
 

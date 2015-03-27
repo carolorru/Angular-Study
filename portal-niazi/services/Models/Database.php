@@ -43,9 +43,9 @@ class Database
 			// Dados do banco
 			$this->dbtype   = "mssql";
 			$this->dbhost   = "192.168.0.121"; #Nome do host
-			$this->db       = "DATANIAZITEX"; 			#Nome do banco de dados
-			$this->user     = "SIGA"; 			#Nome do usuário
-			$this->password = "SIGA"; 	#Senha do usuário
+			$this->db       = "DATANIAZITEX";  #Nome do banco de dados
+			$this->user     = "SIGA"; 		   #Nome do usuário
+			$this->password = "SIGA"; 		   #Senha do usuário
 
 			$this->tbl->usuarios   	   = 'PAINEL_ACD_004';
 			$this->tbl->usuarios_perms = 'uperp_USERS_PERMS';

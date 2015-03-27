@@ -83,7 +83,8 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
  on         CB1_CODOPE = CB7_XOPERC
  and        CB1.D_E_L_E_T_ <> '*'
  where      CB7.D_E_L_E_T_ <> '*'
- and        CB7_XDTFC = convert(varchar(8), SYSDATETIME(), 112)
+ -- and        CB7_XDTFC = convert(varchar(8), SYSDATETIME(), 112)
+ and        CB7_XDTFC = ".$params['ref-date']."
  group by   CB1_NOME
 ";
 		}

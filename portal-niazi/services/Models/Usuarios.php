@@ -217,5 +217,29 @@ class Usuarios
 		return $_RETURN;
 		
 	}
+
+	public function trocar_senha($params)
+	{
+
+		$upd = "UPDATE ".$this->Database->tbl->usuarios." SET
+					pass = '".$params['pass']."'
+				WHERE id = ".$params['id'];
+		$query = $this->Database->doQuery($upd);
+		if($query)
+		{
+
+			$_RETURN['code'] = 200;
+			$_RETURN['num'] = 0;
+			$_RETURN['msg'] = 'Senha alterada.';
+
+		}else{
+
+			$_RETURN['code'] = 500;
+			$_RETURN['num'] = 0;
+			$_RETURN['msg'] = 'Erro ao alterar senha.';
+
+		}
+
+	}
 	
 }
