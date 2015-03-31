@@ -67,7 +67,8 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 		CB1_CODOPE	as COD_SEPARADOR, 
 		max(isnull(CB1_NOME,''))	as NOM_SEPARADOR, 
 		max(CB1_XMETAS)             as META_SEP,
-		sum(C5_PBRUTO)				as TOTAL_PESO_BRUTO 
+		sum(C5_PBRUTO)				as TOTAL_PESO_BRUTO,
+		1000                        as META
  from       CB7110 as CB7
  inner join SC5110 as SC5
  on         C5_NUM = CB7_PEDIDO
@@ -76,9 +77,10 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
  on         CB1_CODOPE = CB7_XOPERS
  and        CB1.D_E_L_E_T_ <> '*'
  where      CB7.D_E_L_E_T_ <> '*'
- -- and        CB7_DTFIMS = convert(varchar(8), SYSDATETIME(), 112) 
- and        CB7_DTFIMS = ".$params['ref-date']."
+ and        CB7_DTFIMS = '".$params['ref-date']."'
  GROUP BY CB1_CODOPE";
+ 
+ 
 		}
 
 		if($params['tipo'] == 'em-separacao')
@@ -95,7 +97,7 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 		CB7_DTFIMS					as DT_FIM_SEP, 
 		max(isnull(CB9_CODSEP, ''))	as COD_SEPARADOR, 
 		max(isnull(CB1_NOME,''))	as NOM_SEPARADOR, 
-		1000                        as META_SEP,
+		1000                        as META,
 		sum(C5_PBRUTO)				as PESO_BRUTO 
 from (
 SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C9_QTDLIB, CB7_PEDIDO, CB7_HRINIS, CB7_DTINIS, CB7_HRFIMS, CB7_DTFIMS, sum(isnull(CB8_QTDORI-CB8_SALDOS,0)) as CB9_QTESEP, max(isnull(CB7_XOPERS, '')) as CB9_CODSEP, max(isnull(CB1_NOME,'')) as CB1_NOME, (select SC5a.C5_PBRUTO from SC5110 as SC5a where SC5a.C5_NUM = SC5.C5_NUM and SC5a.D_E_L_E_T_ <> '*') as C5_PBRUTO
@@ -143,6 +145,9 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 					while($row = $this->Database->fetch_array($query))
 				    {
 
+				    	$_PESO_TOTAL[] = $row['TOTAL_PESO_BRUTO'];
+				    	$_TOTAL_SEPARADOS[] = $row['TOTAL_SEPARADOS'];
+
 				    	$_RETURN['row'][] = array(
 				    							'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
 				    							'TOTAL_SEPARADOS' => $row['TOTAL_SEPARADOS'],
@@ -150,16 +155,23 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    							'META' => $row['META']
 				    							);
 				    }
-
+					/* *
 				    $sel = "SELECT
-								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
+								COUNT(*) AS TOTAL, SUM(C5_PBRUTO) AS PESO_TOTAL
 							FROM ".$this->Database->tbl->separacao."
-							WHERE   DT_FIM_SEP != '' ";
+							WHERE   CB7_DTFIMS = '".$params['ref-date']."'
+							GROUP BY C5_PBRUTO, CB7_DTFIMS";
+					print_r($sel);
 					$qry = $this->Database->doQuery($sel);
 					$row = $this->Database->fetch_array($qry);
-
-					$_RETURN['num'] = $row['TOTAL'];
-					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
+					echo "<pre>";
+					print_r($qry);
+					print_r($row);
+					echo "</pre>";
+					/* */
+					
+					$_RETURN['num_peso'] = array_sum($_PESO_TOTAL);
+					$_RETURN['num']		 = array_sum($_TOTAL_SEPARADOS);
 
 				}else{
 
@@ -170,6 +182,7 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
+				    	$qtdSep[]    = $row['NUM_PED'];
 
 				    	$emissao['br_date']      = '';
 
@@ -197,24 +210,25 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    	}
 
 				    	$_RETURN['row'][] = array(
-				    							'EMISSAO' => $emissao['br_date'],
-				    							'NUM_PED' => $row['NUM_PED'],
-				    							'COD_CLI' => $row['COD_CLI'],
-				    							'NOM_CLI' => trim($row['NOM_CLI']),
-				    							'QUANTIDADE' => $row['QUANTIDADE'],
-												'HR_INI_SEP' => $hr_ini_sep['formatted'],
-												'DT_INI_SEP' => $dt_ini_sep['br_date'],
-												'QTD_SEP' => $row['QTD_SEP'],
-												'HR_FIM_SEP' => $hr_fim_sep['formatted'],
-												'DT_FIM_SEP' => $dt_fim_sep['br_date'],
+				    							'EMISSAO' 		=> $emissao['br_date'],
+				    							'NUM_PED' 		=> $row['NUM_PED'],
+				    							'COD_CLI' 		=> $row['COD_CLI'],
+				    							'NOM_CLI' 		=> trim($row['NOM_CLI']),
+				    							'QUANTIDADE' 	=> $row['QUANTIDADE'],
+												'HR_INI_SEP' 	=> $hr_ini_sep['formatted'],
+												'DT_INI_SEP' 	=> $dt_ini_sep['br_date'],
+												'QTD_SEP' 		=> $row['QTD_SEP'],
+												'HR_FIM_SEP' 	=> $hr_fim_sep['formatted'],
+												'DT_FIM_SEP'    => $dt_fim_sep['br_date'],
 												'COD_SEPARADOR' => trim($row['COD_SEPARADOR']),
 												'NOM_SEPARADOR' => trim($row['NOM_SEPARADOR']),
-												'PESO_BRUTO' => $row['PESO_BRUTO'],
+												'PESO_BRUTO' 	=> $row['PESO_BRUTO'],
 				    							 );
 
 				    }
 
 				    $_RETURN['num_peso'] = array_sum($pesoBruto);
+				    $_RETURN['num']      = count(array_unique($qtdSep));
 
 				}
 

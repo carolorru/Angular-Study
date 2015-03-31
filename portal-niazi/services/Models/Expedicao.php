@@ -62,8 +62,8 @@ class Expedicao
 					 on         C5_FILIAL = CB7_FILIAL
 					 and        C5_NUM = CB7_PEDIDO
 					 and        SC5.D_E_L_E_T_ <> '*'
-					 -- where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112)
-					 where      CB7_XDTFE = ".$params['ref-date']."
+					 /* where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112) */
+					 where      CB7_XDTFE = '".$params['ref-date']."'
 					 and        CB7_XDTFP <> ''
 					 and        CB7.D_E_L_E_T_ <> '*'
 					 group by   C5_EMISSAO, C5_TRANSP, C5_NOTA, C5_SERIE, C5_XCUB, CB7_XDTFE, CB7_NOTA, CB7_SERIE
@@ -195,23 +195,23 @@ class Expedicao
 				    	}
 
 				    	$_RETURN['row'][] = array(
-				    							'EMISSAO' => $emissao['br_date'],
-				    							'NUM_NF' => trim($row['NUM_NF']),
-				    							'SERIE_NF' => $row['SERIE_NF'],
-				    							'COD_CLI' => $row['COD_CLI'],
-				    							'NOM_CLI' => trim($row['NOM_CLI']),
-				    							'TRANSP' => $row['TRANSP'],
-												'NOM_TRANSP' => trim($row['NOM_TRANSP']),
-												'CUBAGEM' => $row['CUBAGEM'],
-				    							'QUANTIDADE' => $row['QUANTIDADE'],
-												'HR_INI_EMB' => $hr_ini_emb['formatted'],
-												'DT_INI_EMB' => $dt_ini_emb['br_date'],
-												'QTD_EMB' => $row['QTD_EMB'],
-												'HR_FIM_EMB' => $hr_fim_emb['formatted'],
-												'DT_FIM_EMB' => $dt_fim_emb['br_date'],
+				    							'EMISSAO' 		 => $emissao['br_date'],
+				    							'NUM_NF' 		 => trim($row['NUM_NF']),
+				    							'SERIE_NF' 		 => $row['SERIE_NF'],
+				    							'COD_CLI' 		 => $row['COD_CLI'],
+				    							'NOM_CLI' 		 => trim($row['NOM_CLI']),
+				    							'TRANSP' 		 => $row['TRANSP'],
+												'NOM_TRANSP' 	 => trim($row['NOM_TRANSP']),
+												'CUBAGEM' 		 => $row['CUBAGEM'],
+				    							'QUANTIDADE' 	 => $row['QUANTIDADE'],
+												'HR_INI_EMB' 	 => $hr_ini_emb['formatted'],
+												'DT_INI_EMB' 	 => $dt_ini_emb['br_date'],
+												'QTD_EMB' 	 	 => $row['QTD_EMB'],
+												'HR_FIM_EMB' 	 => $hr_fim_emb['formatted'],
+												'DT_FIM_EMB' 	 => $dt_fim_emb['br_date'],
 												'COD_EMBARCADOR' => trim($row['COD_EMBARCADOR']),
 												'NOM_EMBARCADOR' => trim($row['NOM_EMBARCADOR']),
-												'PESO_BRUTO' => $row['PESO_BRUTO']
+												'PESO_BRUTO' 	 => $row['PESO_BRUTO']
 				    							 );
 
 				    }

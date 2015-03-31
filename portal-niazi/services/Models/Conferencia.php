@@ -72,21 +72,20 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 		if($params['tipo'] == 'conferidos')
 		{
 			$sel = "select	count(C5_NUM)		as TOTAL_CONFERIDOS, 
-		CB1_NOME			as NOM_CONFERENTE, 
-		max(CB1_XMETAC)                as META,
-		sum(C5_PBRUTO)		as TOTAL_PESO_BRUTO 
- from       CB7110 as CB7
- inner join SC5110 as SC5
- on         C5_NUM = CB7_PEDIDO
- and        SC5.D_E_L_E_T_ <> '*'
- left  join CB1110 CB1
- on         CB1_CODOPE = CB7_XOPERC
- and        CB1.D_E_L_E_T_ <> '*'
- where      CB7.D_E_L_E_T_ <> '*'
- -- and        CB7_XDTFC = convert(varchar(8), SYSDATETIME(), 112)
- and        CB7_XDTFC = ".$params['ref-date']."
- group by   CB1_NOME
-";
+							CB1_NOME			as NOM_CONFERENTE, 
+							max(CB1_XMETAC)     as META,
+							sum(C5_PBRUTO)		as TOTAL_PESO_BRUTO 
+					 from       CB7110 as CB7
+					 inner join SC5110 as SC5
+					 on         C5_NUM = CB7_PEDIDO
+					 and        SC5.D_E_L_E_T_ <> '*'
+					 left  join CB1110 CB1
+					 on         CB1_CODOPE = CB7_XOPERC
+					 and        CB1.D_E_L_E_T_ <> '*'
+					 where      CB7.D_E_L_E_T_ <> '*'
+					 and        CB7_XDTFC = '".$params['ref-date']."'
+					 group by   CB1_NOME
+					";
 		}
 
 		if($params['tipo'] == 'em-conferencia')
@@ -154,14 +153,17 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 					while($row = $this->Database->fetch_array($query))
 				    {
 
+				    	$_PESO_TOTAL[] 		 = $row['TOTAL_PESO_BRUTO'];
+				    	$_TOTAL_CONFERIDOS[] = $row['TOTAL_CONFERIDOS'];
+
 				    	$_RETURN['row'][] = array(
-				    							'NOM_CONFERENTE' => $row['NOM_CONFERENTE'],
+				    							'NOM_CONFERENTE'   => $row['NOM_CONFERENTE'],
 				    							'TOTAL_CONFERIDOS' => $row['TOTAL_CONFERIDOS'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
-				    							'META' => $row['META']
+				    							'META' 			   => $row['META']
 				    							);
 				    }
-
+				    /*
 				    $sel = "SELECT
 								COUNT(*) AS TOTAL, SUM(PESO_BRUTO) AS PESO_TOTAL
 							FROM ".$this->Database->tbl->conferencia."
@@ -169,21 +171,24 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 									AND DT_INI_CONF != '' AND HR_INI_CONF != '' AND DT_FIM_CONF != '' AND HR_FIM_CONF != ''";
 					$qry = $this->Database->doQuery($sel);
 					$row = $this->Database->fetch_array($qry);
+					*/
 
-					$_RETURN['num'] = $row['TOTAL'];
-					$_RETURN['num_peso'] = $row['PESO_TOTAL'];
+					$_RETURN['num_peso'] = array_sum($_PESO_TOTAL);
+					$_RETURN['num']		 = array_sum($_TOTAL_CONFERIDOS);
 
 				}else{
 
 					$_RETURN['code'] = 200;
-					$_RETURN['num'] = $num;
+					
 
 					$pesoBruto = array();
+					$qtdConf = array();
 
 				    while($row = $this->Database->fetch_array($query))
 				    {
 
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
+				    	$qtdConf[]   = $row['NUM_PED'];
 
 				    	$emissao['br_date']      = '';
 
@@ -211,24 +216,25 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    	}
 
 				    	$_RETURN['row'][] = array(
-				    							'EMISSAO' => $emissao['br_date'],
-				    							'NUM_PED' => $row['NUM_PED'],
-				    							'COD_CLI' => $row['COD_CLI'],
-				    							'NOM_CLI' => trim($row['NOM_CLI']),
-				    							'QUANTIDADE' => $row['QUANTIDADE'],
-												'HR_INI_CONF' => $hr_ini_conf['formatted'],
-												'DT_INI_CONF' => $dt_ini_conf['br_date'],
-												'QTD_CONF' => $row['QTD_CONF'],
-												'HR_FIM_CONF' => $hr_fim_conf['formatted'],
-												'DT_FIM_CONF' => $dt_fim_conf['br_date'],
+				    							'EMISSAO' 		 => $emissao['br_date'],
+				    							'NUM_PED' 		 => $row['NUM_PED'],
+				    							'COD_CLI' 		 => $row['COD_CLI'],
+				    							'NOM_CLI' 		 => trim($row['NOM_CLI']),
+				    							'QUANTIDADE' 	 => $row['QUANTIDADE'],
+												'HR_INI_CONF' 	 => $hr_ini_conf['formatted'],
+												'DT_INI_CONF' 	 => $dt_ini_conf['br_date'],
+												'QTD_CONF' 		 => $row['QTD_CONF'],
+												'HR_FIM_CONF' 	 => $hr_fim_conf['formatted'],
+												'DT_FIM_CONF'    => $dt_fim_conf['br_date'],
 												'COD_CONFERENTE' => trim($row['COD_CONFERENTE']),
 												'NOM_CONFERENTE' => trim($row['NOM_CONFERENTE']),
-												'PESO_BRUTO' => $row['PESO_BRUTO'],
+												'PESO_BRUTO' 	 => $row['PESO_BRUTO'],
 				    							 );
 
 				    }
 
 				    $_RETURN['num_peso'] = array_sum($pesoBruto);
+				    $_RETURN['num']      = count(array_unique($qtdConf));
 
 				}
 
