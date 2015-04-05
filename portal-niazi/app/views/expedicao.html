@@ -42,10 +42,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in aEmbalar.aFaturar" data-toggle="modal" data-target=".bs-faturar-modal-lg" class="cursor">
-        <td>{{un.TOTAL_PEDIDO}}</td>
-        <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{un.TOTAL_CUBAGEM}} m³</td>
+      <tr ng-repeat="un in aEmbalar.aFaturar.row" data-toggle="modal" data-target=".bs-faturar-modal-lg" class="cursor">
+        <td>{{un.NOTAS.TOTAL_PEDIDO}}</td>
+        <td>{{un.NOTAS.TOTAL_PESO_BRUTO}} Kg</td>
+        <td>{{un.NOTAS.TOTAL_CUBAGEM}} m³</td>
       </tr>
     </tbody>
   </table>
@@ -73,7 +73,7 @@
                   <td>Cubagem</td>        
                 </tr>
               </thead>
-              <tbodyng-repeat="un in aEmbalar.aFaturar.row">
+              <tbody ng-repeat="un in aEmbalar.aFaturar.row">
                 <tr ng-repeat="item in un.NOTAS">
                   <td>{{item.NUM_PEDIDO}}</td>
                   <td>{{item.DT_LIB}}</td>
@@ -182,7 +182,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in aEmbalar.atrasados.row | orderBy:'NOM_TRANSP'" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
+      <tr ng-repeat="un in aEmbalar.atrasados.row | orderBy:'NOM_TRANSP'" data-toggle="modal" data-target=".bs-atrasados-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_EMBARCADOS}}</td>
         <td>{{un.VALOR}}</td>
@@ -198,7 +198,7 @@
   -->
   <!-- Large modal -->
   <div ng-repeat="un in aEmbalar.atrasados.row | orderBy:'NOM_TRANSP'">
-    <div class="modal fade bs-embarcar-modal-lg-{{$index + 1}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" >
+    <div class="modal fade bs-atrasados-modal-lg-{{$index + 1}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -255,7 +255,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in embalados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
+      <tr ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
         <td>{{un.NOM_TRANSP}}</td>
         <td>{{un.TOTAL_NOTAS}}</td>
         <td>{{un.VALOR}}</td>
@@ -266,11 +266,11 @@
   </table>
   <!-- 
   ****************************
-  ATRASADOS MODAL DE DETALHES
+  EMBARCADOS MODAL DE DETALHES
   ****************************
   -->
   <!-- Large modal -->
-  <div ng-repeat="un in embalados.row | orderBy:'TOTAL_NOTAS'">
+  <div ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'">
     <div class="modal fade bs-embarcados-modal-lg-{{$index + 1}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
