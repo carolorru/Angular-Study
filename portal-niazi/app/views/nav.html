@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/portal-niazi/" style="padding: 10px 15px 10px 5px;background: white;"><img src="img/logo.jpg"></a>
+          <a class="navbar-brand" href="home" style="padding: 10px 15px 10px 5px;background: white;"><img src="img/logo.jpg"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -16,6 +16,7 @@
             <li ng-if="accessConferencia" ng-class="{active: activetab == '/portal-niazi/conferencia'}"><a href="conferencia">Conferência</a></li>
             <li ng-if="accessExpedicao" ng-class="{active: activetab == '/portal-niazi/expedicao'}"><a href="expedicao">Expedição</a></li>
             <li ng-if="accessCadastro" ng-class="{active: activetab == '/portal-niazi/cadastro'}"><a href="cadastro">Editar Senha</a></li>
+			<li ng-if="accessCadastro" ng-class="{active: activetab == '/portal-niazi/'}"><a href="/portal-niazi/">Sair</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

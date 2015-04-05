@@ -224,6 +224,7 @@ class Usuarios
 		$upd = "UPDATE ".$this->Database->tbl->usuarios." SET
 					pass = '".$params['pass']."'
 				WHERE id = ".$params['id'];
+
 		$query = $this->Database->doQuery($upd);
 		if($query)
 		{
@@ -239,6 +240,8 @@ class Usuarios
 			$_RETURN['msg'] = 'Erro ao alterar senha.';
 
 		}
+		
+		return $_RETURN;
 
 	}
 	

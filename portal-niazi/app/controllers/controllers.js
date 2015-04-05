@@ -9,7 +9,7 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
          ----------------------------------------------*/
         $.post('/portal-niazi/services/login', { email: username, pass: password }, 'json').success(function (data) {
             data = JSON.parse(data);            
-            console.log('service post', data);
+            //console.log('service post', data);
             callback(data);
         }).error(function (error) {
             callback(error);
@@ -130,7 +130,6 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
             return output;
         }
     };
-  
     /* jshint ignore:end */
 })
 .factory('Permission', 
@@ -142,49 +141,98 @@ function ($rootScope, $location, $cookieStore, $http){
         $rootScope.accessExpedicao = false;
         $rootScope.accessSeparacao = false;
         $rootScope.accessConferencia = false;
-        $rootScope.accessCadastro = false;
+        $rootScope.accessCadastro = true;
         for (var i = 0; i < $rootScope.globals.menu.length; i++) {
             console.log($rootScope.globals.menu[i].id);
             switch($rootScope.globals.menu[i].id) {
                 case 1:
                     $rootScope.accessExpedicao = true;
-                    console.log('menu1');
+                    //console.log('menu1');
                     break;
                 case 2:
                     $rootScope.accessSeparacao = true;
-                    console.log('menu2');
+                    //console.log('menu2');
                     break;
                 case 3:
                     $rootScope.accessConferencia = true;
-                    console.log('menu3');
+                    //console.log('menu3');
                     break;
-                case 4:
-                    $rootScope.accessCadastro = true;
-                    console.log('menu4');
-                    break;
+                //case 4:
+                //    $rootScope.accessCadastro = true;
+                //    console.log('menu4');
+                //    break;
             }            
         }; 
-
     }
     return service;
 }])
 .factory('currentDate', function(){
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
+    var formatDate = {};
 
-    if(dd<10) {
-        dd='0'+dd
-    } 
+	formatDate.yyyyMMdd = function(i){
+		var today = i;
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+		var yyyy = today.getFullYear();
 
-    if(mm<10) {
-        mm='0'+mm
-    } 
+		if(dd<10) {
+			dd='0'+dd
+		} 
 
-    return mm+'/'+dd+'/'+yyyy;
+		if(mm<10) {
+			mm='0'+mm
+		} 
+		return yyyy+''+mm+''+dd;
+	}
+
+    return formatDate;
+})
+.factory('Datepicker', function () {
+	var datepicker = {};
+	
+	datepicker.dt = new Date();
+
+	datepicker.open = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		this.opened = true;
+	};
+	
+	return datepicker;
 });
 
+app.directive( 'passwordVerify', function() {
+	return{
+		require: "ngModel",
+		scope: {
+			passwordVerify: '='
+		},
+		link: function(scope, element, attrs, ctrl) {
+			scope.$watch(function() {
+				var combined;
+				
+				if (scope.passwordVerify || ctrl.$viewValue){
+					combined = scope.passwordVerify + '_' + ctrl.$viewValue;
+				}
+				return combined;
+			}, function(value) {
+				if(value){
+					ctrl.$parsers.unshift(function(viewValue) {
+						var origin = scope.passwordVerify;
+						if(origin !== viewValue) {
+							ctrl.$setValidity("passwordVerify", false);
+							return undefined;
+						}else{
+							ctrl.$setValidity("passwordVerify", true);
+							return viewValue;
+						}
+					});
+				}
+			});
+		}
+	};
+});
 
 app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'AuthenticationService', function($scope, $rootScope, $location, AuthenticationService) {
     // reset login status
@@ -209,51 +257,73 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
 
 }]);
 
-app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', 'Datepicker', function($scope, $rootScope, $location, Permission, Datepicker) {
     Permission.validation();
     $rootScope.activetab = $location.path();
 }]);
 
-app.controller('CadastroCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+app.controller('CadastroCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
     console.log('cadastro');
     Permission.validation();
     $rootScope.activetab = $location.path();
+	
+	$scope.userName = $rootScope.globals.currentUser.username;
+	
+	$scope.editPass = function() {
+		$http.get('/portal-niazi/services/usuarios/troca-senha?TYPE=MSSQL&pass='+$scope.dataPass.newPass+'&id=1').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi/"); 
+			if (data.code == 200) {
+				$scope.successForm = true;
+				$scope.successMsg = data.msg;
+			}
+			
+        });
+	}
+	
 }]);
  
-app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval) {
+app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', 'Datepicker', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval, Datepicker) {
     Permission.validation();
     var counter;
-
+	
     $scope.viewLoading = true;
-    $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
-    
-    getSeparacao(0);
+	
+	$scope.dt = Datepicker.dt;
+	$scope.open = Datepicker.open;
+	
+	$scope.maxDate = $scope.maxDate ? null : new Date();
+	
+	$scope.dateOptions = {
+		formatYear: 'yy',
+		startingDay: 1
+	};
+	$scope.formats = ['dd-MMMM-yyyy', 'dd/MM/yyyy', 'dd.MM.yyyy', 'shortDate'];
+	$scope.format = $scope.formats[1];    
 
-    var intervalContent = $interval(function(){
-        getSeparacao(1);    
-    },45000);
-    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
-
-    function getSeparacao(index) {
+    $scope.getSeparacao = function(index) {
 		
-        //$scope.viewLoading = true;
+        if(index == 0) $scope.viewLoading = true;
         counter = 3;
-
-        var json;
-        $http.get('/portal-niazi/services/pedidos/a-separar?TYPE=MSSQL').success(function(data){
+		var hiddenDate = currentDate.yyyyMMdd($scope.dt);
+		//console.log(hiddenDate);
+		//$scope.dt.getFullYear().toString() + ($scope.dt.getMonth() + 1).toString() + $scope.dt.getDate().toString();
+        
+		var json;
+        $http.get('/portal-niazi/services/pedidos/a-separar?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aSeparar = json;    
             sucssesAjax(index);    
         });
-        $http.get('/portal-niazi/services/pedidos/em-separacao?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/pedidos/em-separacao?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emSeparacao = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/pedidos/separados?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/pedidos/separados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+		console.log(data)
            if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.separados = json;
@@ -266,44 +336,55 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         if (counter === 0 && index == 0) {
             $scope.viewLoading = false;
         }
-    }    
+    } 
+	
+	$scope.getSeparacao(0);
+
+    var intervalContent = $interval(function(){
+        $scope.getSeparacao(1);    
+    },45000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 }]);
 
 
 
-app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval) {
+app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', 'Datepicker', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval, Datepicker) {
     Permission.validation();
     var counter;
 
     $scope.viewLoading = true;
-    $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
+	
+	$scope.dt = Datepicker.dt;
+	$scope.open = Datepicker.open;
+	
+	$scope.maxDate = $scope.maxDate ? null : new Date();
+	
+	$scope.dateOptions = {
+		formatYear: 'yy',
+		startingDay: 1
+	};
+	$scope.formats = ['dd-MMMM-yyyy', 'dd/MM/yyyy', 'dd.MM.yyyy', 'shortDate'];
+	$scope.format = $scope.formats[1]; 
 
-    getConferencia(0);
-
-    var intervalContent = $interval(function(){
-        getConferencia(1);    
-    },45000);
-    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
-
-    function getConferencia(index) {
-        //$scope.viewLoading = true;
+    $scope.getConferencia = function(index) {
+        if(index == 0) $scope.viewLoading = true;
         counter = 3;
-
+		var hiddenDate = currentDate.yyyyMMdd($scope.dt);
         var json;
-        $http.get('/portal-niazi/services/conferencia/a-conferir?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/conferencia/a-conferir?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aConferir = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/conferencia/em-conferencia?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/conferencia/em-conferencia?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.emConferencia = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/conferencia/conferidos?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/conferencia/conferidos?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.conferidos = json;
@@ -318,35 +399,47 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
             $scope.viewLoading = false;
         }
     }
+	
+	$scope.getConferencia(0);
+
+    var intervalContent = $interval(function(){
+        $scope.getConferencia(1);    
+    },45000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 }]);
 
-app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval) {
+app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', 'currentDate', '$interval', 'Datepicker', function($scope, $rootScope, $location, $http, Permission, currentDate, $interval, Datepicker) {
     Permission.validation();
     var counter;
 
     $scope.viewLoading = true;
-    $scope.currentDate = currentDate;
     $rootScope.activetab = $location.path();
+	
+	$scope.dt = Datepicker.dt;
+	$scope.open = Datepicker.open;
+	
+	$scope.maxDate = $scope.maxDate ? null : new Date();
+	
+	$scope.dateOptions = {
+		formatYear: 'yy',
+		startingDay: 1
+	};
+	$scope.formats = ['dd-MMMM-yyyy', 'dd/MM/yyyy', 'dd.MM.yyyy', 'shortDate'];
+	$scope.format = $scope.formats[1];     
 
-    getExpedicao(0);
-
-    var intervalContent = $interval(function(){
-        getExpedicao(1);    
-    },45000);
-    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
-
-    function getExpedicao(index) {
-        //$scope.viewLoading = true;
+    $scope.getExpedicao = function(index) {
+        if(index == 0) $scope.viewLoading = true;
         counter = 2;
+		var hiddenDate = currentDate.yyyyMMdd($scope.dt);
 
         var json;
-        $http.get('/portal-niazi/services/expedicao/a-embarcar?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/expedicao/a-embarcar?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.aEmbalar = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/expedicao/embarcados?TYPE=MSSQL').success(function(data){
+        $http.get('/portal-niazi/services/expedicao/embarcados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
             if (data.code == 500) $location.path("/portal-niazi/"); 
             json = data;
             $scope.embalados = json;
@@ -360,4 +453,11 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
             $scope.viewLoading = false;
         }
     }
+	
+	$scope.getExpedicao(0);
+
+    var intervalContent = $interval(function(){
+        $scope.getExpedicao(1);    
+    },45000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 }]);

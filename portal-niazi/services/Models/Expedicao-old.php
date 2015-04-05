@@ -84,53 +84,24 @@ class Expedicao
 		if($query > 0)
 		{
 			$num = $this->Database->num_rows($query);
-			if($num > 0){
+			if($num > 0)
+			{
+
 				$_RETURN['code'] = 200;
+
 				if($params['tipo'] == 'embarcados' || $params['tipo'] == 'a-embarcar')
 				{
+
 					$n_y = 0;
 					$transp = '';
 					$primeiro = 0;
+echo "Expedicao";
 					while($row = $this->Database->fetch_array($query))
 				    {
-							If($primeiro==0)
-							{
-								$transp = '';
-								$dt_ini_emb['br_date']   = '';
-								$dt_ini_emb = $this->Common->validaData($row['DATA']);
-								$notas[] = array('NUM_NF'=>$row['NF'],
-												 'DT_INI_EMB'=>$dt_ini_emb['br_date'],
-												 'VALOR'=>$row['VALOR'],
-												 'PESO_BRUTO'=>$row['PESO'],
-												 'CUBAGEM'=>$row['CUBAGEM'],
-												 );
-								$total_notas += 1;
-								$total_cubg += $row['CUBAGEM'];
-								$total_peso += $row['PESO'];
-								$total_vlor += $row['VALOR'];
-							}
-							If(trim($row['TRANSP'])<> $transp)
-							{
-								If($primeiro == 1)
-								{
-									$_RETURN['row'][] = array(
-															'NOM_TRANSP' => $transp,
-															'TOTAL_EMBARCADOS' => $total_notas,
-															'TOTAL_CUBAGEM' => $total_cubg,
-															'TOTAL_PESO_BRUTO' => $total_peso,
-															'VALOR' => $total_vlor,
-															'NOTAS' => $notas,
-															'TOTAL_NOTAS' => $total_notas
-															);
-								}
-								$primeiro = 1;
-								$notas = array();
-								$total_notas = 0;
-								$total_cubg = 0;
-								$total_peso = 0;
-								$total_vlor = 0;
-							}
 
+						if($primeiro==0)
+						{
+							$transp = '';
 							$dt_ini_emb['br_date']   = '';
 							$dt_ini_emb = $this->Common->validaData($row['DATA']);
 							$notas[] = array('NUM_NF'=>$row['NF'],
@@ -143,9 +114,50 @@ class Expedicao
 							$total_cubg += $row['CUBAGEM'];
 							$total_peso += $row['PESO'];
 							$total_vlor += $row['VALOR'];
+						}
+						
+						if(trim($row['TRANSP']) <> $transp)
+						{
+							
+							if($primeiro == 1)
+							{
+								$_RETURN['row'][] = array(
+														'NOM_TRANSP' => $transp,
+														'TOTAL_EMBARCADOS' => $total_notas,
+														'TOTAL_CUBAGEM' => $total_cubg,
+														'TOTAL_PESO_BRUTO' => $total_peso,
+														'VALOR' => $total_vlor,
+														'NOTAS' => $notas,
+														'TOTAL_NOTAS' => $total_notas
+														);
+							}
 
-							$transp = trim($row['TRANSP']);
+							$primeiro = 1;
+							$notas = array();
+							$total_notas = 0;
+							$total_cubg = 0;
+							$total_peso = 0;
+							$total_vlor = 0;
+
+						}
+
+						$dt_ini_emb['br_date']   = '';
+						$dt_ini_emb = $this->Common->validaData($row['DATA']);
+						$notas[] = array('NUM_NF'=>$row['NF'],
+										 'DT_INI_EMB'=>$dt_ini_emb['br_date'],
+										 'VALOR'=>$row['VALOR'],
+										 'PESO_BRUTO'=>$row['PESO'],
+										 'CUBAGEM'=>$row['CUBAGEM'],
+										 );
+						$total_notas += 1;
+						$total_cubg += $row['CUBAGEM'];
+						$total_peso += $row['PESO'];
+						$total_vlor += $row['VALOR'];
+
+						$transp = trim($row['TRANSP']);
+
 					}
+
 					$_RETURN['row'][] = array(
 											'NOM_TRANSP' => $transp,
 											'TOTAL_EMBARCADOS' => $total_notas,
@@ -157,6 +169,11 @@ class Expedicao
 											);
 					$_RETURN['num'] = 1;
 					$_RETURN['num_peso'] = 1;
+					
+					echo "<pre>";
+					print_r($_RETURN);
+					echo "</pre>";
+					die();
 
 				}else{
 
@@ -195,23 +212,23 @@ class Expedicao
 				    	}
 
 				    	$_RETURN['row'][] = array(
-				    							'EMISSAO' 		 => $emissao['br_date'],
-				    							'NUM_NF' 		 => trim($row['NUM_NF']),
-				    							'SERIE_NF' 		 => $row['SERIE_NF'],
-				    							'COD_CLI' 		 => $row['COD_CLI'],
-				    							'NOM_CLI' 		 => trim($row['NOM_CLI']),
-				    							'TRANSP' 		 => $row['TRANSP'],
-												'NOM_TRANSP' 	 => trim($row['NOM_TRANSP']),
-												'CUBAGEM' 		 => $row['CUBAGEM'],
-				    							'QUANTIDADE' 	 => $row['QUANTIDADE'],
-												'HR_INI_EMB' 	 => $hr_ini_emb['formatted'],
-												'DT_INI_EMB' 	 => $dt_ini_emb['br_date'],
-												'QTD_EMB' 	 	 => $row['QTD_EMB'],
-												'HR_FIM_EMB' 	 => $hr_fim_emb['formatted'],
-												'DT_FIM_EMB' 	 => $dt_fim_emb['br_date'],
+				    							'EMISSAO' => $emissao['br_date'],
+				    							'NUM_NF' => trim($row['NUM_NF']),
+				    							'SERIE_NF' => $row['SERIE_NF'],
+				    							'COD_CLI' => $row['COD_CLI'],
+				    							'NOM_CLI' => trim($row['NOM_CLI']),
+				    							'TRANSP' => $row['TRANSP'],
+												'NOM_TRANSP' => trim($row['NOM_TRANSP']),
+												'CUBAGEM' => $row['CUBAGEM'],
+				    							'QUANTIDADE' => $row['QUANTIDADE'],
+												'HR_INI_EMB' => $hr_ini_emb['formatted'],
+												'DT_INI_EMB' => $dt_ini_emb['br_date'],
+												'QTD_EMB' => $row['QTD_EMB'],
+												'HR_FIM_EMB' => $hr_fim_emb['formatted'],
+												'DT_FIM_EMB' => $dt_fim_emb['br_date'],
 												'COD_EMBARCADOR' => trim($row['COD_EMBARCADOR']),
 												'NOM_EMBARCADOR' => trim($row['NOM_EMBARCADOR']),
-												'PESO_BRUTO' 	 => $row['PESO_BRUTO']
+												'PESO_BRUTO' => $row['PESO_BRUTO']
 				    							 );
 
 				    }
@@ -220,7 +237,7 @@ class Expedicao
 
 				}
 				
-
+				
 			}else{
 
 				$_RETURN['code'] = 200;

@@ -17,6 +17,7 @@ require 'Models/Common.php';
 require 'Models/Database.php';
 require 'Models/Separacao.php';
 require 'Models/Expedicao.php';
+//require 'Models/ExpedicaoDois.php';
 require 'Models/Conferencia.php';
 require 'Models/Usuarios.php';
 
@@ -136,7 +137,26 @@ $app->group('/expedicao', $authenticateForRole('expedicao'), function() use ($ap
 		echo json_encode($search);
 
 	});
+	/*
+	$app->get('/a-embarcar2',function () {
+	        
+	    $Expedicao = new ExpedicaoDois();
+	    $search = $Expedicao->search(array('tipo' => 'a-embarcar'));
 
+	    header("Content-Type: application/json");
+		echo json_encode($search);
+
+	});
+	$app->get('/embarcados2',function () {
+	        
+	    $Expedicao = new ExpedicaoDois();
+	    $search = $Expedicao->search(array('tipo' => 'embarcados', 'ref-date' => $_GET['ref-date']));
+
+	    header("Content-Type: application/json");
+		echo json_encode($search);
+
+	});
+*/
 	$app->get('/embarcados',function () {
 	        
 	    $Expedicao = new Expedicao();
@@ -246,7 +266,16 @@ $app->get('/logout',function () {
 
 $app->group('/usuarios', $authenticateForRole('usuarios'), function() use ($app){
 
+	//trocar senha
+	$app->get('/troca-senha',function () {
+	        
+	    $Usuarios = new Usuarios();
+	    $trocar_senha = $Usuarios->trocar_senha($_GET);
 
+	    header("Content-Type: application/json");
+		echo json_encode($trocar_senha);
+
+	});
 
 	//cria usuario
 	$app->post('/',function () {
@@ -303,16 +332,7 @@ $app->group('/usuarios', $authenticateForRole('usuarios'), function() use ($app)
 
 	});
 
-	//lista todos
-	$app->put('/troca-senha',function () {
-	        
-	    $Usuarios = new Usuarios();
-	    $trocar_senha = $Usuarios->trocar_senha($_POST);
-
-	    header("Content-Type: application/json");
-		echo json_encode($trocar_senha);
-
-	});
+	
 
 });
 

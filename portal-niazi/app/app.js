@@ -1,5 +1,5 @@
 //var appLogin = angular.module('appLogin',['ngCookies']);
-var app = angular.module('app',['ngRoute', 'ngCookies']);
+var app = angular.module('app',['ngRoute', 'ngCookies', 'ui.bootstrap']);
  
 
 app.config(function($routeProvider, $locationProvider) {
@@ -70,9 +70,9 @@ function ($rootScope, $location, $cookieStore, $http) {
                 case 3:
                     conf = true;
                     break;
-                case 4:
-                    pass = true;
-                    break;
+                //case 4:
+                //    pass = true;
+                //    break;
             }            
          }; 
          
@@ -82,12 +82,12 @@ function ($rootScope, $location, $cookieStore, $http) {
          if($location.path() == '/portal-niazi/expedicao' && exp != true){
             $location.path('/portal-niazi/');
          }
-         if($location.path() == '/portal-niazi/conferencia' && conf != true){
+         if($location.path() == '/portal-niazi-2/conferencia' && conf != true){
             $location.path('/portal-niazi/');
          }
-         if($location.path() == '/portal-niazi/cadastro' && pass != true){
-            $location.path('/portal-niazi/');
-         }
+         //if($location.path() == '/portal-niazi/cadastro' && pass != true){
+         //   $location.path('/portal-niazi/');
+         //}
       }
    });
 
