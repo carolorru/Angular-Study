@@ -7,7 +7,7 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
 
         /* Use this for real authentication
          ----------------------------------------------*/
-        $.post('/portal-niazi/services/login', { email: username, pass: password }, 'json').success(function (data) {
+        $.post('/portal-niazi-3/services/login', { email: username, pass: password }, 'json').success(function (data) {
             data = JSON.parse(data);            
             //console.log('service post', data);
             callback(data);
@@ -243,7 +243,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
             //console.log('dentro do callback',response);
             if(response.num == 1) {
                 AuthenticationService.SetCredentials($scope.email, $scope.pass, response.menu, function(){
-                    $scope.$apply(function() { $location.path("/portal-niazi/home"); });
+                    $scope.$apply(function() { $location.path("/portal-niazi-3/home"); });
                 });   
             } else {
                 $scope.$apply(function() {
@@ -270,8 +270,8 @@ app.controller('CadastroCtrl', ['$scope', '$rootScope', '$location', '$http', 'P
 	$scope.userName = $rootScope.globals.currentUser.username;
 	
 	$scope.editPass = function() {
-		$http.get('/portal-niazi/services/usuarios/troca-senha?TYPE=MSSQL&pass='+$scope.dataPass.newPass+'&id=1').success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+		$http.get('/portal-niazi-3/services/usuarios/troca-senha?TYPE=MSSQL&pass='+$scope.dataPass.newPass+'&id=1').success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
 			if (data.code == 200) {
 				$scope.successForm = true;
 				$scope.successMsg = data.msg;
@@ -310,21 +310,21 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 		//$scope.dt.getFullYear().toString() + ($scope.dt.getMonth() + 1).toString() + $scope.dt.getDate().toString();
         
 		var json;
-        $http.get('/portal-niazi/services/pedidos/a-separar?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/pedidos/a-separar?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.aSeparar = json;    
             sucssesAjax(index);    
         });
-        $http.get('/portal-niazi/services/pedidos/em-separacao?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/pedidos/em-separacao?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.emSeparacao = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/pedidos/separados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+        $http.get('/portal-niazi-3/services/pedidos/separados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
 		console.log(data)
-           if (data.code == 500) $location.path("/portal-niazi/"); 
+           if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.separados = json;
             sucssesAjax(index);
@@ -372,20 +372,20 @@ app.controller('ConferenciaCtrl', ['$scope', '$rootScope', '$location', '$http',
         counter = 3;
 		var hiddenDate = currentDate.yyyyMMdd($scope.dt);
         var json;
-        $http.get('/portal-niazi/services/conferencia/a-conferir?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/conferencia/a-conferir?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.aConferir = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/conferencia/em-conferencia?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/conferencia/em-conferencia?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.emConferencia = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/conferencia/conferidos?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/conferencia/conferidos?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.conferidos = json;
             sucssesAjax(index);
@@ -433,14 +433,14 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 		var hiddenDate = currentDate.yyyyMMdd($scope.dt);
 
         var json;
-        $http.get('/portal-niazi/services/expedicao/a-embarcar?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/expedicao/a-embarcar?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.aEmbalar = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi/services/expedicao/embarcados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-            if (data.code == 500) $location.path("/portal-niazi/"); 
+        $http.get('/portal-niazi-3/services/expedicao/embarcados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
+            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.embalados = json;
             sucssesAjax(index);

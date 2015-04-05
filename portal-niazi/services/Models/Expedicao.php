@@ -169,6 +169,7 @@ class Expedicao
 						$transp = trim($row['TRANSP']);
 						$dt_ini_emb['br_date']   = '';
 						$dt_ini_emb = $this->Common->validaData($row['DATA']);
+						$dt_liberacao = $this->Common->validaData($row['DT_LIB']);
 						
 						if(!array_key_exists($transp, $return[$chave])){
 							$chaveValor[$chave][] = $transp;
@@ -187,8 +188,8 @@ class Expedicao
 						$notas = array(
 									'DT_NF'		 => $row['DATA'],
 									'NUM_NF'	 => $row['NF'],
-									'NUM_PEDIDO' => $row['COD_PEDIDO']
-									'DT_LIB'	 => $row['DT_LIB']
+									'NUM_PEDIDO' => $row['COD_PEDIDO'],
+									'DT_LIB'	 => $dt_liberacao['br_date'],
 									'DT_INI_EMB' => $dt_ini_emb['br_date'],
 									'VALOR' 	 => $row['VALOR'],
 									'PESO_BRUTO' => $row['PESO'],
