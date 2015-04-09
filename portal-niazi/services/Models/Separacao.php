@@ -210,19 +210,19 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    	}
 
 				    	$_RETURN['row'][] = array(
-				    							'EMISSAO' 		=> $emissao['br_date'],
-				    							'NUM_PED' 		=> $row['NUM_PED'],
-				    							'COD_CLI' 		=> $row['COD_CLI'],
-				    							'NOM_CLI' 		=> trim($row['NOM_CLI']),
-				    							'QUANTIDADE' 	=> $row['QUANTIDADE'],
-												'HR_INI_SEP' 	=> $hr_ini_sep['formatted'],
-												'DT_INI_SEP' 	=> $dt_ini_sep['br_date'],
-												'QTD_SEP' 		=> $row['QTD_SEP'],
-												'HR_FIM_SEP' 	=> $hr_fim_sep['formatted'],
-												'DT_FIM_SEP'    => $dt_fim_sep['br_date'],
+				    							'EMISSAO' => $emissao['br_date'],
+				    							'NUM_PED' => $row['NUM_PED'],
+				    							'COD_CLI' => $row['COD_CLI'],
+				    							'NOM_CLI' => trim($row['NOM_CLI']),
+				    							'QUANTIDADE' => $row['QUANTIDADE'],
+												'HR_INI_SEP' => $hr_ini_sep['formatted'],
+												'DT_INI_SEP' => $dt_ini_sep['br_date'],
+												'QTD_SEP' => $row['QTD_SEP'],
+												'HR_FIM_SEP' => $hr_fim_sep['formatted'],
+												'DT_FIM_SEP' => $dt_fim_sep['br_date'],
 												'COD_SEPARADOR' => trim($row['COD_SEPARADOR']),
 												'NOM_SEPARADOR' => trim($row['NOM_SEPARADOR']),
-												'PESO_BRUTO' 	=> $row['PESO_BRUTO'],
+												'PESO_BRUTO' => $row['PESO_BRUTO'],
 				    							 );
 
 				    }
@@ -255,6 +255,3 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 	}
 	
 }
-
-
-
