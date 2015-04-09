@@ -63,25 +63,35 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 
 		if($params['tipo'] == 'separados')
 		{
-			$sel = "select	count(C5_NUM)	as TOTAL_SEPARADOS, 
-		CB1_CODOPE	as COD_SEPARADOR, 
-		max(isnull(CB1_NOME,''))	as NOM_SEPARADOR, 
-		max(CB1_XMETAS)             as META_SEP,
-		sum(C5_PBRUTO)				as TOTAL_PESO_BRUTO,
-		sum(C9_QTDLIB)				as QUANTIDADE, 
-		CB7_XDTFC 					as DATA_SEPARACAO,
-		1000                        as META
+ 
+ $sel = "select	count(C5_NUM)				as TOTAL_SEPARADOS, 
+		sum(isnull(CB9_QTESEP,0))	as QTD_SEP, 
+		CB9_CODSEP					as COD_SEPARADOR, 
+		CB1_NOME					as NOM_SEPARADOR, 
+		max(CB1_XMETAS)				as META_SEP,
+		sum(C5_PBRUTO)				as TOTAL_PESO_BRUTO 
+from (
+SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C9_QTDLIB, CB7_PEDIDO, CB7_HRINIS, CB7_DTINIS, CB7_HRFIMS, CB7_DTFIMS, sum(isnull(CB8_QTDORI-CB8_SALDOS,0)) as CB9_QTESEP, max(isnull(CB7_XOPERS, '')) as CB9_CODSEP, max(isnull(CB1_NOME,'')) as CB1_NOME, max(isnull(CB1_XMETAS,'')) as CB1_XMETAS, (select SC5a.C5_PBRUTO from SC5110 as SC5a where SC5a.C5_NUM = SC5.C5_NUM and SC5a.D_E_L_E_T_ <> '*') as C5_PBRUTO
  from       CB7110 as CB7
+ inner join CB8110 as CB8
+ on         CB8_FILIAL = CB7_FILIAL
+ and        CB8_PEDIDO = CB7_PEDIDO
+ and        CB8.D_E_L_E_T_ <> '*'
  inner join SC5110 as SC5
  on         C5_NUM = CB7_PEDIDO
  and        SC5.D_E_L_E_T_ <> '*'
+ inner join SA1110 SA1
+ on         A1_COD = C5_CLIENTE
+ and        A1_LOJA = C5_LOJACLI
+ and        SA1.D_E_L_E_T_ <> '*'
  left  join CB1110 CB1
  on         CB1_CODOPE = CB7_XOPERS
  and        CB1.D_E_L_E_T_ <> '*'
  where      CB7.D_E_L_E_T_ <> '*'
- and        CB7_DTFIMS = '".$params['ref-date']."'
- GROUP BY CB1_CODOPE";
- 
+ and        CB7_DTINIS <> '' 
+ and		CB7_DTFIMS = '".$params['ref-date']."'
+ group by   C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, CB7_PEDIDO, CB7_HRINIS, CB7_DTINIS, CB7_HRFIMS, CB7_DTFIMS
+ ) A GROUP BY CB9_CODSEP, CB1_NOME";
  
 		}
 
@@ -149,29 +159,18 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 
 				    	$_PESO_TOTAL[] = $row['TOTAL_PESO_BRUTO'];
 				    	$_TOTAL_SEPARADOS[] = $row['TOTAL_SEPARADOS'];
+						
+						if($row['DATA_SEPARACAO'] != '')
+							$dt_separado = $this->Common->validaData($row['DATA_SEPARACAO']);
 
 				    	$_RETURN['row'][] = array(
 				    							'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
 				    							'TOTAL_SEPARADOS' => $row['TOTAL_SEPARADOS'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
-				    							'NUMERO_PECAS' => $row['QUANTIDADE'],
+												//'DATA_SEPARACAO' => $dt_separado['br_date'],
 				    							'META' => $row['META']
 				    							);
 				    }
-					/* *
-				    $sel = "SELECT
-								COUNT(*) AS TOTAL, SUM(C5_PBRUTO) AS PESO_TOTAL
-							FROM ".$this->Database->tbl->separacao."
-							WHERE   CB7_DTFIMS = '".$params['ref-date']."'
-							GROUP BY C5_PBRUTO, CB7_DTFIMS";
-					print_r($sel);
-					$qry = $this->Database->doQuery($sel);
-					$row = $this->Database->fetch_array($qry);
-					echo "<pre>";
-					print_r($qry);
-					print_r($row);
-					echo "</pre>";
-					/* */
 					
 					$_RETURN['num_peso'] = array_sum($_PESO_TOTAL);
 					$_RETURN['num']		 = array_sum($_TOTAL_SEPARADOS);
@@ -226,7 +225,6 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 												'COD_SEPARADOR' => trim($row['COD_SEPARADOR']),
 												'NOM_SEPARADOR' => trim($row['NOM_SEPARADOR']),
 												'PESO_BRUTO' => $row['PESO_BRUTO'],
-												'DATA_SEPARACAO' => $row['DATA_SEPARACAO']
 				    							 );
 
 				    }
@@ -259,3 +257,6 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 	}
 	
 }
+
+
+
