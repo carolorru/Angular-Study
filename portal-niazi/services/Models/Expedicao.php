@@ -244,6 +244,27 @@ class Expedicao
 						
 						$_RETURN['aFaturar']['row'] = $aFaturar['row'];
 					}
+
+					if(isset($_RETURN['atrasados'])){
+						$atrasados['row'] = array();
+						foreach($_RETURN['atrasados']['row'] as $k => $v){
+						
+							$atrasados['row']['TOTAL_PESO_BRUTO'][] = ($v['TOTAL_PESO_BRUTO']);
+							$atrasados['row']['TOTAL_CUBAGEM'][]    = ($v['TOTAL_CUBAGEM']);
+							$atrasados['row']['VALOR'][] 		   = ($v['VALOR']);
+							
+							foreach($v['NOTAS'] as $n => $nt)
+								$atrasados['row']['NOTAS'][] = ($nt);
+
+						}
+						$atrasados['row']['TOTAL_PESO_BRUTO'] = array_sum(array_values($atrasados['row']['TOTAL_PESO_BRUTO']));
+						$atrasados['row']['TOTAL_CUBAGEM']    = array_sum(array_values($atrasados['row']['TOTAL_CUBAGEM']));
+						$atrasados['row']['VALOR']  			 = array_sum(array_values($atrasados['row']['VALOR']));
+						$atrasados['row']['TOTAL_EMBARCADOS'] = count($atrasados['row']['NOTAS']);
+						$atrasados['row']['TOTAL_NOTAS']		 = count($atrasados['row']['VALOR']);
+						
+						$_RETURN['atrasados']['row'] = $atrasados['row'];
+					}
 					/*
 					echo "<pre>";
 					print_r($aFaturar);
