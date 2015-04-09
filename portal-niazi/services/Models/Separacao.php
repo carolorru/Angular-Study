@@ -68,6 +68,7 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 		max(isnull(CB1_NOME,''))	as NOM_SEPARADOR, 
 		max(CB1_XMETAS)             as META_SEP,
 		sum(C5_PBRUTO)				as TOTAL_PESO_BRUTO,
+		sum(C9_QTDLIB)				as QUANTIDADE, 
 		1000                        as META
  from       CB7110 as CB7
  inner join SC5110 as SC5
@@ -152,6 +153,7 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    							'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
 				    							'TOTAL_SEPARADOS' => $row['TOTAL_SEPARADOS'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
+				    							'NUMERO_PECAS' => $row['QUANTIDADE'],
 				    							'META' => $row['META']
 				    							);
 				    }
