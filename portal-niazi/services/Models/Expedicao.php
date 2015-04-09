@@ -12,6 +12,11 @@ class Expedicao
 		
 	}
 	
+	public function aFaturar()
+	{
+	
+	}
+	
 	public function search($params)
 	{
 		If ($params['tipo'] == 'a-embarcar')
@@ -19,7 +24,7 @@ class Expedicao
 			$sel = "select	F2_EMISSAO		as DATA,
 							F2_DOC			as NF, 
 							A4_NOME			as TRANSP,
-							'A1_NOME'		as 'NOME_CLIENTE',
+							A1_NOME			as 'NOME_CLIENTE',
 							C5_XCUB			as CUBAGEM,
 							C5_PBRUTO		as PESO,
 							F2_VALBRUT      as VALOR,
@@ -33,6 +38,7 @@ class Expedicao
 								C5_TRANSP, 
 								C5_EMISSAO,
 								sum(C5_PBRUTO) as C5_PBRUTO, 
+								A1_NOME,
 								CB7_XDTFE, 
 								CB7_PEDIDO, 
 								CB7_XDTFP, 
@@ -43,6 +49,10 @@ class Expedicao
 					 on         C5_FILIAL = CB7_FILIAL
 					 and        C5_NUM = CB7_PEDIDO
 					 and        SC5.D_E_L_E_T_ <> '*'
+					 inner join SA1110 as SA1
+					 on         A1_COD = C5_CLIENTE
+					 and        A1_LOJA = C5_LOJACLI
+					 and        SA1.D_E_L_E_T_ <> '*'
 					 where      CB7_XDTFE = ''
 					 and        CB7_XDTFP <> ''
 					 and        CB7.D_E_L_E_T_ <> '*'
@@ -51,6 +61,7 @@ class Expedicao
 					 			C5_NOTA, 
 					 			C5_SERIE, 
 					 			C5_XCUB, 
+								A1_NOME,
 					 			CB7_XDTFE, 
 					 			CB7_XDTFP, 
 					 			CB7_NOTA, 
@@ -144,7 +155,8 @@ class Expedicao
 								///echo $interval->format('%R%a days');
 								
 								$datetime1 = date_create(date("Y-m-d"));
-								$datetime2 = date_create(implode("-",array_reverse(explode("/",$row['DATA']))));
+								//$datetime2 = date_create(implode("-",array_reverse(explode("/",$row['DATA']))));
+								$datetime2 = date_create("2015-04-03"); //MODELO DE TESTE
 								$interval  = date_diff($datetime1, $datetime2);
 								$atraso = $interval->format('%R%a');
 								if($atraso <= -4){
@@ -192,6 +204,7 @@ class Expedicao
 						array_push($return[$chave][$transp]['TOTAL_CUBAGEM'],$row['CUBAGEM']);
 						array_push($return[$chave][$transp]['TOTAL_PESO_BRUTO'],$row['PESO']);
 						array_push($return[$chave][$transp]['VALOR'],$row['VALOR']);
+						
 					}
 					/* *
 					echo "<pre>";
@@ -208,6 +221,7 @@ class Expedicao
 
 						foreach($value as $k => $v)
 						{
+						
 							$tempKey = $v['NOM_TRANSP'];
 							$NewKey = array_search($tempKey, $chaveValor[$key]);
 						
@@ -224,8 +238,11 @@ class Expedicao
 						
 					}
 					
-					if(isset($_RETURN['aFaturar'])){
+					if(isset($_RETURN['aFaturar']))
+					{
+					
 						$aFaturar['row'] = array();
+						
 						foreach($_RETURN['aFaturar']['row'] as $k => $v){
 						
 							$aFaturar['row']['TOTAL_PESO_BRUTO'][] = ($v['TOTAL_PESO_BRUTO']);
@@ -240,38 +257,35 @@ class Expedicao
 						$aFaturar['row']['TOTAL_CUBAGEM']    = array_sum(array_values($aFaturar['row']['TOTAL_CUBAGEM']));
 						$aFaturar['row']['VALOR']  			 = array_sum(array_values($aFaturar['row']['VALOR']));
 						$aFaturar['row']['TOTAL_EMBARCADOS'] = count($aFaturar['row']['NOTAS']);
-						$aFaturar['row']['TOTAL_NOTAS']		 = count($aFaturar['row']['VALOR']);
+						$aFaturar['row']['TOTAL_NOTAS']		 = count($aFaturar['row']['NOTAS']);
 						
 						$_RETURN['aFaturar']['row'] = $aFaturar['row'];
+						
 					}
+					
+					if(isset($_RETURN['atrasados']))
+					{
 
-					if(isset($_RETURN['atrasados'])){
-						$atrasados['row'] = array();
 						foreach($_RETURN['atrasados']['row'] as $k => $v){
 						
-							$atrasados['row']['TOTAL_PESO_BRUTO'][] = ($v['TOTAL_PESO_BRUTO']);
-							$atrasados['row']['TOTAL_CUBAGEM'][]    = ($v['TOTAL_CUBAGEM']);
-							$atrasados['row']['VALOR'][] 		   = ($v['VALOR']);
+							$_RETURN['atrasados']['row']['TOTAL_PESO_BRUTO'][] = $v['TOTAL_PESO_BRUTO'];
+							$_RETURN['atrasados']['row']['TOTAL_CUBAGEM'][]    = $v['TOTAL_CUBAGEM'];
+							$_RETURN['atrasados']['row']['VALOR'][] 		   = $v['VALOR'];
 							
-							foreach($v['NOTAS'] as $n => $nt)
-								$atrasados['row']['NOTAS'][] = ($nt);
+							$total_notas = count($v['NOTAS']);
+							$_RETURN['atrasados']['row']['TOTAL_EMBARCADOS'][] = $total_notas;
+							$_RETURN['atrasados']['row']['TOTAL_NOTAS'][]      = $total_notas;
 
 						}
-						$atrasados['row']['TOTAL_PESO_BRUTO'] = array_sum(array_values($atrasados['row']['TOTAL_PESO_BRUTO']));
-						$atrasados['row']['TOTAL_CUBAGEM']    = array_sum(array_values($atrasados['row']['TOTAL_CUBAGEM']));
-						$atrasados['row']['VALOR']  			 = array_sum(array_values($atrasados['row']['VALOR']));
-						$atrasados['row']['TOTAL_EMBARCADOS'] = count($atrasados['row']['NOTAS']);
-						$atrasados['row']['TOTAL_NOTAS']		 = count($atrasados['row']['VALOR']);
 						
-						$_RETURN['atrasados']['row'] = $atrasados['row'];
+						$_RETURN['atrasados']['row']['TOTAL_PESO_BRUTO'] = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_PESO_BRUTO']));
+						$_RETURN['atrasados']['row']['TOTAL_CUBAGEM']    = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_CUBAGEM']));
+						$_RETURN['atrasados']['row']['VALOR']  			 = array_sum(array_values($_RETURN['atrasados']['row']['VALOR']));
+						$_RETURN['atrasados']['row']['TOTAL_EMBARCADOS'] = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_EMBARCADOS']));
+						$_RETURN['atrasados']['row']['TOTAL_NOTAS']		 = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_NOTAS']));
+						
 					}
-					/*
-					echo "<pre>";
-					print_r($aFaturar);
-					print_r($_RETURN['aFaturar']['row']);
-					echo "</pre>";
-					die();
-					*/
+					
 				}else{
 					$_RETURN['num'] = $num;
 					$pesoBruto = array();
