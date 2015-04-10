@@ -60,6 +60,7 @@
                   <tr class="danger">
                     <td>Pedido</td>
                     <td>Cliente</td>
+                    <td>Dt Separação</td>
                     <td>Qtd. Peças</td>
                     <td>Peso</td>
                   </tr>
@@ -68,6 +69,7 @@
                   <tr ng-repeat="un in aConferir.row | orderBy:'NUM_PED'">
                     <td>{{un.NUM_PED}}</td>
                     <td>{{un.NOM_CLI}}</td>
+                    <td>{{un.DT_SEPARACAO}}</td>
                     <td>{{un.QUANTIDADE}}</td>
                     <td>{{un.PESO_BRUTO}} Kg</td>
                   </tr>
