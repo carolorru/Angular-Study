@@ -9,11 +9,9 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
          ----------------------------------------------*/
         $.post('/portal-niazi-3/services/login', { email: username, pass: password }, 'json').success(function (data) {
             data = JSON.parse(data);            
-            //console.log('service post', data);
             callback(data);
         }).error(function (error) {
             callback(error);
-            //alert("Login Error!");
         });
 
     };
@@ -29,13 +27,8 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
             menu: permissions
         };
 
-        //console.log($rootScope.globals);
-
         $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
-        //console.log($http.defaults.headers.common['Authorization']);
-
         $cookieStore.put('globals', $rootScope.globals);
-        console.log($rootScope.globals);
         callback();
     };
 
@@ -49,8 +42,6 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
 }])
   
 .factory('Base64', function () {
-    /* jshint ignore:start */
-  
     var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
   
     return {
@@ -136,30 +127,24 @@ function (Base64, $http, $cookieStore, $rootScope, $timeout, $location) {
 ['$rootScope', '$location', '$cookieStore', '$http', 
 function ($rootScope, $location, $cookieStore, $http){
     var service = {};
-    console.log('permissions');
     service.validation = function(){
         $rootScope.accessExpedicao = false;
         $rootScope.accessSeparacao = false;
         $rootScope.accessConferencia = false;
         $rootScope.accessCadastro = true;
         for (var i = 0; i < $rootScope.globals.menu.length; i++) {
-            console.log($rootScope.globals.menu[i].id);
             switch($rootScope.globals.menu[i].id) {
                 case 1:
-                    $rootScope.accessExpedicao = true;
-                    //console.log('menu1');
+                    $rootScope.accessExpedicao = true;                    
                     break;
                 case 2:
-                    $rootScope.accessSeparacao = true;
-                    //console.log('menu2');
+                    $rootScope.accessSeparacao = true;                    
                     break;
                 case 3:
-                    $rootScope.accessConferencia = true;
-                    //console.log('menu3');
+                    $rootScope.accessConferencia = true;                    
                     break;
                 //case 4:
-                //    $rootScope.accessCadastro = true;
-                //    console.log('menu4');
+                //    $rootScope.accessCadastro = true;                
                 //    break;
             }            
         }; 
@@ -239,8 +224,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$location', 'Authenticatio
     AuthenticationService.ClearCredentials();
     $scope.login = function() {
         $scope.dataLoading = true;
-        AuthenticationService.Login($scope.email, $scope.pass, function(response) {
-            //console.log('dentro do callback',response);
+        AuthenticationService.Login($scope.email, $scope.pass, function(response) {            
             if(response.num == 1) {
                 AuthenticationService.SetCredentials($scope.email, $scope.pass, response.menu, function(){
                     $scope.$apply(function() { $location.path("/portal-niazi-3/home"); });
@@ -262,8 +246,7 @@ app.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Permission', '
     $rootScope.activetab = $location.path();
 }]);
 
-app.controller('CadastroCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
-    console.log('cadastro');
+app.controller('CadastroCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {    
     Permission.validation();
     $rootScope.activetab = $location.path();
 	
@@ -305,8 +288,7 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
 		
         if(index == 0) $scope.viewLoading = true;
         counter = 3;
-		var hiddenDate = currentDate.yyyyMMdd($scope.dt);
-		//console.log(hiddenDate);
+		var hiddenDate = currentDate.yyyyMMdd($scope.dt);		
 		//$scope.dt.getFullYear().toString() + ($scope.dt.getMonth() + 1).toString() + $scope.dt.getDate().toString();
         
 		var json;
@@ -322,8 +304,7 @@ app.controller('SeparacaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
             $scope.emSeparacao = json;
             sucssesAjax(index);
         });
-        $http.get('/portal-niazi-3/services/pedidos/separados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){
-		console.log(data)
+        $http.get('/portal-niazi-3/services/pedidos/separados?TYPE=MSSQL&ref-date='+hiddenDate).success(function(data){		
            if (data.code == 500) $location.path("/portal-niazi-3/"); 
             json = data;
             $scope.separados = json;

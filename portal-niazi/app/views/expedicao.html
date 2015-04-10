@@ -28,30 +28,32 @@
 
   <!-- 
   ************************
-  À FATURAR TABELA 1
+  À FATURAR - TABELA 1
   itens sem nota fiscal
   ************************
   -->
   <h3>À Faturar</h3>
-  <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
-    <thead>
-      <tr class="success">
-        <td>Nr. de Pedidos</td>
-        <td>Peso</td>
-        <td>Cubagem</td>        
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-toggle="modal" data-target=".bs-faturar-modal-lg" class="cursor">
-        <td>{{aEmbalar.aFaturar.row.TOTAL_EMBARCADOS}}</td>
-        <td>{{aEmbalar.aFaturar.row.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{aEmbalar.aFaturar.row.TOTAL_CUBAGEM}} m³</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
+      <thead>
+        <tr class="success">
+          <td>Nr. de Pedidos</td>
+          <td>Peso</td>
+          <td>Cubagem</td>        
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-toggle="modal" data-target=".bs-faturar-modal-lg" class="cursor">
+          <td>{{aEmbalar.aFaturar.row.TOTAL_EMBARCADOS}}</td>
+          <td>{{aEmbalar.aFaturar.row.TOTAL_PESO_BRUTO}} Kg</td>
+          <td>{{aEmbalar.aFaturar.row.TOTAL_CUBAGEM}} m³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <!-- 
   ****************************
-  À FATURAR MODAL DE DETALHES
+  À FATURAR - MODAL DE DETALHES
   ****************************
   -->
   <!-- Large modal -->
@@ -78,7 +80,7 @@
                 <tr ng-repeat="item in aEmbalar.aFaturar.row.NOTAS">
                   <td>{{item.NUM_PEDIDO}}</td>
                   <td>{{item.DT_LIB}}</td>
-                  <td>{{item.DT_LIB}}</td>
+                  <td>{{item.NOME_CLIENTE}}</td>
                   <td>{{item.PESO_BRUTO}} Kg</td>
                   <td>{{item.CUBAGEM}} m³</td>
                 </tr>
@@ -95,30 +97,32 @@
 
   <!-- 
   ************************
-  ATRASADOS TABELA 2
+  ATRASADOS - TABELA 2
   itens com nota fiscal emitidas a mais de 3 dias
   ************************
   -->
   <h3>Notas com embarques atrasados</h3>
-  <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
-    <thead>
-      <tr class="success">
-        <td>Nr. de Notas</td>
-        <td>Peso</td>
-        <td>Cubagem</td>        
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-toggle="modal" data-target=".bs-atrasados-modal-lg" class="cursor">
-        <td>{{aEmbalar.atrasados.row.TOTAL_EMBARCADOS}}</td>
-        <td>{{aEmbalar.atrasados.row.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{aEmbalar.atrasados.row.TOTAL_CUBAGEM}} m³</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
+      <thead>
+        <tr class="success">
+          <td>Nr. de Notas</td>
+          <td>Peso</td>
+          <td>Cubagem</td>        
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-toggle="modal" data-target=".bs-atrasados-modal-lg" class="cursor">
+          <td>{{aEmbalar.atrasados.row.TOTAL_EMBARCADOS}}</td>
+          <td>{{aEmbalar.atrasados.row.TOTAL_PESO_BRUTO}} Kg</td>
+          <td>{{aEmbalar.atrasados.row.TOTAL_CUBAGEM}} m³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <!-- 
   ****************************
-  ATRASADOS MODAL DE DETALHES
+  ATRASADOS - MODAL DE DETALHES
   ****************************
   -->
   <!-- Large modal -->
@@ -143,7 +147,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="item in aEmbalar.aFaturar.row.NOTAS">
+                <tr ng-repeat="item in aEmbalar.atrasados.row.NOTAS">
                   <td>{{item.NUM_NF}}</td>
                   <td>{{item.DT_INI_EMB}}</td>
                   <td>{{item.NOM_TRANSP}}</td>
@@ -164,34 +168,36 @@
 
   <!-- 
   ************************
-  À EMBARCAR TABELA 3
+  À EMBARCAR - TABELA 3
   itens com nota fiscal emitidas a menos de 3 dias
   ************************
   -->
   <h3>À Embarcar</h3>
-  <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
-    <thead>
-      <tr class="success">
-        <td>Transportadora</td>
-        <td>Nr. Nota Fiscal</td>
-        <td>Valor</td>
-        <td>Peso</td>
-        <td>Cubagem</td>        
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="un in aEmbalar.aEmbarcar.row | orderBy:'NOM_TRANSP'" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
-        <td>{{un.NOM_TRANSP}}</td>
-        <td>{{un.TOTAL_EMBARCADOS}}</td>
-        <td>{{un.VALOR}}</td>
-        <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{un.TOTAL_CUBAGEM}} m³</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
+      <thead>
+        <tr class="success">
+          <td>Transportadora</td>
+          <td>Nr. Nota Fiscal</td>
+          <td>Valor</td>
+          <td>Peso</td>
+          <td>Cubagem</td>        
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="un in aEmbalar.aEmbarcar.row | orderBy:'NOM_TRANSP'" data-toggle="modal" data-target=".bs-embarcar-modal-lg-{{$index + 1}}" class="cursor">
+          <td>{{un.NOM_TRANSP}}</td>
+          <td>{{un.TOTAL_EMBARCADOS}}</td>
+          <td>{{un.VALOR}}</td>
+          <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
+          <td>{{un.TOTAL_CUBAGEM}} m³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <!-- 
   ****************************
-  À EMBARCAR MODAL DE DETALHES
+  À EMBARCAR - MODAL DE DETALHES
   ****************************
   -->
   <!-- Large modal -->
@@ -237,34 +243,36 @@
 
   <!-- 
   ************************
-  EMBARCADOS TABELA 4
+  EMBARCADOS - TABELA 4
   itens embarcados
   ************************
   -->
   <h3>Embarcados</h3>
-  <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
-    <thead>
-      <tr class="success">
-        <td>Transportadora</td>
-        <td>Nr. Nota Fiscal</td>
-        <td>Valor</td>
-        <td>Peso</td>
-        <td>Cubagem</td>        
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
-        <td>{{un.NOM_TRANSP}}</td>
-        <td>{{un.TOTAL_NOTAS}}</td>
-        <td>{{un.VALOR}}</td>
-        <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{un.TOTAL_CUBAGEM}} m³</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" style="margin-bottom: 40px;">
+      <thead>
+        <tr class="success">
+          <td>Transportadora</td>
+          <td>Nr. Nota Fiscal</td>
+          <td>Valor</td>
+          <td>Peso</td>
+          <td>Cubagem</td>        
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
+          <td>{{un.NOM_TRANSP}}</td>
+          <td>{{un.TOTAL_NOTAS}}</td>
+          <td>{{un.VALOR}}</td>
+          <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
+          <td>{{un.TOTAL_CUBAGEM}} m³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <!-- 
   ****************************
-  EMBARCADOS MODAL DE DETALHES
+  EMBARCADOS - MODAL DE DETALHES
   ****************************
   -->
   <!-- Large modal -->
