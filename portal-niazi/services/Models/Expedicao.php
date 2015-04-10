@@ -184,7 +184,9 @@ class Expedicao
 							
 							$NF = trim($row['NF']);
 							
-							if($NF == ''){
+							if($NF == '')
+							{
+
 								$adicional = 'aFaturar';
 								$_RETURN[$adicional]['row']['NOTAS'][] 			  = $notas;
 								$_RETURN[$adicional]['row']['TOTAL_PESO_BRUTO'][] = trim($row['PESO']);
@@ -192,8 +194,12 @@ class Expedicao
 								$_RETURN[$adicional]['row']['VALOR'][] 		      = trim($row['VALOR']);
 								$_RETURN[$adicional]['row']['TOTAL_EMBARCADOS']   = count($_RETURN[$adicional]['row']['NOTAS']);
 								$_RETURN[$adicional]['row']['TOTAL_NOTAS']		  = count($_RETURN[$adicional]['row']['NOTAS']);
+
 							}
-							if($atraso <= -4){
+
+							if($atraso <= -4)
+							{
+
 								$adicional = 'atrasados';
 								$_RETURN[$adicional]['row']['NOTAS'][] 			  = $notas;
 								$_RETURN[$adicional]['row']['TOTAL_PESO_BRUTO'][] = trim($row['PESO']);
@@ -201,12 +207,13 @@ class Expedicao
 								$_RETURN[$adicional]['row']['VALOR'][] 		      = trim($row['VALOR']);
 								$_RETURN[$adicional]['row']['TOTAL_EMBARCADOS']   = count($_RETURN[$adicional]['row']['NOTAS']);
 								$_RETURN[$adicional]['row']['TOTAL_NOTAS']		  = count($_RETURN[$adicional]['row']['NOTAS']);
+
 							}
 							
 
 						}
 						
-						if($NF == '')
+						if($NF == '' && $chave == 'aembarcar')
 							$notas['NUM_NF'] = 'P'.$row['COD_PEDIDO'];
 							
 						$_RETURN[$chave]['row']['NOTAS'][] 			  = $notas;
@@ -218,9 +225,10 @@ class Expedicao
 						
 					}
 
+					//faz a soma do arrays
 					foreach($_RETURN as $key => $value)
 					{
-					//echo $key."<br>";
+
 						foreach($value as $k => $v)
 						{
 
@@ -230,6 +238,36 @@ class Expedicao
 							$_RETURN[$key]['row']['TOTAL_EMBARCADOS'] = count($v['NOTAS']);
 							$_RETURN[$key]['row']['TOTAL_NOTAS']	  = count($v['NOTAS']);
 							
+						}
+						
+					}
+
+					//AGRUPA POR TRANSPORTADORA
+					foreach($return as $key => $value)
+					{
+					
+						$_RETURN[$key]['row'] = array();
+
+						if($chave == 'aembarcar' || $chave == 'embarcados')
+						{
+						
+							foreach($value as $k => $v)
+							{
+							
+								$tempKey = $v['NOM_TRANSP'];
+								$NewKey = array_search($tempKey, $chaveValor[$key]);
+							
+								if(!array_key_exists($NewKey, $_RETURN[$key]['row']))
+									$_RETURN[$key]['row'][$NewKey] = array('NOM_TRANSP' => $tempKey,'NOTAS' => $v['NOTAS']);
+								
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_PESO_BRUTO'] = array_sum(array_values($v['TOTAL_PESO_BRUTO']));
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_CUBAGEM']    = array_sum(array_values($v['TOTAL_CUBAGEM']));
+								$_RETURN[$key]['row'][$NewKey]['VALOR'] 		   = array_sum(array_values($v['VALOR']));
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_EMBARCADOS'] = count($v['NOTAS']);
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_NOTAS']	   = count($v['NOTAS']);
+								
+							}
+
 						}
 						
 					}
