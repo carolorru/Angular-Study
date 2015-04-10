@@ -140,149 +140,97 @@ class Expedicao
 					$chaveValor = array();
 					while($row = $this->Database->fetch_array($query))
 				    {
-					
+					/*
+					echo "<pre>";
+					print_r($row);
+					echo "</pre>";
+					die();
+					*/
 						if($params['tipo'] == 'embarcados'){
-							$chave = 'embarcados';
-						}else{
 						
-							if($row['NF'] == ''){
-								$chave = 'aFaturar';
-							}else{
+							$chave = 'embarcados';
 							
-								//$datetime1 = date_create('2009-10-11');
-								//$datetime2 = date_create('2009-10-13');
-								//$interval  = date_diff($datetime1, $datetime2);
-								///echo $interval->format('%R%a days');
-								
-								$datetime1 = date_create(date("Y-m-d"));
-								//$datetime2 = date_create(implode("-",array_reverse(explode("/",$row['DATA']))));
-								$datetime2 = date_create("2015-04-03"); //MODELO DE TESTE
-								$interval  = date_diff($datetime1, $datetime2);
-								$atraso = $interval->format('%R%a');
-								if($atraso <= -4){
-									$chave = 'atrasados';
-								}else{
-									$chave = 'aEmbarcar';
-								}
-								
+						}else{
+							
+							$chave = 'aembarcar';
+							
+							//verifica se esta atrasado
+							$datetime1 = date_create(date("Y-m-d"));
+							$datetime2 = date_create(implode("-",array_reverse(explode("/",$row['DATA']))));
+							//$datetime2 = date_create("2015-04-03"); //MODELO DE TESTE
+							$interval  = date_diff($datetime1, $datetime2);
+							$atraso = $interval->format('%R%a');
+							
+						}
+						
+						$dt_ini_emb['br_date']   = '';
+						$dt_ini_emb   = $this->Common->validaData($row['DATA']);
+						$dt_liberacao = $this->Common->validaData($row['DT_LIB']); 
+
+						$notas = array(
+									'NOM_TRANSP'   => trim($row['TRANSP']),
+									'NOME_CLIENTE' => trim($row['NOME_CLIENTE']),
+									'DT_NF'		   => trim($row['DATA']),
+									'NUM_NF'	   => trim($row['NF']),
+									'NUM_PEDIDO'   => trim($row['COD_PEDIDO']),
+									'DT_LIB'	   => trim($dt_liberacao['br_date']),
+									'DT_INI_EMB'   => trim($dt_ini_emb['br_date']),
+									'VALOR' 	   => trim($row['VALOR']),
+									'PESO_BRUTO'   => trim($row['PESO']),
+									'CUBAGEM' 	   => trim($row['CUBAGEM']),
+									);
+						
+						if($chave == 'aembarcar'){
+							
+							$NF = trim($row['NF']);
+							
+							if($NF == ''){
+								$adicional = 'aFaturar';
+								$_RETURN[$adicional]['row']['NOTAS'][] 			  = $notas;
+								$_RETURN[$adicional]['row']['TOTAL_PESO_BRUTO'][] = trim($row['PESO']);
+								$_RETURN[$adicional]['row']['TOTAL_CUBAGEM'][]    = trim($row['CUBAGEM']);
+								$_RETURN[$adicional]['row']['VALOR'][] 		      = trim($row['VALOR']);
+								$_RETURN[$adicional]['row']['TOTAL_EMBARCADOS']   = count($_RETURN[$adicional]['row']['NOTAS']);
+								$_RETURN[$adicional]['row']['TOTAL_NOTAS']		  = count($_RETURN[$adicional]['row']['NOTAS']);
+							}
+							if($atraso <= -4){
+								$adicional = 'atrasados';
+								$_RETURN[$adicional]['row']['NOTAS'][] 			  = $notas;
+								$_RETURN[$adicional]['row']['TOTAL_PESO_BRUTO'][] = trim($row['PESO']);
+								$_RETURN[$adicional]['row']['TOTAL_CUBAGEM'][]    = trim($row['CUBAGEM']);
+								$_RETURN[$adicional]['row']['VALOR'][] 		      = trim($row['VALOR']);
+								$_RETURN[$adicional]['row']['TOTAL_EMBARCADOS']   = count($_RETURN[$adicional]['row']['NOTAS']);
+								$_RETURN[$adicional]['row']['TOTAL_NOTAS']		  = count($_RETURN[$adicional]['row']['NOTAS']);
 							}
 							
+
 						}
 						
-						$transp = trim($row['TRANSP']);
-						$dt_ini_emb['br_date']   = '';
-						$dt_ini_emb = $this->Common->validaData($row['DATA']);
-						$dt_liberacao = $this->Common->validaData($row['DT_LIB']); 
-						
-						if(!array_key_exists($transp, $return[$chave])){
-							$chaveValor[$chave][] = $transp;
-							$return[$chave][$transp] = array(
-															'NOM_TRANSP' 	   => $transp,
-															'TOTAL_EMBARCADOS' => array(),
-															'TOTAL_CUBAGEM'    => array(),
-															'TOTAL_PESO_BRUTO' => array(),
-															'VALOR' 		   => array(),
-															'NOTAS'			   => array(),
-															'TOTAL_NOTAS'	   => array(),
-															);
-															
-						}
-						
-						$notas = array(
-									'NOME_CLIENTE' => $row['NOME_CLIENTE'],
-									'DT_NF'		   => $row['DATA'],
-									'NUM_NF'	   => $row['NF'],
-									'NUM_PEDIDO'   => $row['COD_PEDIDO'],
-									'DT_LIB'	   => $dt_liberacao['br_date'],
-									'DT_INI_EMB'   => $dt_ini_emb['br_date'],
-									'VALOR' 	   => $row['VALOR'],
-									'PESO_BRUTO'   => $row['PESO'],
-									'CUBAGEM' 	   => $row['CUBAGEM'],
-									);
-									
-						array_push($return[$chave][$transp]['NOTAS'],$notas);
-						array_push($return[$chave][$transp]['TOTAL_CUBAGEM'],$row['CUBAGEM']);
-						array_push($return[$chave][$transp]['TOTAL_PESO_BRUTO'],$row['PESO']);
-						array_push($return[$chave][$transp]['VALOR'],$row['VALOR']);
+						if($NF == '')
+							$notas['NUM_NF'] = 'P'.$row['COD_PEDIDO'];
+							
+						$_RETURN[$chave]['row']['NOTAS'][] 			  = $notas;
+						$_RETURN[$chave]['row']['TOTAL_PESO_BRUTO'][] = trim($row['PESO']);
+						$_RETURN[$chave]['row']['TOTAL_CUBAGEM'][]    = trim($row['CUBAGEM']);
+						$_RETURN[$chave]['row']['VALOR'][] 		      = trim($row['VALOR']);
+						$_RETURN[$chave]['row']['TOTAL_EMBARCADOS']   = count($_RETURN[$chave]['row']['NOTAS']);
+						$_RETURN[$chave]['row']['TOTAL_NOTAS']		  = count($_RETURN[$chave]['row']['NOTAS']);
 						
 					}
-					/* *
-					echo "<pre>";
-					//print_r($return);
-					print_r($chaveValor);
-					echo "</pre>";
-					/* */
-					//reseta as chaves do array
-					
-					foreach($return as $key => $value)
-					{
-					
-						$_RETURN[$key]['row'] = array();
 
+					foreach($_RETURN as $key => $value)
+					{
+					//echo $key."<br>";
 						foreach($value as $k => $v)
 						{
-						
-							$tempKey = $v['NOM_TRANSP'];
-							$NewKey = array_search($tempKey, $chaveValor[$key]);
-						
-							if(!array_key_exists($NewKey, $_RETURN[$key]['row']))
-								$_RETURN[$key]['row'][$NewKey] = array('NOM_TRANSP' => $tempKey,'NOTAS' => $v['NOTAS']);
-							
-							$_RETURN[$key]['row'][$NewKey]['TOTAL_PESO_BRUTO'] = array_sum(array_values($v['TOTAL_PESO_BRUTO']));
-							$_RETURN[$key]['row'][$NewKey]['TOTAL_CUBAGEM']    = array_sum(array_values($v['TOTAL_CUBAGEM']));
-							$_RETURN[$key]['row'][$NewKey]['VALOR'] 		   = array_sum(array_values($v['VALOR']));
-							$_RETURN[$key]['row'][$NewKey]['TOTAL_EMBARCADOS'] = count($v['NOTAS']);
-							$_RETURN[$key]['row'][$NewKey]['TOTAL_NOTAS']	   = count($v['NOTAS']);
+
+							$_RETURN[$key]['row']['TOTAL_PESO_BRUTO'] = array_sum(array_values($v['TOTAL_PESO_BRUTO']));
+							$_RETURN[$key]['row']['TOTAL_CUBAGEM']    = array_sum(array_values($v['TOTAL_CUBAGEM']));
+							$_RETURN[$key]['row']['VALOR'] 		  	  = array_sum(array_values($v['VALOR']));
+							$_RETURN[$key]['row']['TOTAL_EMBARCADOS'] = count($v['NOTAS']);
+							$_RETURN[$key]['row']['TOTAL_NOTAS']	  = count($v['NOTAS']);
 							
 						}
-						
-					}
-					
-					if(isset($_RETURN['aFaturar']))
-					{
-					
-						$aFaturar['row'] = array();
-						
-						foreach($_RETURN['aFaturar']['row'] as $k => $v){
-						
-							$aFaturar['row']['TOTAL_PESO_BRUTO'][] = ($v['TOTAL_PESO_BRUTO']);
-							$aFaturar['row']['TOTAL_CUBAGEM'][]    = ($v['TOTAL_CUBAGEM']);
-							$aFaturar['row']['VALOR'][] 		   = ($v['VALOR']);
-							
-							foreach($v['NOTAS'] as $n => $nt)
-								$aFaturar['row']['NOTAS'][] = ($nt);
-
-						}
-						$aFaturar['row']['TOTAL_PESO_BRUTO'] = array_sum(array_values($aFaturar['row']['TOTAL_PESO_BRUTO']));
-						$aFaturar['row']['TOTAL_CUBAGEM']    = array_sum(array_values($aFaturar['row']['TOTAL_CUBAGEM']));
-						$aFaturar['row']['VALOR']  			 = array_sum(array_values($aFaturar['row']['VALOR']));
-						$aFaturar['row']['TOTAL_EMBARCADOS'] = count($aFaturar['row']['NOTAS']);
-						$aFaturar['row']['TOTAL_NOTAS']		 = count($aFaturar['row']['NOTAS']);
-						
-						$_RETURN['aFaturar']['row'] = $aFaturar['row'];
-						
-					}
-					
-					if(isset($_RETURN['atrasados']))
-					{
-
-						foreach($_RETURN['atrasados']['row'] as $k => $v){
-						
-							$_RETURN['atrasados']['row']['TOTAL_PESO_BRUTO'][] = $v['TOTAL_PESO_BRUTO'];
-							$_RETURN['atrasados']['row']['TOTAL_CUBAGEM'][]    = $v['TOTAL_CUBAGEM'];
-							$_RETURN['atrasados']['row']['VALOR'][] 		   = $v['VALOR'];
-							
-							$total_notas = count($v['NOTAS']);
-							$_RETURN['atrasados']['row']['TOTAL_EMBARCADOS'][] = $total_notas;
-							$_RETURN['atrasados']['row']['TOTAL_NOTAS'][]      = $total_notas;
-
-						}
-						
-						$_RETURN['atrasados']['row']['TOTAL_PESO_BRUTO'] = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_PESO_BRUTO']));
-						$_RETURN['atrasados']['row']['TOTAL_CUBAGEM']    = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_CUBAGEM']));
-						$_RETURN['atrasados']['row']['VALOR']  			 = array_sum(array_values($_RETURN['atrasados']['row']['VALOR']));
-						$_RETURN['atrasados']['row']['TOTAL_EMBARCADOS'] = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_EMBARCADOS']));
-						$_RETURN['atrasados']['row']['TOTAL_NOTAS']		 = array_sum(array_values($_RETURN['atrasados']['row']['TOTAL_NOTAS']));
 						
 					}
 					
