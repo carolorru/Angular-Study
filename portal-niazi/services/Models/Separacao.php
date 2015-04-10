@@ -167,7 +167,7 @@ SELECT C5_EMISSAO, C5_NUM, C5_CLIENTE, C5_LOJACLI, A1_NOME, sum(CB8_QTDORI) as C
 				    							'NOM_SEPARADOR' => $row['NOM_SEPARADOR'],
 				    							'TOTAL_SEPARADOS' => $row['TOTAL_SEPARADOS'],
 				    							'TOTAL_PESO_BRUTO' => $row['TOTAL_PESO_BRUTO'],
-												//'DATA_SEPARACAO' => $dt_separado['br_date'],
+												'QTD_SEP' => $row['QTD_SEP'],
 				    							'META' => $row['META']
 				    							);
 				    }
