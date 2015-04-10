@@ -42,10 +42,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="un in aEmbalar.aFaturar.row" data-toggle="modal" data-target=".bs-faturar-modal-lg" class="cursor">
-        <td>{{un.NOTAS.TOTAL_PEDIDO}}</td>
-        <td>{{un.NOTAS.TOTAL_PESO_BRUTO}} Kg</td>
-        <td>{{un.NOTAS.TOTAL_CUBAGEM}} m³</td>
+      <tr data-toggle="modal" data-target=".bs-faturar-modal-lg" class="cursor">
+        <td>{{aEmbalar.aFaturar.row.TOTAL_EMBARCADOS}}</td>
+        <td>{{aEmbalar.aFaturar.row.TOTAL_PESO_BRUTO}} Kg</td>
+        <td>{{aEmbalar.aFaturar.row.TOTAL_CUBAGEM}} m³</td>
       </tr>
     </tbody>
   </table>
@@ -73,8 +73,8 @@
                   <td>Cubagem</td>        
                 </tr>
               </thead>
-              <tbody ng-repeat="un in aEmbalar.aFaturar.row">
-                <tr ng-repeat="item in un.NOTAS">
+              <tbody>
+                <tr ng-repeat="item in aEmbalar.aFaturar.row.NOTAS">
                   <td>{{item.NUM_PEDIDO}}</td>
                   <td>{{item.DT_LIB}}</td>
                   <td>{{item.PESO_BRUTO}} Kg</td>
