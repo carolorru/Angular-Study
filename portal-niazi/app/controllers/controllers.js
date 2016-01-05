@@ -142,6 +142,7 @@ function ($rootScope, $location, $cookieStore, $http){
         $rootScope.accessSeparacao = false;
         $rootScope.accessConferencia = false;
         $rootScope.accessCadastro = true;
+        $rootScope.accessConsulta = true;
         for (var i = 0; i < $rootScope.globals.menu.length; i++) {
             console.log($rootScope.globals.menu[i].id);
             switch($rootScope.globals.menu[i].id) {
@@ -461,4 +462,13 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
         $scope.getExpedicao(1);    
     },45000);
     $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
+}]);
+
+app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+    Permission.validation();
+    $rootScope.activetab = $location.path();
+
+    $scope.searchItens = function() {
+        $scope.viewLoading = true;
+    }
 }]);

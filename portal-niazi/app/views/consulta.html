@@ -1,38 +1,45 @@
 <div ng-include="'app/views/nav.html'"></div>
 
+<div ng-if="viewLoading" class="loading">
+  <img class="loading-gif" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+</div>
+
+
 <div class="container" style="padding-top: 40px;">
   <h1 class="page-header">Painel de Gestão </h1>  
   <div class="bs-callout bs-callout-info" id="callout-type-b-i-elems">
-    <h2>Consulta </h2>  
+    <h2>Consulta {{typeSearch}}</h2>  
   </div>
   
-  <div class="alert alert-success" ng-show="successForm">{{successMsg}}</div>
-  <form novalidate name="editPassForm" ng-submit="editPass()">
+  <form novalidate name="SearchApp" ng-submit="searchItens()">
 	<div class="row">
 		
-		<div class="col-lg-6">
-			<select class="form-control">
-				<option>Número do Cliente</option>
-				<option>Número da OS</option>
-				<option>Número da NF</option>
+		<div class="col-lg-6" ng-class="{'has-error' : SearchApp.filter_where.$invalid || SearchApp.filter_where.$pristine}">
+			<select name="filter_where" class="form-control" ng-model="typeSearch" required>
+				<option id="1" value="por número de Cliente">Número do Cliente</option>
+				<option id="2" value="por número da OS">Número da OS</option>
+				<option id="3" value="por número da NF">Número da NF</option>
 			</select>
 		</div>
 		<div class="col-lg-6">
-			<div class="input-group">				
-				<input type="text" class="form-control" placeholder="">
+			<div class="input-group" ng-class="{'has-error' : SearchApp.filter_q.$invalid || SearchApp.filter_q.$pristine}">
+				<input name="filter_q" ng-minlength="6" ng-maxlength="9" type="text" class="form-control" placeholder="" ng-model="itenSearch" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button">Consultar</button>
+					<button class="btn btn-default" type="submit" ng-disabled="SearchApp.$invalid">Consultar</button>
 				</span>
 			</div>
 		</div>
 		
 	</div>
+	<p ng-show="SearchApp.filter_q.$error.maxlength" class="help-block">9 é o número máximo de caracteres.</p>
+	<p ng-show="SearchApp.filter_q.$error.minlength" class="help-block">6 é o número mínimo de caracteres.</p>
+		
   </form>
 
   <hr/>
   <div class="row">
 	  <div class="col-lg-12">
-	  	<h4>Nenhum item foi encontrado para essa consulta.</h4>
+	  	<h4>Não foi encontrado o item {{itenSearch}} na consulta do {{typeSearch}}.</h4>
 	  </div>
   </div>
 
