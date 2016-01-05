@@ -32,6 +32,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl : 'app/views/expedicao.html',
       controller  : 'ExpedicaoCtrl'
    })
+   .when('/portal-niazi/consulta', {
+      title       : 'Consulta',
+      templateUrl : 'app/views/consulta.html',
+      controller  : 'ConsultaCtrl'
+   })
    .when('/portal-niazi/cadastro', {
       title       : 'Edição de Senha',
       templateUrl : 'app/views/cadastro.html',

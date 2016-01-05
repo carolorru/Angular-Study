@@ -1,0 +1,169 @@
+<div ng-include="'app/views/nav.html'"></div>
+
+<div class="container" style="padding-top: 40px;">
+  <h1 class="page-header">Painel de Gestão </h1>  
+  <div class="bs-callout bs-callout-info" id="callout-type-b-i-elems">
+    <h2>Consulta </h2>  
+  </div>
+  
+  <div class="alert alert-success" ng-show="successForm">{{successMsg}}</div>
+  <form novalidate name="editPassForm" ng-submit="editPass()">
+	<div class="row">
+		
+		<div class="col-lg-6">
+			<select class="form-control">
+				<option>Número do Cliente</option>
+				<option>Número da OS</option>
+				<option>Número da NF</option>
+			</select>
+		</div>
+		<div class="col-lg-6">
+			<div class="input-group">				
+				<input type="text" class="form-control" placeholder="">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button">Consultar</button>
+				</span>
+			</div>
+		</div>
+		
+	</div>
+  </form>
+
+  <hr/>
+  <div class="row">
+	  <div class="col-lg-12">
+	  	<h4>Nenhum item foi encontrado para essa consulta.</h4>
+	  </div>
+  </div>
+
+  <div class="row">
+  	<div class="col-lg-12">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Cod. Cliente/Loja</td>
+				<td>Nome do Cliente</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  </div>
+
+  <div class="row">
+  	<div class="col-lg-4">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Número do Pedido</td>
+				<td>Data do Pedido</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  	<div class="col-lg-4">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Número da OS</td>
+				<td>Data da OS</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  	<div class="col-lg-4">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Número da NF</td>
+				<td>Data da NF</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  </div>
+
+  <div class="row">
+  	<div class="col-lg-6">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Inicio da Separação</td>
+				<td>Separado por</td>
+				<td>Fim da Separação</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+
+  	<div class="col-lg-6">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Inicio da Conferência</td>
+				<td>Conferido por</td>
+				<td>Fim da Conferência</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  </div>
+
+  <div class="row">
+  	<div class="col-lg-12">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>Pesado por</td>
+				<td>Peesado em</td>
+				<td>Expedido por</td>
+				<td>Embarcado em</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td>...</td>
+				<td>...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  </div>
+
+  <div class="row">
+  	<div class="col-lg-12">
+		<table class="table table-hover table-bordered">
+			<tr class="info">
+				<td>DT Ent. Destino</td>
+				<td>Hora de Entrada</td>
+				<td>Ocorrência</td>
+			</tr>
+			<tr>
+				<td>...</td>
+				<td >...</td>
+				<td>...</td>
+			</tr>
+			<tr class="info">
+				<td colspan="2">Informações Complementares</td>
+				<td>Transportadora</td>
+			</tr>
+			<tr>
+				<td colspan="2">...</td>
+				<td>...</td>
+			</tr>
+		</table>
+  	</div>
+  </div>
+
+</div><!-- /.container -->
