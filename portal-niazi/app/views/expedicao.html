@@ -316,4 +316,147 @@
     </div>
   </div>
 
+
+  <!-- 
+  ************************
+  ENTREGAS REALIZADAS - TABELA 5
+  itens entregues
+  ************************
+  -->
+  <h3>Entregas Realizadas</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" style="margin-bottom: 10px;">
+      <thead>
+        <tr class="success">
+          <td>Nr. Nota Fiscal</td>
+          <td>Peso</td>
+          <td>Cubagem</td>        
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
+          <td>{{un.TOTAL_NOTAS}}</td>
+          <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
+          <td>{{un.TOTAL_CUBAGEM}} m³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- 
+  ****************************
+  ENTREGAS REALIZADAS - MODAL DE DETALHES
+  ****************************
+  -->
+  <!-- Large modal -->
+  <div ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'">
+    <div class="modal fade bs-entregues-modal-lg-{{$index + 1}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Entregas Realizadas</h4>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr class="success">
+                    <td>N. da NF</td>
+                    <td>Data NF</td>
+                    <td>Transp.</td>
+                    <td>Dt. Embarque</td>
+                    <td>Data Max. Ent.</td>        
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="item in un.NOTAS">
+                    <td>{{item.NUM_NF}}</td>
+                    <td>{{item.DT_INI_EMB}}</td>
+                    <td>{{item.VALOR}}</td>
+                    <td>{{item.PESO_BRUTO}} Kg</td>
+                    <td>{{item.CUBAGEM}} m³</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+  ************************
+  ENTREGAS À REALIZAR - TABELA 6
+  itens a entregar
+  ************************
+  -->
+  <h3>A Entregar</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" style="margin-bottom: 10px;">
+      <thead>
+        <tr class="success">
+          <td>Transportadora</td>
+          <td>Nr. Nota Fiscal</td>
+          <td>Valor</td>        
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'" data-toggle="modal" data-target=".bs-embarcados-modal-lg-{{$index + 1}}" class="cursor">
+          <td>{{un.TOTAL_NOTAS}}</td>
+          <td>{{un.TOTAL_PESO_BRUTO}} Kg</td>
+          <td>{{un.TOTAL_CUBAGEM}} m³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- 
+  ****************************
+  ENTREGAS REALIZADAS - MODAL DE DETALHES
+  ****************************
+  -->
+  <!-- Large modal -->
+  <div ng-repeat="un in embalados.embarcados.row | orderBy:'TOTAL_NOTAS'">
+    <div class="modal fade bs-entregar-modal-lg-{{$index + 1}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">A Entregar</h4>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr class="success">
+                    <td>N. da NF</td>
+                    <td>Data NF</td>
+                    <td>Transp.</td>
+                    <td>Dt. Embarque</td>
+                    <td>Data Max. Ent.</td>        
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="item in un.NOTAS">
+                    <td>N. da NF</td>
+                    <td>Data NF</td>
+                    <td>Transp.</td>
+                    <td>Dt. Embarque</td>
+                    <td>Data Max. Ent.</td>    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /.container -->
