@@ -71,7 +71,7 @@ $authenticateForRole = function($role = ''){
 };
 
 // CONSULTAS
-$app->group('/consultas', $authenticateForRole('consultas'), function() use ($app){
+$app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app){
 
 	$app->get('/',function () {
 
