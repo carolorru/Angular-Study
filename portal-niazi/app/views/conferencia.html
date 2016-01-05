@@ -77,7 +77,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="un in aConferir.row | orderBy:'NUM_PED'">
+                <tr ng-repeat="un in aConferir.row | orderBy:['DT_SEPARACAO', 'NUM_PED']">
                   <td>{{un.NUM_PED}}</td>
                   <td>{{un.NOM_CLI}}</td>
                   <td>{{un.DT_SEPARACAO}}</td>

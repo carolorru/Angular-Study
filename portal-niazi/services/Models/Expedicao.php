@@ -163,12 +163,27 @@ class Expedicao
 							
 						}
 						
+						$transp = trim($row['TRANSP']);
 						$dt_ini_emb['br_date']   = '';
 						$dt_ini_emb   = $this->Common->validaData($row['DATA']);
-						$dt_liberacao = $this->Common->validaData($row['DT_LIB']); 
+						$dt_liberacao = $this->Common->validaData($row['DT_LIB']);
+						
+						if(!array_key_exists($transp, $return[$chave])){
+							$chaveValor[$chave][] = $transp;
+							$return[$chave][$transp] = array(
+															'NOM_TRANSP' 	   => $transp,
+															'TOTAL_EMBARCADOS' => array(),
+															'TOTAL_CUBAGEM'    => array(),
+															'TOTAL_PESO_BRUTO' => array(),
+															'VALOR' 		   => array(),
+															'NOTAS'			   => array(),
+															'TOTAL_NOTAS'	   => array(),
+															);
+															
+						}
 
 						$notas = array(
-									'NOM_TRANSP'   => trim($row['TRANSP']),
+									'NOM_TRANSP'   => $transp,
 									'NOME_CLIENTE' => trim($row['NOME_CLIENTE']),
 									'DT_NF'		   => trim($row['DATA']),
 									'NUM_NF'	   => trim($row['NF']),
@@ -243,38 +258,69 @@ class Expedicao
 					}
 
 					//AGRUPA POR TRANSPORTADORA
-					foreach($return as $key => $value)
+					foreach($_RETURN as $key => $value)
 					{
 					
-						$_RETURN[$key]['row'] = array();
-
-						if($chave == 'aembarcar' || $chave == 'embarcados')
+						$_RETURN[$key]['TOTAL_PESO_BRUTO'] = $_RETURN[$key]['row']['TOTAL_PESO_BRUTO'];
+						$_RETURN[$key]['TOTAL_CUBAGEM']    = $_RETURN[$key]['row']['TOTAL_CUBAGEM'];
+						$_RETURN[$key]['VALOR']			   = $_RETURN[$key]['row']['VALOR'];
+						$_RETURN[$key]['TOTAL_EMBARCADOS'] = $_RETURN[$key]['row']['TOTAL_EMBARCADOS'];
+						$_RETURN[$key]['TOTAL_NOTAS'] 	   = $_RETURN[$key]['row']['TOTAL_NOTAS'];
+						
+						unset($_RETURN[$key]['row']['TOTAL_PESO_BRUTO']);
+						unset($_RETURN[$key]['row']['TOTAL_CUBAGEM']);
+						unset($_RETURN[$key]['row']['VALOR']);
+						unset($_RETURN[$key]['row']['TOTAL_EMBARCADOS']);
+						unset($_RETURN[$key]['row']['TOTAL_NOTAS']);
+						
+						if($key == 'aembarcar' || $key == 'embarcados')
 						{
 						
 							foreach($value as $k => $v)
 							{
-							
-								$tempKey = $v['NOM_TRANSP'];
-								$NewKey = array_search($tempKey, $chaveValor[$key]);
-							
-								if(!array_key_exists($NewKey, $_RETURN[$key]['row']))
-									$_RETURN[$key]['row'][$NewKey] = array('NOM_TRANSP' => $tempKey,'NOTAS' => $v['NOTAS']);
+				
+								foreach($v['NOTAS'] as $chave => $valor){
 								
-								$_RETURN[$key]['row'][$NewKey]['TOTAL_PESO_BRUTO'] = array_sum(array_values($v['TOTAL_PESO_BRUTO']));
-								$_RETURN[$key]['row'][$NewKey]['TOTAL_CUBAGEM']    = array_sum(array_values($v['TOTAL_CUBAGEM']));
-								$_RETURN[$key]['row'][$NewKey]['VALOR'] 		   = array_sum(array_values($v['VALOR']));
-								$_RETURN[$key]['row'][$NewKey]['TOTAL_EMBARCADOS'] = count($v['NOTAS']);
-								$_RETURN[$key]['row'][$NewKey]['TOTAL_NOTAS']	   = count($v['NOTAS']);
+								$tempKey = $valor['NOM_TRANSP'];
+								$NewKey = array_search($tempKey, $chaveValor[$key]);
+								
+								if(!array_key_exists($NewKey, $_RETURN[$key]['row'])){
+									$_RETURN[$key]['row'][$NewKey] = array('NOM_TRANSP' => $tempKey);
+								}
+									
+								$_RETURN[$key]['row'][$NewKey]['NOTAS'][] = $valor;
+								
+								//echo $NewKey."=".$_RETURN[$key]['row'][$NewKey]['TOTAL_PESO_BRUTO'].' + '.$valor['PESO_BRUTO']."<br>";
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_PESO_BRUTO'] = $_RETURN[$key]['row'][$NewKey]['TOTAL_PESO_BRUTO'] + $valor['PESO_BRUTO'];
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_CUBAGEM']    = $_RETURN[$key]['row'][$NewKey]['TOTAL_CUBAGEM'] + $valor['CUBAGEM'];
+								$_RETURN[$key]['row'][$NewKey]['VALOR'] 		   = $_RETURN[$key]['row'][$NewKey]['VALOR'] + $valor['VALOR'];
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_EMBARCADOS'] = count($_RETURN[$key]['row'][$NewKey]['NOTAS']);
+								$_RETURN[$key]['row'][$NewKey]['TOTAL_NOTAS']	   = count($_RETURN[$key]['row'][$NewKey]['NOTAS']);
+								
+								}
 								
 							}
-
+							//unset($_RETURN['aFaturar']);
+							//unset($_RETURN['atrasados']);
+							
+							unset($_RETURN['aembarcar']['row']['NOTAS']);
+							unset($_RETURN['embarcados']['row']['NOTAS']);
+							
 						}
 						
 					}
-					
+					//unset($_RETURN['aFaturar']);
+					/**
+					echo "<pre>";
+					print_r($_RETURN);
+					echo "</pre>";
+					die();
+					/**/
 				}else{
+					
 					$_RETURN['num'] = $num;
 					$pesoBruto = array();
+					
 				    while($row = $this->Database->fetch_array($query))
 				    {
 				    	$pesoBruto[] = $row['PESO_BRUTO'];
