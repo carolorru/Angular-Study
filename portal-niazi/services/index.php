@@ -70,6 +70,48 @@ $authenticateForRole = function($role = ''){
 
 };
 
+// CONSULTAS
+$app->group('/consultas', $authenticateForRole('consultas'), function() use ($app){
+
+	$app->get('/',function () {
+
+		if(!isset($_POST['filter_q']) || !isset($_POST['filter_where']))
+		{
+			
+			$search = array('code' => 404, 'msg' => 'Selecione os filtros para consulta.');
+			
+			header("Content-Type: application/json");
+			echo json_encode($search);
+
+		}else{
+
+		    $Consulta = new Consulta();
+
+		    switch ($_POST['filter_where']) {
+		    	case 'por número de Cliente':
+		    		$filter_where = 'NUM_PEDIDO';
+		    		break;
+		    	case 'por número da OS':
+		    		$filter_where = 'NUM_OS';
+		    		break;
+		    	case 'por número da NF':
+		    		$filter_where = 'NOTA_FISCAL';
+		    		break;
+		    }
+
+		    $Consulta->filter_q = addslashes($_POST['filter_q']);
+		    $Consulta->filter_where = $filter_where;
+		    $search = $Consulta->search();
+
+		    header("Content-Type: application/json");
+			echo json_encode($search);
+
+		}
+
+	});
+
+});
+
 // PEDIDOS
 $app->group('/pedidos', $authenticateForRole('pedidos'), function() use ($app){
 
