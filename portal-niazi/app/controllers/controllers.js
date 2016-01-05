@@ -470,5 +470,13 @@ app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', 'Permission
 
     $scope.searchItens = function() {
         $scope.viewLoading = true;
+        $.post('/portal-niazi/services/consultas', { filter_where: $scope.SearchApp.filter_where, filter_q: $scope.SearchApp.filter_q }, 'json').success(function (data) {
+            data = JSON.parse(data);            
+            console.log('service post', data);
+            callback(data);
+        }).error(function (error) {
+            callback(error);
+            alert("Login Error!");
+        });
     }
 }]);
