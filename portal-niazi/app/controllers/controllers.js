@@ -474,7 +474,7 @@ app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', 'Permission
         $scope.viewLoading = false;
 		$scope.viewError = false;
 
-        $.post('/portal-niazi-2016/services/consultas', { filter_where: $scope.typeSearch, filter_q: $scope.itenSearch }, 'json')
+        $http.get('/portal-niazi-2016/services/consultas?filter_where='+$scope.typeSearch+'&filter_q='+$scope.itenSearch, 'json')
 		.success(function (data) {
             json = JSON.parse(data);
 			 

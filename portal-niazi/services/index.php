@@ -74,9 +74,9 @@ $authenticateForRole = function($role = ''){
 // CONSULTAS
 $app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app){
 
-	$app->post('/',function () {
+	$app->map('/',function () {
 
-		if(!isset($_POST['filter_q']) || !isset($_POST['filter_where']))
+		if(!isset($_REQUEST['filter_q']) || !isset($_REQUEST['filter_where']))
 		{
 
 			$search = array('code' => 404, 'msg' => 'Selecione os filtros para consulta.');
@@ -88,7 +88,7 @@ $app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app)
 
 		    $Consulta = new Consulta();
 
-		    switch ($_POST['filter_where']) {
+		    switch ($_REQUEST['filter_where']) {
 		    	case 'por número de Cliente':
 		    		$filter_where = 'NUM_PEDIDO';
 		    		break;
@@ -100,7 +100,7 @@ $app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app)
 		    		break;
 		    }
 
-		    $Consulta->filter_q = addslashes($_POST['filter_q']);
+		    $Consulta->filter_q = addslashes($_REQUEST['filter_q']);
 		    $Consulta->filter_where = $filter_where;
 		    
 		    $search = $Consulta->search();
@@ -110,7 +110,7 @@ $app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app)
 
 		}
 		
-	});
+	})->via('GET', 'POST');
 
 });
 
