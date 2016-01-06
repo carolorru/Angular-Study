@@ -1,51 +1,48 @@
 <?php
-
-error_reporting(E_ALL);
-ini_set("display_errors",1);
-
 class Consulta
 {
 
 	public $Database;
 	public $Common;
-
+	
 	public function __construct()
 	{
+
 		// Dados do banco
 		$this->Database = new Database;
 		$this->Common = new Common;
-		
+
 	}
-	
+
 	public function search()
 	{
 
-			$sel = "SELECT * FROM (
-									select '0001' as COD_CLI,
-									       'NIAZI CHOHFI' as NOME_CLI,
-									       '050333' as NUM_PEDIDO,
-									       '06/10/2015' as DATA_PEDIDO,
-									       '066000' as NUM_OS,
-									       '10/10/2015' as DATA_OS,
-									       '047000' as NOTA_FISCAL,
-									       '11/10/2015' as DATA_NF,
-									       '10/10/2015' as INI_SEP,
-									       'JOAO' as SEPARADOR,
-									       '10/10/2015' as FIM_SEP,
-									       '11/10/2015' as INI_CONF,
-									       'FLAVIO' as CONFERENTE,
-									       '11/10/2015' as FIM_CONF,
-									       '11/10/2015' as DATA_PESAGEM,
-									       'GORDAO' as PESADOR,
-									       '12/10/2015' as DATA_EMBARQUE,
-									       'ROBSON' as EMBARCADOR,
-									       '20/10/2010' as DATA_ENTREGA,
-									       '15:00:00' as HORA_ENTREGA,
-									       '01-Entrega Realizada Normalmente' as OCORRENCIA,
-									       'Recebido por Vitoria' as INF_COMPL,
-									       'GRAN CARGO' as TRANSPORTADORA
-						        ) Z
-					WHERE ".$this->filter_where."  = '".$this->filter_q."'";
+		$sel = "SELECT * FROM (
+								select '0001' as COD_CLI,
+									   'NIAZI CHOHFI' as NOME_CLI,
+									   '050333' as NUM_PEDIDO,
+									   '06/10/2015' as DATA_PEDIDO,
+									   '066000' as NUM_OS,
+									   '10/10/2015' as DATA_OS,
+									   '047000' as NOTA_FISCAL,
+									   '11/10/2015' as DATA_NF,
+									   '10/10/2015' as INI_SEP,
+									   'JOAO' as SEPARADOR,
+									   '10/10/2015' as FIM_SEP,
+									   '11/10/2015' as INI_CONF,
+									   'FLAVIO' as CONFERENTE,
+									   '11/10/2015' as FIM_CONF,
+									   '11/10/2015' as DATA_PESAGEM,
+									   'GORDAO' as PESADOR,
+									   '12/10/2015' as DATA_EMBARQUE,
+									   'ROBSON' as EMBARCADOR,
+									   '20/10/2010' as DATA_ENTREGA,
+									   '15:00:00' as HORA_ENTREGA,
+									   '01-Entrega Realizada Normalmente' as OCORRENCIA,
+									   'Recebido por Vitoria' as INF_COMPL,
+									   'GRAN CARGO' as TRANSPORTADORA
+							) Z
+				WHERE ".$this->filter_where."  = '".$this->filter_q."'";
 
 		$query = $this->Database->doQuery($sel);
 

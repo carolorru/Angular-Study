@@ -17,6 +17,7 @@ require 'Models/Common.php';
 require 'Models/Database.php';
 require 'Models/Separacao.php';
 require 'Models/Expedicao.php';
+require 'Models/Consulta.php';
 //require 'Models/ExpedicaoDois.php';
 require 'Models/Conferencia.php';
 require 'Models/Usuarios.php';
@@ -73,46 +74,15 @@ $authenticateForRole = function($role = ''){
 // CONSULTAS
 $app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app){
 
-	$app->get('/',function () {
+	$app->post('/',function () {
 
 		if(!isset($_POST['filter_q']) || !isset($_POST['filter_where']))
 		{
-			
+
 			$search = array('code' => 404, 'msg' => 'Selecione os filtros para consulta.');
 			
 			header("Content-Type: application/json");
 			echo json_encode($search);
-
-		}else if(isset($_REQUEST['teste'])){
-
-			$search = '{
-				"COD_CLI": "0001",
-				"NOME_CLI": "NIAZICHOHFI",
-				"NUM_PEDIDO": "050333",
-				"DATA_PEDIDO": "06/10/2015",
-				"NUM_OS": "066000",
-				"DATA_OS": "10/10/2015",
-				"NOTA_FISCAL": "047000",
-				"DATA_NF": "11/10/2015",
-				"INI_SEP": "10/10/2015",
-				"SEPARADOR": "JOAO",
-				"FIM_SEP": "10/10/2015",
-				"INI_CONF": "11/10/2015",
-				"CONFERENTE": "FLAVIO",
-				"FIM_CONF": "11/10/2015",
-				"DATA_PESAGEM": "11/10/2015",
-				"PESADOR": "GORDAO",
-				"DATA_EMBARQUE": "12/10/2015",
-				"EMBARCADOR": "ROBSON",
-				"DATA_ENTREGA": "20/10/2010",
-				"HORA_ENTREGA": "15: 00: 00",
-				"OCORRENCIA": "01-EntregaRealizadaNormalmente",
-				"INF_COMPL": "RecebidoporVitoria",
-				"TRANSPORTADORA": "GRANCARGO"
-			}';
-
-			header("Content-Type: application/json");
-			echo $search;
 
 		}else{
 
@@ -139,7 +109,7 @@ $app->group('/consultas', $authenticateForRole('pedidos'), function() use ($app)
 			echo json_encode($search);
 
 		}
-
+		
 	});
 
 });

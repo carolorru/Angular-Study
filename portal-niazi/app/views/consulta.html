@@ -11,10 +11,10 @@
     <h2>Consulta {{typeSearch}}</h2>  
   </div>
   
-  <form novalidate name="SearchApp" ng-submit="searchItens()">
+  <form novalidate name="searchApp" ng-model="searchApp" ng-submit="searchItens()">
 	<div class="row">
 		
-		<div class="col-lg-6" ng-class="{'has-error' : SearchApp.filter_where.$invalid || SearchApp.filter_where.$pristine}">
+		<div class="col-lg-6" ng-class="{'has-error' : searchApp.filter_where.$invalid || searchApp.filter_where.$pristine}">
 			<select name="filter_where" class="form-control" ng-model="typeSearch" required>
 				<option id="1" value="por número de Cliente">Número do Cliente</option>
 				<option id="2" value="por número da OS">Número da OS</option>
@@ -22,155 +22,159 @@
 			</select>
 		</div>
 		<div class="col-lg-6">
-			<div class="input-group" ng-class="{'has-error' : SearchApp.filter_q.$invalid || SearchApp.filter_q.$pristine}">
+			<div class="input-group" ng-class="{'has-error' : searchApp.filter_q.$invalid || searchApp.filter_q.$pristine}">
 				<input name="filter_q" ng-minlength="6" ng-maxlength="9" type="text" class="form-control" placeholder="" ng-model="itenSearch" required>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="submit" ng-disabled="SearchApp.$invalid">Consultar</button>
+					<button class="btn btn-default" type="submit" ng-disabled="searchApp.$invalid">Consultar</button>
 				</span>
 			</div>
 		</div>
 		
 	</div>
-	<p ng-show="SearchApp.filter_q.$error.maxlength" class="help-block">9 é o número máximo de caracteres.</p>
-	<p ng-show="SearchApp.filter_q.$error.minlength" class="help-block">6 é o número mínimo de caracteres.</p>
 		
   </form>
 
   <hr/>
-  <div class="row">
-	  <div class="col-lg-12">
-	  	<h4>Não foi encontrado o item {{itenSearch}} na consulta do {{typeSearch}}.</h4>
+  <div ng-if="viewError" class="error">
+	<div class="row">
+		<div class="col-lg-12">
+			<h4>Não foi encontrado o item na consulta.</h4>
+		</div>
+	</div>
+  </div>
+  
+
+  <div ng-repeat="un in consulta.row" >
+	  <div class="row">
+	  	<div class="col-lg-12">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Cod. Cliente/Loja</td>
+					<td>Nome do Cliente</td>
+				</tr>
+				<tr>
+					<td>{{un.COD_CLI}}</td>
+					<td>{{un.NOME_CLI}}</td>
+				</tr>
+			</table>
+	  	</div>
 	  </div>
-  </div>
 
-  <div class="row">
-  	<div class="col-lg-12">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Cod. Cliente/Loja</td>
-				<td>Nome do Cliente</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  </div>
+	  <div class="row">
+	  	<div class="col-lg-4">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Número do Pedido</td>
+					<td>Data do Pedido</td>
+				</tr>
+				<tr>
+					<td>{{un.NUM_PEDIDO}}</td>
+					<td>{{un.DATA_PEDIDO}}</td>
+				</tr>
+			</table>
+	  	</div>
+	  	<div class="col-lg-4">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Número da OS</td>
+					<td>Data da OS</td>
+				</tr>
+				<tr>
+					<td>{{un.NUM_OS}}</td>
+					<td>{{un.DATA_OS}}</td>
+				</tr>
+			</table>
+	  	</div>
+	  	<div class="col-lg-4">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Número da NF</td>
+					<td>Data da NF</td>
+				</tr>
+				<tr>
+					<td>{{un.NOTA_FISCAL}}</td>
+					<td>{{un.DATA_NF}}</td>
+				</tr>
+			</table>
+	  	</div>
+	  </div>
 
-  <div class="row">
-  	<div class="col-lg-4">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Número do Pedido</td>
-				<td>Data do Pedido</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  	<div class="col-lg-4">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Número da OS</td>
-				<td>Data da OS</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  	<div class="col-lg-4">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Número da NF</td>
-				<td>Data da NF</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  </div>
+	  <div class="row">
+	  	<div class="col-lg-6">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Inicio da Separação</td>
+					<td>Separado por</td>
+					<td>Fim da Separação</td>
+				</tr>
+				<tr>
+					<td>{{un.INI_SEP}}</td>
+					<td>{{un.SEPARADOR}}</td>
+					<td>{{un.FIM_SEP}}</td>
+				</tr>
+			</table>
+	  	</div>
 
-  <div class="row">
-  	<div class="col-lg-6">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Inicio da Separação</td>
-				<td>Separado por</td>
-				<td>Fim da Separação</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
+	  	<div class="col-lg-6">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Inicio da Conferência</td>
+					<td>Conferido por</td>
+					<td>Fim da Conferência</td>
+				</tr>
+				<tr>
+					<td>{{un.INI_CONF}}</td>
+					<td>{{un.CONFERENTE}}</td>
+					<td>{{un.FIM_CONF}}</td>
+				</tr>
+			</table>
+	  	</div>
+	  </div>
 
-  	<div class="col-lg-6">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Inicio da Conferência</td>
-				<td>Conferido por</td>
-				<td>Fim da Conferência</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  </div>
+	  <div class="row">
+	  	<div class="col-lg-12">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>Pesado por</td>
+					<td>Peesado em</td>
+					<td>Expedido por</td>
+					<td>Embarcado em</td>
+				</tr>
+				<tr>
+					<td>{{un.PESADOR}}</td>
+					<td>{{un.DATA_PESAGEM}}</td>
+					<td>{{un.EMBARCADOR}}</td>
+					<td>{{un.DATA_EMBARQUE}}</td>
+				</tr>
+			</table>
+	  	</div>
+	  </div>
 
-  <div class="row">
-  	<div class="col-lg-12">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>Pesado por</td>
-				<td>Peesado em</td>
-				<td>Expedido por</td>
-				<td>Embarcado em</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td>...</td>
-				<td>...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  </div>
+	  <div class="row">
+	  	<div class="col-lg-12">
+			<table class="table table-hover table-bordered">
+				<tr class="info">
+					<td>DT Ent. Destino</td>
+					<td>Hora de Entrada</td>
+					<td>Ocorrência</td>
+				</tr>
+				<tr>
+					<td>{{un.DATA_ENTREGA}}</td>
+					<td>{{un.HORA_ENTREGA}}</td>
+					<td>{{un.OCORRENCIA}}</td>
+				</tr>
+				<tr class="info">
+					<td colspan="2">Informações Complementares</td>
+					<td>Transportadora</td>
+				</tr>
+				<tr>
+					<td colspan="2">{{un.INF_COMPL}}</td>
+					<td>{{un.TRANSPORTADORA}}</td>
+				</tr>
+			</table>
+	  	</div>
+	  </div>
 
-  <div class="row">
-  	<div class="col-lg-12">
-		<table class="table table-hover table-bordered">
-			<tr class="info">
-				<td>DT Ent. Destino</td>
-				<td>Hora de Entrada</td>
-				<td>Ocorrência</td>
-			</tr>
-			<tr>
-				<td>...</td>
-				<td >...</td>
-				<td>...</td>
-			</tr>
-			<tr class="info">
-				<td colspan="2">Informações Complementares</td>
-				<td>Transportadora</td>
-			</tr>
-			<tr>
-				<td colspan="2">...</td>
-				<td>...</td>
-			</tr>
-		</table>
-  	</div>
-  </div>
+	</div>
 
 </div><!-- /.container -->

@@ -7,42 +7,42 @@ app.config(function($routeProvider, $locationProvider) {
    $locationProvider.html5Mode(true);
  
    $routeProvider
-   .when('/portal-niazi/home', {
+   .when('/portal-niazi-2016/home', {
       title       : 'Home',
       templateUrl : 'app/views/home.html',
       controller  : 'HomeCtrl'
    })
-   .when('/portal-niazi/', {
+   .when('/portal-niazi-2016/', {
       title       : 'Login',
       templateUrl : 'app/views/login.html',
       controller  : 'LoginCtrl'
    })
-   .when('/portal-niazi/separacao', {
+   .when('/portal-niazi-2016/separacao', {
       title       : 'Separação',
       templateUrl : 'app/views/separacao.html',
       controller  : 'SeparacaoCtrl'
    })
-   .when('/portal-niazi/conferencia', {
+   .when('/portal-niazi-2016/conferencia', {
       title       : 'Conferência',
       templateUrl : 'app/views/conferencia.html',
       controller  : 'ConferenciaCtrl'
    })
-   .when('/portal-niazi/expedicao', {
+   .when('/portal-niazi-2016/expedicao', {
       title       : 'Expedição',
       templateUrl : 'app/views/expedicao.html',
       controller  : 'ExpedicaoCtrl'
    })
-   .when('/portal-niazi/consulta', {
+   .when('/portal-niazi-2016/consulta', {
       title       : 'Consulta',
       templateUrl : 'app/views/consulta.html',
       controller  : 'ConsultaCtrl'
    })
-   .when('/portal-niazi/cadastro', {
+   .when('/portal-niazi-2016/cadastro', {
       title       : 'Edição de Senha',
       templateUrl : 'app/views/cadastro.html',
       controller  : 'CadastroCtrl'
    })
-   .otherwise ({ redirectTo: '/portal-niazi/' });
+   .otherwise ({ redirectTo: '/portal-niazi-2016/' });
 
 })
 .run(['$rootScope', '$location', '$cookieStore', '$http',
@@ -58,8 +58,8 @@ function ($rootScope, $location, $cookieStore, $http) {
 
    $rootScope.$on('$locationChangeStart', function (event, next, current) {
       // redirect to login page if not logged in
-      if ($location.path() !== '/portal-niazi/' && !$rootScope.globals.currentUser) {
-         $location.path('/portal-niazi/');
+      if ($location.path() !== '/portal-niazi-2016/' && !$rootScope.globals.currentUser) {
+         $location.path('/portal-niazi-2016/');
       //redireciona para home quando não tem permissão
       } 
       else {
@@ -81,17 +81,17 @@ function ($rootScope, $location, $cookieStore, $http) {
             }            
          }; 
          
-         if($location.path() == '/portal-niazi/separacao' && sep != true){
-            $location.path('/portal-niazi/');
+         if($location.path() == '/portal-niazi-2016/separacao' && sep != true){
+            $location.path('/portal-niazi-2016/');
          }
-         if($location.path() == '/portal-niazi/expedicao' && exp != true){
-            $location.path('/portal-niazi/');
+         if($location.path() == '/portal-niazi-2016/expedicao' && exp != true){
+            $location.path('/portal-niazi-2016/');
          }
-         if($location.path() == '/portal-niazi/conferencia' && conf != true){
-            $location.path('/portal-niazi/');
+         if($location.path() == '/portal-niazi-2016/conferencia' && conf != true){
+            $location.path('/portal-niazi-2016/');
          }
-         //if($location.path() == '/portal-niazi/cadastro' && pass != true){
-         //   $location.path('/portal-niazi/');
+         //if($location.path() == '/portal-niazi-2016/cadastro' && pass != true){
+         //   $location.path('/portal-niazi-2016/');
          //}
       }
    });
