@@ -378,6 +378,7 @@ class Expedicao
 									
 									}
 									
+									$_RETURN[$newKey]['row'][$nomeTransp]['NOM_TRANSP'] = $nomeTransp;
 									$_RETURN[$newKey]['row'][$nomeTransp]['NOTAS'][] = $value;
 									$_RETURN[$newKey]['row'][$nomeTransp]['TOTAL_PESO_BRUTO'] +=  $value['PESO_BRUTO'];
 									$_RETURN[$newKey]['row'][$nomeTransp]['TOTAL_CUBAGEM'] += $value['CUBAGEM'];
@@ -386,6 +387,9 @@ class Expedicao
 									$_RETURN[$newKey]['row'][$nomeTransp]['TOTAL_NOTAS'] = count($_RETURN[$newKey]['row'][$nomeTransp]['NOTAS']);
 									
 								}
+								
+								sort($_RETURN['entregue']['row']);
+								sort($_RETURN['aEntregar']['row']);
 
 							}
 							
