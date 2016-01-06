@@ -105,7 +105,7 @@ class Expedicao
 					      on         C5_FILIAL = CB7_FILIAL
 					      and        C5_NUM = CB7_PEDIDO
 					      and        SC5.D_E_L_E_T_ <> '*'
-					      / where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112) /
+					      -- where      CB7_XDTFE = convert(varchar(8), SYSDATETIME(), 112)
 					      where      CB7_XDTFE = '".$params['ref-date']."'
 					      and        CB7_XDTFP <> ''
 					      and        CB7.D_E_L_E_T_ <> '*'
@@ -199,6 +199,11 @@ class Expedicao
 						
 							$chave = 'embarcados';
 							
+							//TESTES : REMOVER DEPOIS
+							$status = array('','06/01/2015');
+							shuffle($status);
+							$row['DT_ENT'] = $status[0];
+							
 						}else{
 							
 							$chave = 'aembarcar';
@@ -242,6 +247,7 @@ class Expedicao
 									'VALOR' 	   => trim($row['VALOR']),
 									'PESO_BRUTO'   => trim($row['PESO']),
 									'CUBAGEM' 	   => trim($row['CUBAGEM']),
+									'DT_ENT'	   => trim($row['DT_ENT'])
 									);
 						
 						if($chave == 'aembarcar'){
@@ -286,7 +292,6 @@ class Expedicao
 						$_RETURN[$chave]['row']['VALOR'][] 		      = trim($row['VALOR']);
 						$_RETURN[$chave]['row']['TOTAL_EMBARCADOS']   = count($_RETURN[$chave]['row']['NOTAS']);
 						$_RETURN[$chave]['row']['TOTAL_NOTAS']		  = count($_RETURN[$chave]['row']['NOTAS']);
-						$_RETURN[$chave]['row']['DT_ENT'][] 		  = $row['DT_ENT'];
 						
 					}
 
@@ -348,26 +353,31 @@ class Expedicao
 								$_RETURN[$key]['row'][$NewKey]['TOTAL_NOTAS']	   = count($_RETURN[$key]['row'][$NewKey]['NOTAS']);
 								
 								}
-
-								//cria os arrays de: entregues e a entregar, para os embarcados
-								if($chave == 'embarcados')
-								{
-									
-									if($value['DT_ENT'] != ''){
-										
-										$_RETURN['entregue']['row'][] = $_RETURN[$key]['row'];
-
-									}else{
-
-										$_RETURN['a-entregar']['row'][] = $_RETURN[$key]['row'];
-
-									}
-
-								}
 								
 							}
 							//unset($_RETURN['aFaturar']);
 							//unset($_RETURN['atrasados']);
+							
+							//cria os arrays de: entregues e a entregar, para os embarcados
+							if($key == 'embarcados')
+							{	
+
+								foreach($_RETURN['embarcados']['row']['NOTAS'] as $key => $value)
+								{
+									
+									if($value['DT_ENT'] != ''){
+									
+										$_RETURN['entregue']['row'][] = $value;
+									
+									}else{
+									
+										$_RETURN['aEntregar']['row'][] = $value;
+									
+									}
+										
+								}
+
+							}
 							
 							unset($_RETURN['aembarcar']['row']['NOTAS']);
 							unset($_RETURN['embarcados']['row']['NOTAS']);
