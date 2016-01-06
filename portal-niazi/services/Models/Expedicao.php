@@ -198,12 +198,12 @@ class Expedicao
 						if($params['tipo'] == 'embarcados'){
 						
 							$chave = 'embarcados';
-							
+							/*
 							//TESTES : REMOVER DEPOIS
 							$status = array('','06/01/2015');
 							shuffle($status);
 							$row['DT_ENT'] = $status[0];
-							
+							*/
 						}else{
 							
 							$chave = 'aembarcar';
@@ -221,6 +221,7 @@ class Expedicao
 						$dt_ini_emb['br_date']   = '';
 						$dt_ini_emb   = $this->Common->validaData($row['DATA']);
 						$dt_liberacao = $this->Common->validaData($row['DT_LIB']);
+						$dt_ent 	  = $this->Common->validaData($row['DT_ENT']);
 						
 						if(!array_key_exists($transp, $return[$chave])){
 							$chaveValor[$chave][] = $transp;
@@ -247,7 +248,7 @@ class Expedicao
 									'VALOR' 	   => trim($row['VALOR']),
 									'PESO_BRUTO'   => trim($row['PESO']),
 									'CUBAGEM' 	   => trim($row['CUBAGEM']),
-									'DT_ENT'	   => trim($row['DT_ENT'])
+									'DT_ENT'	   => trim($dt_ent['br_date'])
 									);
 						
 						if($chave == 'aembarcar'){
