@@ -471,7 +471,7 @@ app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', '$http', 'P
 	
 
     $scope.searchItens = function() {
-        $scope.viewLoading = false;
+        $scope.viewLoading = true;
 		$scope.viewError = false;
 
         $http.get('/portal-niazi-2016/services/consultas?filter_where='+$scope.typeSearch+'&filter_q='+$scope.itenSearch).success(function (data) {
@@ -485,12 +485,7 @@ app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', '$http', 'P
 			
             $scope.consulta = json;
 		
-            
-            console.log(json);
-			console.log('scope');
-			console.log($scope.consulta);
-			console.log('erro ' +$scope.viewError);
-
+            $scope.viewLoading = false;
         });
 		
     }
