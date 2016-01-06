@@ -464,7 +464,7 @@ app.controller('ExpedicaoCtrl', ['$scope', '$rootScope', '$location', '$http', '
     $scope.$on('$destroy', function () { $interval.cancel(intervalContent); });
 }]);
 
-app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', 'Permission', function($scope, $rootScope, $location, Permission) {
+app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', '$http', 'Permission', function($scope, $rootScope, $location, $http, Permission) {
     Permission.validation();
     $rootScope.activetab = $location.path();
     console.log('consulta');
@@ -474,9 +474,8 @@ app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', 'Permission
         $scope.viewLoading = false;
 		$scope.viewError = false;
 
-        $http.get('/portal-niazi-2016/services/consultas?filter_where='+$scope.typeSearch+'&filter_q='+$scope.itenSearch, 'json')
-		.success(function (data) {
-            json = JSON.parse(data);
+        $http.get('/portal-niazi-2016/services/consultas?filter_where='+$scope.typeSearch+'&filter_q='+$scope.itenSearch).success(function (data) {
+            json = data;
 			 
 			if (json.num == 0){ 
 				$scope.viewError = true; 
@@ -485,22 +484,15 @@ app.controller('ConsultaCtrl', ['$scope', '$rootScope', '$location', 'Permission
 			}
 			
             $scope.consulta = json;
-			sucssesAjax();
+		
             
             console.log(json);
 			console.log('scope');
 			console.log($scope.consulta);
 			console.log('erro ' +$scope.viewError);
 
-        }).error(function (error) {
-            alert("Erro de rotorno da consulta");
         });
 		
-		return $scope.consulta;
     }
 	
-	function sucssesAjax() {
-        $scope.viewLoading = false;
-		console.log('sucesso');
-    }
 }]);
